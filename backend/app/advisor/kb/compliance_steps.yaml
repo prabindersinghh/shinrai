@@ -1,0 +1,59 @@
+# Compliance steps (Day 0 = decision to enter). Deadlines are summaries of the cited rule; confirm with an
+# Indian chartered accountant or lawyer. verified_by_team: false until checked against the primary text.
+steps:
+  - {id: cs_partner_verify, name: "Verify the partner (Shinrai Verify)", name_ja: "パートナーの信用調査（Shinrai Verify）",
+     authority: "Shinrai", form: "Verify report", trigger: "Before any agreement", deadline: "Before signing", start: 0, days: 7, owner: SME,
+     why_en: "Confirms the partner is real, compliant and who is behind it.", why_ja: "相手が実在し、法令を遵守しているか、誰が背後にいるかを確認します。",
+     docs: ["Partner CIN / GSTIN", "Partner brochure"], source_name: "Shinrai", source_url: "internal:shinrai-verify", as_of: "2026-10-24", verified_by_team: true}
+  - {id: cs_distribution_agreement, name: "Distribution agreement", name_ja: "販売代理店契約",
+     authority: "Contract", form: "Agreement", trigger: "After verification", deadline: "Before first order", start: 7, days: 21, owner: Lawyer,
+     why_en: "Sets payment security, audit rights and exit terms.", why_ja: "支払保全、監査権、解除条件を定めます。",
+     docs: ["Term sheet (Shinrai clause pack)"], source_name: "Indian Contract Act, 1872", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_manufacturing_agreement, name: "Manufacturing and quality agreement", name_ja: "製造委託・品質契約",
+     authority: "Contract", form: "Agreement", trigger: "After verification", deadline: "Before first order", start: 7, days: 28, owner: Lawyer,
+     why_en: "Protects IP and quality, and gives audit rights.", why_ja: "知的財産と品質を守り、監査権を確保します。",
+     docs: ["Specifications", "Quality plan"], source_name: "Indian Contract Act, 1872", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_lo_approval, name: "Liaison / branch office approval", name_ja: "駐在員事務所・支店の承認",
+     authority: "AD Category-I bank (RBI framework)", form: "Form FNC", trigger: "Decision to open an office", deadline: "Before starting activity", start: 0, days: 45, owner: "Indian CA",
+     why_en: "An office cannot operate until the approval is granted.", why_ja: "承認前に事務所を運営することはできません。",
+     docs: ["Certificate of incorporation (Japan)", "Audited accounts", "Board resolution"], source_name: "RBI Master Direction on LO/BO/PO", source_url: "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_spice, name: "Incorporate the company (SPICe+)", name_ja: "会社設立（SPICe+）",
+     authority: "Ministry of Corporate Affairs", form: "SPICe+ (INC-32)", trigger: "Decision to incorporate", deadline: "—", start: 0, days: 20, owner: "Indian CA",
+     why_en: "Creates the Indian company; SPICe+ also issues PAN and TAN.", why_ja: "インド法人を設立します。SPICe+でPANとTANも取得できます。",
+     docs: ["Director IDs (DIN)", "Digital signature certificates", "Registered office proof", "MoA and AoA"], source_name: "MCA, SPICe+", source_url: "https://www.mca.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_pan_tan, name: "PAN and TAN", name_ja: "PAN・TANの取得",
+     authority: "Income Tax Department", form: "Issued with SPICe+ or Form 49A / 49B", trigger: "Incorporation", deadline: "With incorporation", start: 20, days: 5, owner: "Indian CA",
+     why_en: "Needed for tax filings, the bank account and withholding tax.", why_ja: "納税、銀行口座、源泉徴収に必要です。",
+     docs: ["Certificate of incorporation"], source_name: "Income Tax Department", source_url: "https://www.incometax.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_bank_account, name: "Bank account and capital remittance", name_ja: "銀行口座開設・資本金送金",
+     authority: "AD Category-I bank", form: "Account opening; inward remittance (FIRC / KYC)", trigger: "PAN issued", deadline: "—", start: 25, days: 10, owner: SME,
+     why_en: "Capital must arrive through banking channels before shares are allotted.", why_ja: "株式割当の前に、資本金を銀行経由で送金する必要があります。",
+     docs: ["PAN", "Board resolution", "KYC of directors"], source_name: "RBI Master Direction on Foreign Investment", source_url: "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_fcgpr, name: "Report the foreign investment (FC-GPR)", name_ja: "外国投資の報告（FC-GPR）",
+     authority: "RBI (FIRMS portal, through the AD bank)", form: "FC-GPR", trigger: "Allotment of shares to the Japanese parent", deadline: "Within 30 days of allotment", start: 40, days: 30, owner: "Indian CA", critical: true,
+     why_en: "Late or missing FEMA reporting attracts late-submission fees and can complicate future remittances.", why_ja: "FEMA報告の遅延や未提出は遅延手数料の対象となり、将来の送金に支障が出る場合があります。",
+     docs: ["FIRC", "KYC of the investor", "Valuation certificate", "Company secretary certificate"], source_name: "RBI Master Direction on Foreign Investment (FC-GPR reporting)", source_url: "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_gst, name: "GST registration", name_ja: "GST登録",
+     authority: "GSTN (state and central GST)", form: "GST REG-01", trigger: "Becoming liable to register (supply or threshold)", deadline: "Within 30 days of becoming liable", start: 35, days: 15, owner: "Indian CA", critical: true,
+     why_en: "A separate registration is needed in every state where you have a place of business.", why_ja: "事業所を置く州ごとに個別の登録が必要です。",
+     docs: ["PAN", "Address proof of each place of business", "Authorised signatory"], source_name: "CGST Act, 2017, s.22 and s.25", source_url: "https://cbic-gst.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_iec, name: "Importer-Exporter Code (IEC)", name_ja: "輸出入者コード（IEC）",
+     authority: "DGFT", form: "IEC application", trigger: "Before the first import or export", deadline: "Before the first shipment", start: 35, days: 5, owner: "Indian CA",
+     why_en: "Customs will not clear goods without an IEC.", why_ja: "IECがないと通関できません。",
+     docs: ["PAN", "Bank certificate"], source_name: "DGFT", source_url: "https://www.dgft.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_shops, name: "Shops and establishments / factory licence", name_ja: "店舗・事業所登録／工場ライセンス",
+     authority: "State labour department", form: "State form", trigger: "Opening an office or factory", deadline: "Per state rules", start: 45, days: 20, owner: "Indian CA",
+     why_en: "Each state sets its own rules; factories also need a licence under the Factories Act.", why_ja: "州ごとに規則が異なり、工場は工場法に基づく許可も必要です。",
+     docs: ["Lease deed", "Employee details"], source_name: "State labour departments", source_url: "https://labour.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_commencement, name: "Declaration of commencement of business", name_ja: "事業開始の届出",
+     authority: "Ministry of Corporate Affairs", form: "INC-20A", trigger: "Incorporation", deadline: "Within 180 days of incorporation", start: 60, days: 120, owner: "Indian CA", critical: true,
+     why_en: "Missing it can lead to penalties and, ultimately, removal from the register.", why_ja: "未提出の場合、罰則や登記抹消につながることがあります。",
+     docs: ["Proof of subscription money received"], source_name: "Companies Act, 2013, s.10A", source_url: "https://www.mca.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_auditor, name: "Appoint the first auditor", name_ja: "最初の監査人の選任",
+     authority: "Board of directors", form: "Board resolution (ADT-1 on later appointment)", trigger: "Incorporation", deadline: "Within 30 days of incorporation", start: 20, days: 30, owner: "Indian CA",
+     why_en: "Statutory audit is mandatory for every company.", why_ja: "すべての会社に法定監査が義務付けられています。",
+     docs: ["Auditor consent and certificate"], source_name: "Companies Act, 2013, s.139(6)", source_url: "https://www.mca.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cs_annual, name: "Annual filings and transfer pricing", name_ja: "年次報告・移転価格文書",
+     authority: "MCA; Income Tax Department; RBI", form: "AOC-4, MGT-7, ITR-6, Form 3CEB, FLA return", trigger: "Each financial year", deadline: "Annual (statutory due dates)", start: 150, days: 30, owner: "Indian CA",
+     why_en: "Overdue filings are the most common path to strike-off. India and Japan have a tax treaty (DTAA) that governs withholding on dividends, royalties and fees.", why_ja: "年次報告の遅延は登記抹消の最も一般的な原因です。日印租税条約（DTAA）が配当・ロイヤルティ等の源泉課税を規定します。",
+     docs: ["Audited accounts", "Transfer pricing study"], source_name: "Companies Act, 2013; Income-tax Act; RBI FLA return", source_url: "https://www.mca.gov.in/", as_of: "2026-10-24", verified_by_team: false}

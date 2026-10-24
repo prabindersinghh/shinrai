@@ -10,6 +10,7 @@ import MoneyPanel from "../components/MoneyPanel";
 import { CitedText, FlagRow, Section, SubscoreBars, SubscoreRadar, TraceTimeline } from "../components/ReportParts";
 import ScoreDial from "../components/ScoreDial";
 import Shell from "../components/Shell";
+import TermSheet from "../components/TermSheet";
 import { useI18n } from "../i18n";
 import { api, type Report as ReportT } from "../lib/api";
 import type { VizLink, VizNode } from "../lib/stream";
@@ -224,6 +225,10 @@ export default function Report() {
 
       <Section id="audit" title={t("audit.header")} kicker={ja ? "現地の監査人による写真検証" : "Photo verification by a local auditor"}>
         <AuditPanel invId={invId} audit={r.audit} onUpdated={load} onEvidence={setEv} isDemo={inv.is_demo} />
+      </Section>
+
+      <Section id="termsheet" title={ja ? "契約条件書（リスク連動）" : "Partner term sheet"} kicker={ja ? "検証結果に連動した契約条項" : "Clauses linked to this partner's findings"}>
+        <TermSheet invId={invId} onEvidence={setEv} />
       </Section>
 
       <Section title={t("report.suggestions")}>

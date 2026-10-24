@@ -237,6 +237,9 @@ export const api = {
   completeAudit: (auditId: number) => call<any>(`/api/audits/${auditId}/complete`, { method: "POST" }),
   demoAudit: (id: number) => call<any>(`/api/investigations/${id}/audits/demo-complete`, { method: "POST" }),
   ringi: (id: number) => call<any>(`/api/investigations/${id}/ringi`),
+  advisor: (smeId: number) => call<any>(`/api/advisor/${smeId}`),
+  advisorStep: (smeId: number, step_id: string, status: string) => call<any>(`/api/advisor/${smeId}/step`, json({ step_id, status })),
+  clauses: (invId: number) => call<any>(`/api/investigations/${invId}/clauses`),
   demoSetup: () => call<{ sme: Sme; partners: Partner[] }>("/api/demo/setup", { method: "POST" }),
 };
 

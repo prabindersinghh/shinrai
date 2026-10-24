@@ -1,0 +1,53 @@
+# Support network: institutions only (never private individuals). Coordinates are city-level for offices and
+# site-level approximations for JITs; verify before relying on them for navigation. Shinrai complements JETRO.
+offices:
+  - {id: sn_jetro_delhi, kind: jetro, name: "JETRO New Delhi", city: "New Delhi", state: "Delhi", lat: 28.6139, lon: 77.2090,
+     source_url: "https://www.jetro.go.jp/india/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: sn_jetro_mumbai, kind: jetro, name: "JETRO Mumbai", city: "Mumbai", state: "Maharashtra", lat: 19.0760, lon: 72.8777,
+     source_url: "https://www.jetro.go.jp/india/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: sn_jetro_chennai, kind: jetro, name: "JETRO Chennai", city: "Chennai", state: "Tamil Nadu", lat: 13.0827, lon: 80.2707,
+     source_url: "https://www.jetro.go.jp/india/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: sn_jetro_bengaluru, kind: jetro, name: "JETRO Bengaluru", city: "Bengaluru", state: "Karnataka", lat: 12.9716, lon: 77.5946,
+     source_url: "https://www.jetro.go.jp/india/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: sn_jetro_ahmedabad, kind: jetro, name: "JETRO Ahmedabad", city: "Ahmedabad", state: "Gujarat", lat: 23.0225, lon: 72.5714,
+     source_url: "https://www.jetro.go.jp/india/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: sn_emb_delhi, kind: consulate, name: "Embassy of Japan in India", city: "New Delhi", state: "Delhi", lat: 28.5960, lon: 77.1855,
+     source_url: "https://www.in.emb-japan.go.jp/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: sn_cg_mumbai, kind: consulate, name: "Consulate-General of Japan in Mumbai", city: "Mumbai", state: "Maharashtra", lat: 18.9690, lon: 72.8205,
+     source_url: "https://www.mumbai.in.emb-japan.go.jp/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: sn_cg_chennai, kind: consulate, name: "Consulate-General of Japan in Chennai", city: "Chennai", state: "Tamil Nadu", lat: 13.0569, lon: 80.2425,
+     source_url: "https://www.chennai.in.emb-japan.go.jp/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: sn_cg_bengaluru, kind: consulate, name: "Consulate-General of Japan in Bengaluru", city: "Bengaluru", state: "Karnataka", lat: 12.9719, lon: 77.6412,
+     source_url: "https://www.bengaluru.in.emb-japan.go.jp/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: sn_cg_kolkata, kind: consulate, name: "Consulate-General of Japan in Kolkata", city: "Kolkata", state: "West Bengal", lat: 22.5726, lon: 88.3639,
+     source_url: "https://www.kolkata.in.emb-japan.go.jp/", as_of: "2026-10-24", verified_by_team: false}
+
+jits:
+  # Japan Industrial Townships (DPIIT-METI). Company counts from the METI Feb 2024 snapshot where reported.
+  - {id: jit_neemrana, name: "Neemrana Industrial Park (Japanese Zone)", state: "Rajasthan", lat: 27.9890, lon: 76.3860, jp_companies: 49,
+     source_url: "https://www.meti.go.jp/policy/external_economy/trade/indopacific/supplychain/ProgressJAPANside.pdf", as_of: "2024-02-01", verified_by_team: false}
+  - {id: jit_ghiloth, name: "Ghiloth Industrial Park", state: "Rajasthan", lat: 27.9380, lon: 76.4050, jp_companies: null,
+     source_url: "https://www.meti.go.jp/policy/external_economy/trade/indopacific/supplychain/ProgressJAPANside.pdf", as_of: "2024-02-01", verified_by_team: false}
+  - {id: jit_mandal, name: "Mandal Industrial Park", state: "Gujarat", lat: 23.2870, lon: 71.9180, jp_companies: 13,
+     source_url: "https://www.meti.go.jp/policy/external_economy/trade/indopacific/supplychain/ProgressJAPANside.pdf", as_of: "2024-02-01", verified_by_team: false}
+  - {id: jit_sanand, name: "Sanand III (Khoraj) Industrial Estate", state: "Gujarat", lat: 22.9920, lon: 72.3780, jp_companies: null,
+     source_url: "https://www.meti.go.jp/policy/external_economy/trade/indopacific/supplychain/ProgressJAPANside.pdf", as_of: "2024-02-01", verified_by_team: false}
+  - {id: jit_tumakuru, name: "Tumakuru (Vasanthanarasapura) Industrial Area", state: "Karnataka", lat: 13.3409, lon: 77.1010, jp_companies: 4,
+     source_url: "https://www.meti.go.jp/policy/external_economy/trade/indopacific/supplychain/ProgressJAPANside.pdf", as_of: "2024-02-01", verified_by_team: false}
+  - {id: jit_onehub, name: "One Hub Chennai", state: "Tamil Nadu", lat: 12.8100, lon: 79.9500, jp_companies: null,
+     source_url: "https://www.meti.go.jp/policy/external_economy/trade/indopacific/supplychain/ProgressJAPANside.pdf", as_of: "2024-02-01", verified_by_team: false}
+  - {id: jit_origins, name: "Origins Chennai", state: "Tamil Nadu", lat: 13.2700, lon: 80.1200, jp_companies: null,
+     source_url: "https://www.meti.go.jp/policy/external_economy/trade/indopacific/supplychain/ProgressJAPANside.pdf", as_of: "2024-02-01", verified_by_team: false}
+  - {id: jit_met_jhajjar, name: "Model Economic Township (Jhajjar)", state: "Haryana", lat: 28.5800, lon: 76.6600, jp_companies: null,
+     source_url: "https://www.meti.go.jp/policy/external_economy/trade/indopacific/supplychain/ProgressJAPANside.pdf", as_of: "2024-02-01", verified_by_team: false}
+  - {id: jit_sricity, name: "Sri City", state: "Andhra Pradesh", lat: 13.5560, lon: 80.0230, jp_companies: 28,
+     source_url: "https://www.meti.go.jp/policy/external_economy/trade/indopacific/supplychain/ProgressJAPANside.pdf", as_of: "2024-02-01", verified_by_team: false}
+
+agencies:
+  # State investment agencies with a Japan desk (state.japan_desk in states.yaml).
+  - {id: ag_haryana, name: "Invest Haryana", state: "Haryana", lat: 30.7333, lon: 76.7794, source_url: "https://investharyana.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ag_rajasthan, name: "Invest Rajasthan (BIP)", state: "Rajasthan", lat: 26.9124, lon: 75.7873, source_url: "https://invest.rajasthan.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ag_gujarat, name: "iNDEXTb", state: "Gujarat", lat: 23.2156, lon: 72.6369, source_url: "https://www.indextb.com/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ag_maharashtra, name: "MIDC / Maitri", state: "Maharashtra", lat: 19.0760, lon: 72.8777, source_url: "https://www.midcindia.org/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ag_karnataka, name: "Invest Karnataka", state: "Karnataka", lat: 12.9716, lon: 77.5946, source_url: "https://investkarnataka.co.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ag_tamilnadu, name: "Guidance Tamil Nadu", state: "Tamil Nadu", lat: 13.0827, lon: 80.2707, source_url: "https://investingintamilnadu.com/", as_of: "2026-10-24", verified_by_team: false}

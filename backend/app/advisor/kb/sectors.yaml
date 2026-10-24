@@ -1,0 +1,55 @@
+# Sector notes. Policy facts are cited to the official page; verify before use (verified_by_team: false).
+sectors:
+  - id: sec_auto_components
+    name: Auto components
+    name_ja: 自動車部品
+    nic2: "29"
+    asi_note_kb: kb_asi_motor_vehicles
+    fdi_route: "Automatic route"
+    fdi_cap_pct: 100
+    pli: "Production Linked Incentive scheme for Automobile and Auto Component industry"
+    regulators: ["Ministry of Heavy Industries", "ARAI / ICAT (homologation and testing)", "BIS (standards)"]
+    typical_entry: ["distributor", "jv", "wos"]
+    notes: "Supply into Indian OEMs usually requires local engineering support and tier-1 qualification."
+    source_name: "DPIIT Consolidated FDI Policy; Ministry of Heavy Industries PLI scheme page"
+    source_url: "https://dpiit.gov.in/policies-rules-and-acts/policies/foreign-direct-investment"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: sec_electronics
+    name: Electronics
+    name_ja: 電子部品・電子機器
+    nic2: "26"
+    asi_note_kb: null
+    fdi_route: "Automatic route"
+    fdi_cap_pct: 100
+    pli: "Production Linked Incentive scheme for Large Scale Electronics Manufacturing"
+    regulators: ["Ministry of Electronics and IT (MeitY)", "BIS Compulsory Registration Scheme"]
+    typical_entry: ["distributor", "contract_mfg", "wos"]
+    notes: "Many electronics products need BIS registration before they can be sold in India."
+    source_name: "DPIIT Consolidated FDI Policy; MeitY PLI scheme page"
+    source_url: "https://www.meity.gov.in/"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: sec_food_processing
+    name: Food processing
+    name_ja: 食品加工
+    nic2: "10"
+    asi_note_kb: kb_asi_food
+    fdi_route: "Automatic route"
+    fdi_cap_pct: 100
+    pli: "Production Linked Incentive Scheme for Food Processing Industry"
+    regulators: ["Ministry of Food Processing Industries", "FSSAI (food safety licensing)"]
+    typical_entry: ["distributor", "jv", "contract_mfg"]
+    notes: "Every food business operator needs an FSSAI licence or registration."
+    source_name: "DPIIT Consolidated FDI Policy; MoFPI PLI scheme page"
+    source_url: "https://www.mofpi.gov.in/"
+    as_of: "2026-10-24"
+    verified_by_team: false
+
+facts:
+  - id: kb_asi_motor_vehicles
+    text: "Motor vehicles, trailers and semi-trailers accounted for 8.07% of manufacturing GVA and 6.84% of persons engaged in ASI 2022-23."
+    source: src_asi_2223
+  - id: kb_asi_food
+    text: "Food products accounted for 11.44% of persons engaged in manufacturing and 15.99% of factories in ASI 2022-23."
+    source: src_asi_2223

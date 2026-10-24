@@ -105,3 +105,35 @@ The PRD puts user accounts and multi-tenant auth out of scope, so these are know
   taken from the detected format; `/api/data` serves only PNG/JPEG with `nosniff`; the LLM writes only the cited
   summary (partner-document text is marked as quotation, not instruction), and suggestions come from a fixed
   playbook.
+
+## Final addendum: integration plan
+
+Navigation becomes **Onboarding → Advisor → Partners → Verify → Reports → Analytics**. The scripted run sheet moves
+from the main nav to a presenter view at `/presenter`, so the product reads as a working product. Fictional companies
+and simulated data keep a discreet label (PRD hard rule).
+
+| Part | Plugs in at |
+|---|---|
+| Extended onboarding (§2) | `Sme` gains goal, products, HS chapter, investment band, headcount, timeline, entry mode, must-haves |
+| Knowledge base (§3) | `backend/app/advisor/kb/*.yaml` + `data/*.csv`; `advisor/kb.py` loads and validates (id, source_name, source_url, as_of, verified_by_team); BM25 retrieval; `advisor/cite.py` post-check removes sentences with a number, deadline, fee or legal statement lacking a KB citation |
+| Fit model + India map (§4.1, §4.6) | `advisor/fit.py` (deterministic, weights from goal/appetite, returned to the browser so sliders re-rank client-side); Advisor run streams over the same SSE/TraceEvent machinery; **3D extruded India map** in three.js (already a dependency via the 3D graph) |
+| Entry route + compliance Gantt (§4.2) | `advisor/routes.py` decision table over `entry_routes.yaml`; Gantt built from `compliance_steps.yaml`; step status stored per SME |
+| Clause pack (§4.3) | `advisor/clauses.py` reads the partner's Verify flags; every added clause carries the flag and evidence IDs; DOCX via python-docx, PDF via the existing Playwright printer |
+| Contacts (§4.5) | `contacts.yaml` (institutions only) + partners already verified with a good band |
+| QBDS (§1) | see below |
+| Reports (§6) | Market Entry, Compliance Roadmap, Term Sheet, Growth Plan as React print pages + PDF |
+| Distress model (§5.1) | `scripts/train_distress.py` → `models/distress/{model.txt,metrics.json}`; rule NET_DISTRESS_HIGH; FEATURE_DISTRESS_MODEL |
+| Vizro (§7) | `backend/analytics/app.py` mounted at `/analytics` (WSGI) and shown in an Analytics tab iframe |
+| Growth plan (§4.4) | `growth_playbooks.yaml` + a client-side scenario model with visible assumptions |
+
+**Theme.** The addendum asks for a dark theme again; the product owner asked directly for white-first, so the white
+system stays and QBDS tokens are mapped onto it.
+
+**Cut order if time runs short (from the bottom of §9):** regional-language news and FinBERT/IndicTrans2 sentiment
+first (they need PyTorch and multi-GB model downloads not available here; the feature flags stay off and the UI says
+so), then the certificate check's live path (SEED only), then the Growth Plan scenario charts.
+
+**Data honesty.** No KB number, deadline or fee is typed from memory. Facts come from documents fetched during the
+build and carry their URL and `as_of`; anything not confirmed from a fetched source is `verified_by_team: false`
+and shows a "to be verified" chip. The distress model trains only on real MCA records; with no data it reports
+"not trained" and its rule cannot fire.

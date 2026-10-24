@@ -1,0 +1,29 @@
+# Institutional contacts only: official public channels (websites). No private individuals, phone numbers or emails.
+contacts:
+  - {id: ct_jetro_india, kind: jetro, name: "JETRO India", name_ja: "ジェトロ・インド", states: [all], sectors: [all],
+     channel: "Business support and matching for Japanese companies (New Delhi, Mumbai, Chennai, Bengaluru, Ahmedabad)",
+     source_url: "https://www.jetro.go.jp/india/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_embassy, kind: government, name: "Embassy of Japan in India (Economic Section)", name_ja: "在インド日本国大使館（経済部）", states: [all], sectors: [all],
+     channel: "Japan-India economic policy, JIT programme", source_url: "https://www.in.emb-japan.go.jp/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_japan_plus, kind: agency, name: "Invest India, Japan Plus", name_ja: "インベスト・インディア（ジャパン・プラス）", states: [all], sectors: [all],
+     channel: "Government of India facilitation desk for Japanese investors", source_url: "https://www.investindia.gov.in/japan-plus", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_jccii, kind: chamber, name: "Japan Chamber of Commerce and Industry in India", name_ja: "インド日本商工会", states: [all], sectors: [all],
+     channel: "Network of Japanese companies operating in India", source_url: "https://www.jccii.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_acma, kind: association, name: "Automotive Component Manufacturers Association of India (ACMA)", name_ja: "インド自動車部品工業会", states: [all], sectors: [sec_auto_components],
+     channel: "Industry association for auto components", source_url: "https://www.acma.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_elcina, kind: association, name: "ELCINA Electronic Industries Association of India", name_ja: "インド電子工業会", states: [all], sectors: [sec_electronics],
+     channel: "Industry association for electronics", source_url: "https://www.elcina.com/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_mofpi, kind: government, name: "Ministry of Food Processing Industries (Invest India desk)", name_ja: "食品加工産業省", states: [all], sectors: [sec_food_processing],
+     channel: "Food processing investment facilitation", source_url: "https://www.mofpi.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_ag_haryana, kind: state_agency, name: "Invest Haryana (Japan desk)", name_ja: "ハリヤナ州投資促進（ジャパンデスク）", states: [Haryana], sectors: [all],
+     channel: "State investment facilitation", source_url: "https://investharyana.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_ag_rajasthan, kind: state_agency, name: "Invest Rajasthan, BIP (Japan desk)", name_ja: "ラジャスタン州投資促進局（ジャパンデスク）", states: [Rajasthan], sectors: [all],
+     channel: "State investment facilitation; Neemrana Japanese Zone", source_url: "https://invest.rajasthan.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_ag_gujarat, kind: state_agency, name: "iNDEXTb (Japan desk)", name_ja: "グジャラート州投資促進機関（ジャパンデスク）", states: [Gujarat], sectors: [all],
+     channel: "State investment facilitation", source_url: "https://www.indextb.com/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_ag_maharashtra, kind: state_agency, name: "MIDC / Maitri (Japan desk)", name_ja: "マハラシュトラ州産業開発公社（ジャパンデスク）", states: [Maharashtra], sectors: [all],
+     channel: "State investment facilitation and industrial land", source_url: "https://www.midcindia.org/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_ag_karnataka, kind: state_agency, name: "Invest Karnataka (Japan desk)", name_ja: "カルナータカ州投資促進（ジャパンデスク）", states: [Karnataka], sectors: [all],
+     channel: "State investment facilitation", source_url: "https://investkarnataka.co.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: ct_ag_tamilnadu, kind: state_agency, name: "Guidance Tamil Nadu (Japan desk)", name_ja: "タミル・ナドゥ州投資促進（ジャパンデスク）", states: [Tamil Nadu], sectors: [all],
+     channel: "State investment facilitation", source_url: "https://investingintamilnadu.com/", as_of: "2026-10-24", verified_by_team: false}

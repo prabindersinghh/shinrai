@@ -37,7 +37,7 @@ function smeId(): string | null {
 }
 
 export default function Shell({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const sme = smeId();
   const link = ({ isActive }: { isActive: boolean }) =>
     `rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${isActive ? "bg-ink text-white" : "text-ink-2 hover:bg-stage"}`;
@@ -47,12 +47,18 @@ export default function Shell({ children, wide = false }: { children: ReactNode;
         <div className={`mx-auto flex h-14 items-center gap-6 px-4 sm:px-6 ${wide ? "max-w-[1600px]" : "max-w-[1240px]"}`}>
           <Wordmark />
           <nav className="flex items-center gap-1">
-            <NavLink to="/demo" className={({ isActive }) => `${link({ isActive })} ${isActive ? "" : "!text-hinomaru"}`}>
-              ● {t("nav.demo")}
-            </NavLink>
-            <NavLink to="/onboarding" className={link}>{t("nav.start")}</NavLink>
-            {sme && <NavLink to={`/partners/${sme}`} className={link}>{t("nav.partners")}</NavLink>}
-            {sme && <NavLink to={`/compare/${sme}`} className={link}>{t("nav.compare")}</NavLink>}
+            {sme ? (
+              <>
+                <NavLink to={`/advisor/${sme}`} className={link}>{lang === "ja" ? "アドバイザー" : "Advisor"}</NavLink>
+                <NavLink to={`/partners/${sme}`} className={link}>{t("nav.partners")}</NavLink>
+                <NavLink to={`/compare/${sme}`} className={link}>{lang === "ja" ? "レポート" : "Reports"}</NavLink>
+                <NavLink to={`/analytics/${sme}`} className={link}>{lang === "ja" ? "分析" : "Analytics"}</NavLink>
+              </>
+            ) : (
+              <NavLink to="/onboarding" className={link}>{lang === "ja" ? "はじめる" : "Get started"}</NavLink>
+            )}
+            <span className="mx-1 h-5 w-px bg-line" />
+            <NavLink to="/demo" className={link}>{t("nav.demo")}</NavLink>
           </nav>
           <div className="ml-auto"><LangToggle /></div>
         </div>

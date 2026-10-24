@@ -1,0 +1,87 @@
+# Clause library: team-written model clauses. Templates for discussion with qualified counsel, not legal advice.
+# triggered_by: Verify rule IDs that add the clause automatically for a partner.
+meta:
+  disclaimer_en: "Templates for discussion with qualified counsel. Not legal advice."
+  disclaimer_ja: "資格を有する弁護士との協議のためのひな形です。法的助言ではありません。"
+
+clauses:
+  - {id: cl_governing_law, partner_types: [distributor, jv, supplier, contract_mfg], base: true,
+     title_en: "Governing law", title_ja: "準拠法",
+     text_en: "This Agreement is governed by the laws of India, without regard to its conflict-of-laws rules.",
+     text_ja: "本契約はインド法に準拠し、その抵触法の規定は適用しないものとします。",
+     law: "Indian Contract Act, 1872", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_arbitration, partner_types: [distributor, jv, supplier, contract_mfg], base: true,
+     title_en: "Dispute resolution: arbitration", title_ja: "紛争解決：仲裁",
+     text_en: "Disputes are finally settled by arbitration seated in Singapore under the SIAC Rules, in English, by three arbitrators. Either party may seek interim relief from a competent court.",
+     text_ja: "紛争は、シンガポールを仲裁地とし、SIAC規則に基づき英語で3名の仲裁人により最終的に解決するものとします。各当事者は管轄裁判所に暫定的救済を求めることができます。",
+     law: "Arbitration and Conciliation Act, 1996 (India); New York Convention", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_payment_security, partner_types: [distributor, supplier, contract_mfg], base: true,
+     title_en: "Payment security", title_ja: "支払保全",
+     text_en: "Orders are paid by irrevocable letter of credit, or by advance payment capped at the percentage set in Schedule 2. Title passes only on full payment.",
+     text_ja: "注文代金は取消不能信用状、または別表2に定める上限率以内の前払いにより支払われます。所有権は全額支払時に移転します。",
+     law: "Sale of Goods Act, 1930", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_anti_bribery, partner_types: [distributor, jv, supplier, contract_mfg], base: true,
+     title_en: "Anti-bribery and corruption", title_ja: "贈収賄防止",
+     text_en: "Each party complies with India's Prevention of Corruption Act, 1988 and Japan's Unfair Competition Prevention Act, and may terminate immediately on a breach.",
+     text_ja: "各当事者はインドの汚職防止法（1988年）および日本の不正競争防止法を遵守し、違反時には直ちに解除できるものとします。",
+     law: "Prevention of Corruption Act, 1988 (India); Unfair Competition Prevention Act (Japan)", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_data_protection, partner_types: [distributor, jv, supplier, contract_mfg], base: true,
+     title_en: "Data protection", title_ja: "個人データ保護",
+     text_en: "Personal data shared under this Agreement is processed in line with India's Digital Personal Data Protection Act, 2023 and used only for the purposes of this Agreement.",
+     text_ja: "本契約に基づき共有される個人データは、インドのデジタル個人データ保護法（2023年）に従って本契約の目的のためにのみ処理されます。",
+     law: "Digital Personal Data Protection Act, 2023", source_url: "https://www.meity.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_ip, partner_types: [distributor, jv, contract_mfg], base: true,
+     title_en: "Intellectual property", title_ja: "知的財産",
+     text_en: "All trademarks, designs and know-how remain the property of the Japanese party. No licence is granted except as stated in this Agreement.",
+     text_ja: "商標、意匠およびノウハウは日本側当事者に帰属し、本契約に定める場合を除き使用許諾は付与されません。",
+     law: "Trade Marks Act, 1999; Designs Act, 2000", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_exclusivity, partner_types: [distributor], base: true,
+     title_en: "Exclusivity with performance minimums", title_ja: "最低購入数量付き独占権",
+     text_en: "Exclusivity in the Territory continues only while the Distributor meets the annual minimum purchases in Schedule 3.",
+     text_ja: "販売地域における独占権は、販売代理店が別表3の年間最低購入数量を達成している間に限り継続します。",
+     law: "Indian Contract Act, 1872", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+
+  # Risk-driven clauses, added from the partner's Verify flags.
+  - {id: cl_cp_gst, partner_types: [distributor, supplier, contract_mfg, jv], base: false, triggered_by: [CMP_GST_CANCELLED],
+     title_en: "Condition precedent: valid GST registration", title_ja: "前提条件：有効なGST登録",
+     text_en: "No order is placed until the Partner shows an active GST registration in each state it invoices from, verified on the GST portal.",
+     text_ja: "相手方が請求を行う各州で有効なGST登録を示し、GSTポータルで確認できるまで発注しないものとします。",
+     law: "CGST Act, 2017", source_url: "https://cbic-gst.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_audit_rights, partner_types: [distributor, supplier, contract_mfg, jv], base: false,
+     triggered_by: [GROUND_AREA_MISMATCH, GROUND_NO_BUILDING, GROUND_AFTER_CLAIMED_YEAR, GROUND_LOW_ACTIVITY],
+     title_en: "On-site audit rights", title_ja: "現地監査権",
+     text_en: "The Company may inspect the Partner's premises, production and records on 5 business days' notice, before signing and at any time during the term.",
+     text_ja: "当社は5営業日前の通知により、契約締結前および契約期間中いつでも、相手方の施設・生産・記録を検査できるものとします。",
+     law: "Indian Contract Act, 1872", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_capacity_warranty, partner_types: [supplier, contract_mfg, distributor], base: false,
+     triggered_by: [GROUND_AREA_MISMATCH, GROUND_NO_BUILDING],
+     title_en: "Capacity warranty", title_ja: "生産能力の保証",
+     text_en: "The Partner warrants the production capacity stated in Schedule 4 and that it operates the facility named there.",
+     text_ja: "相手方は、別表4に記載の生産能力を有し、同記載の施設を運営していることを保証します。",
+     law: "Indian Contract Act, 1872", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_director_reps, partner_types: [distributor, supplier, contract_mfg, jv], base: false,
+     triggered_by: [NET_STRUCKOFF_LINKS, NET_DIRECTOR_DISQUALIFIED, NET_DISTRESS_HIGH, NET_SHARED_ADDRESS_CLUSTER],
+     title_en: "Director representations and change of control", title_ja: "取締役に関する表明保証・支配権変更",
+     text_en: "The Partner represents that no director is disqualified or was a director of a company struck off for non-compliance, and must notify any change of control or directors within 10 days.",
+     text_ja: "相手方は、取締役に資格停止者や法令違反で登記抹消された会社の取締役であった者がいないことを表明し、支配権または取締役の変更を10日以内に通知するものとします。",
+     law: "Companies Act, 2013 (s.164, s.248)", source_url: "https://www.mca.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_lc_escrow, partner_types: [distributor, supplier, contract_mfg, jv], base: false, triggered_by: [MONEY_TURNOVER_MISMATCH, CMP_FILING_OVERDUE],
+     title_en: "Letter of credit or escrow; financial statements", title_ja: "信用状またはエスクロー、財務諸表の提出",
+     text_en: "Payments run through a letter of credit or escrow, advance payments are capped, and the Partner delivers audited financial statements within 6 months of each year end.",
+     text_ja: "支払は信用状またはエスクローを経由し、前払いには上限を設け、相手方は各期末後6か月以内に監査済み財務諸表を提出するものとします。",
+     law: "Indian Contract Act, 1872", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_litigation, partner_types: [distributor, supplier, contract_mfg, jv], base: false, triggered_by: [LEG_CASES_AS_RESPONDENT, LEG_INSOLVENCY],
+     title_en: "Litigation disclosure, indemnity and termination", title_ja: "訴訟の開示・補償・解除",
+     text_en: "The Partner discloses all pending litigation, indemnifies the Company against related losses, and the Company may terminate on material litigation or insolvency proceedings.",
+     text_ja: "相手方は係属中のすべての訴訟を開示し、関連する損失を補償します。重大な訴訟または倒産手続の開始時、当社は解除できるものとします。",
+     law: "Insolvency and Bankruptcy Code, 2016; Indian Contract Act, 1872", source_url: "https://ibbi.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_quality_cert, partner_types: [supplier, contract_mfg, distributor], base: false, triggered_by: [CLM_CERT_INVALID, CLM_CONTRADICTED],
+     title_en: "Quality warranty and certification as a condition precedent", title_ja: "品質保証・認証の前提条件",
+     text_en: "Every claim in the Partner's materials listed in Schedule 5 is a warranty; the quality certification named there must be valid before the first order.",
+     text_ja: "別表5に記載した相手方資料の各記載事項を保証事項とし、同記載の品質認証が初回発注前に有効であることを前提条件とします。",
+     law: "Indian Contract Act, 1872", source_url: "https://www.indiacode.nic.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_identity, partner_types: [distributor, supplier, contract_mfg, jv], base: false, triggered_by: [ID_STATE_MISMATCH, ADDRESS_MISMATCH, ID_GSTIN_PAN_MISMATCH],
+     title_en: "Identity and place-of-business confirmation", title_ja: "本人確認・事業所の確認",
+     text_en: "The Partner confirms its registered office, GST places of business and operating sites in Schedule 1, and notifies any change before it takes effect.",
+     text_ja: "相手方は登記上の本店、GST上の事業所および操業拠点を別表1で確認し、変更の際は事前に通知するものとします。",
+     law: "Companies Act, 2013; CGST Act, 2017", source_url: "https://www.mca.gov.in/", as_of: "2026-10-24", verified_by_team: false}

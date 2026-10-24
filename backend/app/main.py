@@ -43,13 +43,36 @@ class SmeIn(BaseModel):
     target_states: list[str] = []
     deal_band: str = "mid"
     risk_appetite: str = "balanced"
-    language: str = "ja"
+    language: str = "en"
+    products: str = ""
+    hs_chapter: str = ""
+    export_markets: list[str] = []
+    goal: str = "sell"
+    investment_band: str = "50m_300m"
+    headcount_y1: int = 0
+    timeline_months: int = 12
+    entry_mode: str = "undecided"
+    must_haves: list[str] = []
 
 
 @app.post("/api/sme")
 def create_sme(body: SmeIn) -> Sme:
     with session() as s:
         sme = Sme(**body.model_dump())
+        s.add(sme)
+        s.commit()
+        s.refresh(sme)
+        return sme
+
+
+@app.put("/api/sme/{sme_id}")
+def update_sme(sme_id: int, body: SmeIn) -> Sme:
+    with session() as s:
+        sme = s.get(Sme, sme_id)
+        if not sme:
+            raise HTTPException(404, "Company profile not found")
+        for k, v in body.model_dump().items():
+            setattr(sme, k, v)
         s.add(sme)
         s.commit()
         s.refresh(sme)
@@ -333,7 +356,10 @@ def demo_setup() -> dict:
     """Creates the scripted demo: Tanaka Seiko K.K. plus Sunrise (with brochure), Kaveri and Maruti."""
     with session() as s:
         sme = Sme(name="Tanaka Seiko K.K.", name_ja="田中精工株式会社", industry="auto_parts", seeking="distributor",
-                  target_states=["Haryana", "Maharashtra"], deal_band="mid", risk_appetite="conservative", language="ja")
+                  target_states=["Haryana", "Maharashtra"], deal_band="mid", risk_appetite="conservative", language="en",
+                  products="Precision transmission gears and shafts", hs_chapter="87", export_markets=["Thailand", "Indonesia"],
+                  goal="manufacture", investment_band="300m_1b", headcount_y1=25, timeline_months=12, entry_mode="undecided",
+                  must_haves=["japanese_community", "power"])
         s.add(sme)
         s.commit()
         s.refresh(sme)
@@ -354,3 +380,6 @@ def demo_setup() -> dict:
 from .routes_modules import router as modules_router  # noqa: E402
 
 app.include_router(modules_router)
+from .routes_advisor import router as advisor_router  # noqa: E402
+
+app.include_router(advisor_router)

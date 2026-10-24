@@ -30,6 +30,16 @@ class Sme(SQLModel, table=True):
     deal_band: str = "mid"  # small | mid | large
     risk_appetite: str = "balanced"  # conservative | balanced | aggressive
     language: str = "ja"
+    products: str = ""
+    hs_chapter: str = ""
+    export_markets: list[str] = JsonField([])
+    goal: str = "sell"  # sell | manufacture | source | export_hub
+    investment_band: str = "50m_300m"  # lt50m | 50m_300m | 300m_1b | gt1b
+    headcount_y1: int = 0
+    timeline_months: int = 12
+    entry_mode: str = "undecided"  # distributor | jv | wos | liaison | contract_mfg | undecided
+    must_haves: list[str] = JsonField([])
+    advisor_state: dict = JsonField({})  # compliance step statuses, slider weights
     created_at: datetime = Field(default_factory=utcnow)
 
 
@@ -203,6 +213,23 @@ engine = create_engine(f"sqlite:///{DB_PATH}", connect_args={"check_same_thread"
 
 def init_db() -> None:
     SQLModel.metadata.create_all(engine)
+    _add_missing_columns()
+
+
+def _add_missing_columns() -> None:
+    """Additive migration: new nullable/defaulted columns on existing SQLite tables."""
+    from sqlalchemy import inspect, text
+
+    insp = inspect(engine)
+    with engine.begin() as conn:
+        for table in SQLModel.metadata.sorted_tables:
+            if not insp.has_table(table.name):
+                continue
+            have = {c["name"] for c in insp.get_columns(table.name)}
+            for col in table.columns:
+                if col.name not in have:
+                    ddl = col.type.compile(engine.dialect)
+                    conn.execute(text(f'ALTER TABLE "{table.name}" ADD COLUMN "{col.name}" {ddl}'))
 
 
 def session() -> Session:

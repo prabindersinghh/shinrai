@@ -1,0 +1,171 @@
+# State profiles. Numbers come from fetched official documents (verified_by_team: true) or from reputable
+# secondary reports of official data (verified_by_team: false, shown as "to be verified"). null = not in source.
+sources:
+  asi:
+    id: src_asi_2223
+    source_name: "MoSPI, Annual Survey of Industries 2022-23, press note, Table 4: Top States"
+    source_url: "https://mospi.gov.in/sites/default/files/press_release/PIB%20Note_ASI%202022-23-English%20Revised.pdf"
+    as_of: "2024-09-30"
+    verified_by_team: true
+    note: "Shares of all-India manufacturing aggregates. Only the top five states are published per measure."
+  jp_companies:
+    id: src_jetro_2021_states
+    source_name: "JETRO, 進出日系企業数が初めて減少（インド） (state table from the Embassy of Japan / JETRO list, Oct 2021)"
+    source_url: "https://www.jetro.go.jp/biz/areareports/2022/bf790ac1393fbb3c.html"
+    as_of: "2021-10-01"
+    verified_by_team: true
+  jp_total:
+    id: src_jetro_2024_total
+    source_name: "JETRO area report (2026-03-10) citing the Embassy of Japan / JETRO list of Japanese companies in India, Oct 2024"
+    source_url: "https://www.jetro.go.jp/biz/areareports/2026/7cb80159ee52d16c.html"
+    as_of: "2024-10-01"
+    verified_by_team: true
+  fdi:
+    id: src_fdi_h1fy25
+    source_name: "DPIIT state-wise FDI equity inflows, Apr-Sep 2024 (US$ million), Rajya Sabha unstarred question annexure, 7 Feb 2025"
+    source_url: "https://rsdebate.nic.in/bitstream/123456789/758292/1/PQ_267_07022025_U523_p185_p192.pdf"
+    as_of: "2024-09-30"
+    verified_by_team: false
+  jit:
+    id: src_meti_jit
+    source_name: "METI, Japan-India Industrial Competitiveness Partnership progress report (JIT snapshot, Feb 2024)"
+    source_url: "https://www.meti.go.jp/policy/external_economy/trade/indopacific/supplychain/ProgressJAPANside.pdf"
+    as_of: "2024-02-01"
+    verified_by_team: false
+
+states:
+  - id: st_haryana
+    name: Haryana
+    name_ja: ハリヤナ州
+    code: "06"
+    asi_gva_share_pct: null          # not in ASI 2022-23 top five for GVA
+    asi_employment_share_pct: null
+    jp_companies_2021: 404
+    jp_establishments_2021: 600
+    fdi_h1_fy25_usd_mn: 1313.14
+    port_access: landlocked
+    logistics: "Delhi-Mumbai Industrial Corridor and Western Dedicated Freight Corridor; NCR auto belt (Gurugram, Manesar, Bawal)"
+    clusters: ["Automobiles and auto components (Gurugram-Manesar-Bawal)", "Two-wheelers", "Electronics assembly (NCR)"]
+    jits: [jit_met_jhajjar]
+    japan_desk: true
+    agency: ag_haryana
+    source_name: "Invest Haryana; DMIC Trust"
+    source_url: "https://investharyana.in/"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: st_rajasthan
+    name: Rajasthan
+    name_ja: ラジャスタン州
+    code: "08"
+    asi_gva_share_pct: null
+    asi_employment_share_pct: null
+    jp_companies_2021: 49             # Embassy summary; not in the JETRO state table fetched
+    jp_establishments_2021: null
+    fdi_h1_fy25_usd_mn: null
+    port_access: landlocked
+    logistics: "Delhi-Mumbai Industrial Corridor; Neemrana-Bhiwadi industrial belt on the Delhi-Jaipur highway"
+    clusters: ["Japanese Zone at Neemrana", "Auto components (Bhiwadi)", "Ceramics and building materials"]
+    jits: [jit_neemrana, jit_ghiloth]
+    japan_desk: true
+    agency: ag_rajasthan
+    source_name: "Invest Rajasthan (Bureau of Investment Promotion)"
+    source_url: "https://invest.rajasthan.gov.in/"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: st_gujarat
+    name: Gujarat
+    name_ja: グジャラート州
+    code: "24"
+    asi_gva_share_pct: 14.78
+    asi_employment_share_pct: 12.62
+    asi_output_share_pct: 17.72
+    jp_companies_2021: null
+    jp_establishments_2021: null
+    fdi_h1_fy25_usd_mn: 3948.54
+    port_access: major_port
+    logistics: "Mundra, Kandla (Deendayal) and Hazira ports; Western Dedicated Freight Corridor; Sanand-Mandal-Becharaji auto hub"
+    clusters: ["Automobiles (Sanand, Mandal-Becharaji)", "Chemicals and petrochemicals", "Semiconductors (Dholera, Sanand)"]
+    jits: [jit_mandal, jit_sanand]
+    japan_desk: true
+    agency: ag_gujarat
+    source_name: "iNDEXTb (Industrial Extension Bureau, Gujarat)"
+    source_url: "https://www.indextb.com/"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: st_maharashtra
+    name: Maharashtra
+    name_ja: マハラシュトラ州
+    code: "27"
+    asi_gva_share_pct: 16.33
+    asi_employment_share_pct: 12.84
+    asi_output_share_pct: 14.65
+    jp_companies_2021: 238
+    jp_establishments_2021: 787
+    fdi_h1_fy25_usd_mn: 13551.48
+    port_access: major_port
+    logistics: "Jawaharlal Nehru Port (Navi Mumbai); Mumbai-Pune expressway; Chakan, Talegaon and Ranjangaon auto clusters"
+    clusters: ["Automobiles and auto components (Pune-Chakan)", "Engineering", "Electronics (Pune)", "Food processing"]
+    jits: []
+    japan_desk: true
+    agency: ag_maharashtra
+    source_name: "MIDC; Maitri (Maharashtra Industry, Trade and Investment Facilitation Cell)"
+    source_url: "https://www.midcindia.org/"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: st_karnataka
+    name: Karnataka
+    name_ja: カルナータカ州
+    code: "29"
+    asi_gva_share_pct: 7.04
+    asi_employment_share_pct: 6.58
+    asi_output_share_pct: 6.17
+    jp_companies_2021: 226
+    jp_establishments_2021: 512
+    fdi_h1_fy25_usd_mn: 3542.33
+    port_access: minor_port
+    logistics: "New Mangalore Port; Bengaluru-Chennai corridor; Bidadi and Narasapura industrial areas"
+    clusters: ["Automobiles (Bidadi)", "Electronics and semiconductors design (Bengaluru)", "Aerospace", "Machine tools"]
+    jits: [jit_tumakuru]
+    japan_desk: true
+    agency: ag_karnataka
+    source_name: "Invest Karnataka"
+    source_url: "https://investkarnataka.co.in/"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: st_tamilnadu
+    name: Tamil Nadu
+    name_ja: タミル・ナドゥ州
+    code: "33"
+    asi_gva_share_pct: 10.33
+    asi_employment_share_pct: 15.00
+    asi_output_share_pct: 9.97
+    jp_companies_2021: 191
+    jp_establishments_2021: 565
+    fdi_h1_fy25_usd_mn: 1622.54
+    port_access: major_port
+    logistics: "Chennai and Kamarajar (Ennore) ports; Chennai-Bengaluru corridor; Sriperumbudur-Oragadam auto and electronics belt"
+    clusters: ["Automobiles and auto components (Chennai)", "Electronics manufacturing (Sriperumbudur)", "Textiles (Tiruppur)"]
+    jits: [jit_onehub, jit_origins]
+    japan_desk: true
+    agency: ag_tamilnadu
+    source_name: "Guidance Tamil Nadu"
+    source_url: "https://investingintamilnadu.com/"
+    as_of: "2026-10-24"
+    verified_by_team: false
+
+facts:
+  - id: kb_asi_top5_gva
+    text: "In ASI 2022-23 the top five states by manufacturing GVA were Maharashtra (16.33%), Gujarat (14.78%), Tamil Nadu (10.33%), Karnataka (7.04%) and Uttar Pradesh (6.09%)."
+    source: src_asi_2223
+  - id: kb_asi_top5_emp
+    text: "In ASI 2022-23 the top five states by persons engaged in manufacturing were Tamil Nadu (15.00%), Maharashtra (12.84%), Gujarat (12.62%), Uttar Pradesh (8.04%) and Karnataka (6.58%)."
+    source: src_asi_2223
+  - id: kb_jp_total_2024
+    text: "As of October 2024 there were 1,434 Japanese companies in India, 35 more than in 2023, after a peak of 1,455 in 2020."
+    source: src_jetro_2024_total
+  - id: kb_jp_states_2021
+    text: "As of October 2021 Japanese companies by state were Haryana 404, Maharashtra 238, Karnataka 226, Tamil Nadu 191 and Delhi 150."
+    source: src_jetro_2021_states
+  - id: kb_fdi_h1fy25
+    text: "For April-September 2024, DPIIT reported FDI equity inflows of US$13,551 million for Maharashtra, US$3,949 million for Gujarat, US$3,542 million for Karnataka, US$1,623 million for Tamil Nadu and US$1,313 million for Haryana."
+    source: src_fdi_h1fy25

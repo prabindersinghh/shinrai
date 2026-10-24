@@ -1,0 +1,83 @@
+# Growth models (team-written). Facts they rely on are cited; figures in the scenario model are user assumptions.
+playbooks:
+  - id: gp_phased
+    source_name: "Shinrai growth playbook (team-written)"
+    source_url: "internal:shinrai-playbook"
+    as_of: "2026-10-24"
+    verified_by_team: true
+    name_en: "Phased: distributor → sales office → local assembly → manufacturing"
+    name_ja: "段階的拡大：販売代理店 → 販売拠点 → 現地組立 → 現地生産"
+    goals: [sell, manufacture]
+    phases:
+      - {when: "Year 0-1", mode: rt_distributor, headcount: "2-5", channel_en: "One verified distributor per priority state", channel_ja: "重点州ごとに検証済み販売代理店1社",
+         kpi_en: "Sell-through, payment days, distributor audit result", kpi_ja: "販売実績、回収日数、代理店監査結果"}
+      - {when: "Year 1-3", mode: rt_wos, headcount: "10-40", channel_en: "Own sales office, key accounts served directly", channel_ja: "自社販売拠点、主要顧客は直販",
+         kpi_en: "Key-account revenue share, gross margin, service response time", kpi_ja: "主要顧客売上比率、粗利率、サービス対応時間"}
+      - {when: "Year 3-5", mode: rt_wos, headcount: "50-200", channel_en: "Local assembly in a Japan Industrial Township", channel_ja: "日本工業団地での現地組立",
+         kpi_en: "Localisation rate, cost per unit, OEM approvals", kpi_ja: "現地調達率、単位コスト、OEM承認数"}
+    levers: [lv_jit, lv_pli]
+  - id: gp_oem_supplier
+    source_name: "Shinrai growth playbook (team-written)"
+    source_url: "internal:shinrai-playbook"
+    as_of: "2026-10-24"
+    verified_by_team: true
+    name_en: "OEM supplier path: tier-2 to tier-1"
+    name_ja: "OEMサプライヤー：ティア2からティア1へ"
+    goals: [manufacture, sell]
+    phases:
+      - {when: "Year 0-1", mode: rt_contract_mfg, headcount: "3-8", channel_en: "Supply tier-1s through a verified contract manufacturer", channel_ja: "検証済み製造委託先経由でティア1へ供給",
+         kpi_en: "PPAP approvals, defect rate (ppm)", kpi_ja: "PPAP承認数、不良率（ppm）"}
+      - {when: "Year 1-3", mode: rt_jv, headcount: "30-80", channel_en: "JV plant near OEM cluster", channel_ja: "OEM集積地近くの合弁工場",
+         kpi_en: "Share of business with tier-1s, on-time delivery", kpi_ja: "ティア1取引シェア、納期遵守率"}
+      - {when: "Year 3-5", mode: rt_wos, headcount: "100-300", channel_en: "Direct tier-1 supply to OEMs", channel_ja: "OEMへのティア1直接供給",
+         kpi_en: "OEM nominations, export share", kpi_ja: "OEM採用数、輸出比率"}
+    levers: [lv_pli, lv_jit]
+  - id: gp_export_hub
+    source_name: "Shinrai growth playbook (team-written)"
+    source_url: "internal:shinrai-playbook"
+    as_of: "2026-10-24"
+    verified_by_team: true
+    name_en: "Export hub (China+1)"
+    name_ja: "輸出拠点（チャイナ・プラス・ワン）"
+    goals: [export_hub, source, manufacture]
+    phases:
+      - {when: "Year 0-1", mode: rt_contract_mfg, headcount: "2-6", channel_en: "Contract manufacturing for export", channel_ja: "輸出向け製造委託",
+         kpi_en: "Landed cost vs current source, quality yield", kpi_ja: "現調達先との着地コスト比較、品質歩留まり"}
+      - {when: "Year 1-3", mode: rt_wos, headcount: "20-60", channel_en: "Export-oriented subsidiary near a major port", channel_ja: "主要港近くの輸出型子会社",
+         kpi_en: "Export volume, lead time to Japan", kpi_ja: "輸出数量、日本までのリードタイム"}
+      - {when: "Year 3-5", mode: rt_wos, headcount: "80-250", channel_en: "Regional supply base for Japan and ASEAN", channel_ja: "日本・ASEAN向け地域供給拠点",
+         kpi_en: "Share of group supply from India", kpi_ja: "グループ調達に占めるインド比率"}
+    levers: [lv_pli, lv_ports]
+  - id: gp_marketplaces
+    source_name: "Shinrai growth playbook (team-written)"
+    source_url: "internal:shinrai-playbook"
+    as_of: "2026-10-24"
+    verified_by_team: true
+    name_en: "Government and digital channels"
+    name_ja: "政府調達・デジタルチャネル"
+    goals: [sell]
+    phases:
+      - {when: "Year 0-1", mode: rt_distributor, headcount: "2-4", channel_en: "Distributor-led, list on B2B marketplaces", channel_ja: "代理店主導、B2Bマーケットプレイスに出品",
+         kpi_en: "Leads per month, conversion", kpi_ja: "月間引合い数、成約率"}
+      - {when: "Year 1-3", mode: rt_wos, headcount: "8-25", channel_en: "Government e-Marketplace (GeM) and ONDC sellers", channel_ja: "政府電子調達（GeM）とONDC",
+         kpi_en: "Public procurement revenue", kpi_ja: "公共調達売上"}
+      - {when: "Year 3-5", mode: rt_wos, headcount: "25-60", channel_en: "Service and aftermarket revenue", channel_ja: "保守・アフターマーケット収益",
+         kpi_en: "Aftermarket share of revenue", kpi_ja: "アフター売上比率"}
+    levers: [lv_gem, lv_ondc]
+
+levers:
+  - {id: lv_pli, name_en: "Production Linked Incentive schemes", name_ja: "生産連動型インセンティブ（PLI）",
+     text_en: "Sector PLI schemes reward incremental production in India; check eligibility for your sector.", text_ja: "業種別のPLIはインドでの生産増加に応じて奨励金を支給します。対象要件を確認してください。",
+     source_url: "https://www.investindia.gov.in/production-linked-incentives-schemes-india", as_of: "2026-10-24", verified_by_team: false}
+  - {id: lv_jit, name_en: "Japan Industrial Townships", name_ja: "日本工業団地（JIT）",
+     text_en: "JITs offer plug-and-play land and a Japanese business community.", text_ja: "JITはすぐに使える用地と日系企業コミュニティを提供します。",
+     source_url: "https://www.meti.go.jp/policy/external_economy/trade/indopacific/supplychain/ProgressJAPANside.pdf", as_of: "2024-02-01", verified_by_team: false}
+  - {id: lv_gem, name_en: "Government e-Marketplace (GeM)", name_ja: "政府電子調達（GeM）",
+     text_en: "GeM is the national public procurement portal for goods and services.", text_ja: "GeMは物品・サービスの全国公共調達ポータルです。",
+     source_url: "https://gem.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: lv_ondc, name_en: "ONDC", name_ja: "ONDC（デジタル商取引オープンネットワーク）",
+     text_en: "ONDC is an open network for digital commerce in India.", text_ja: "ONDCはインドのデジタル商取引のオープンネットワークです。",
+     source_url: "https://ondc.org/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: lv_ports, name_en: "Port access", name_ja: "港湾アクセス",
+     text_en: "Export hubs work best near a major port with direct services to Japan.", text_ja: "輸出拠点は日本への直行便がある主要港の近くが最適です。",
+     source_url: "https://shipmin.gov.in/", as_of: "2026-10-24", verified_by_team: false}

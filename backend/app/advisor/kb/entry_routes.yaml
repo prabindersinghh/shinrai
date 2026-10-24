@@ -1,0 +1,101 @@
+# Entry routes. Legal requirements are summaries to discuss with counsel; verify against the cited source.
+routes:
+  - id: rt_distributor
+    name: Distributor or agent
+    name_ja: 販売代理店・エージェント
+    entity: "No Indian entity; contract with an Indian distributor"
+    approvals: "None for the Japanese company; the distributor holds GST registration and licences"
+    pros: ["Fastest and cheapest way to test demand", "No capital commitment in India"]
+    cons: ["Limited control over pricing and brand", "Depends entirely on one partner's integrity"]
+    setup_steps: [cs_partner_verify, cs_distribution_agreement]
+    source_name: "Invest India, setting up business in India"
+    source_url: "https://www.investindia.gov.in/setting-up-business"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: rt_liaison
+    name: Liaison office
+    name_ja: 駐在員事務所
+    entity: "Liaison office of the Japanese company"
+    approvals: "Approval through an AD Category-I bank under the RBI framework for liaison, branch and project offices"
+    pros: ["Market research and relationship building on the ground", "Low cost presence"]
+    cons: ["Cannot carry on commercial activity or earn income in India"]
+    setup_steps: [cs_lo_approval, cs_pan_tan, cs_bank_account]
+    source_name: "RBI, Master Direction: Establishment of Liaison / Branch / Project Office in India"
+    source_url: "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: rt_branch
+    name: Branch office
+    name_ja: 支店
+    entity: "Branch of the Japanese company"
+    approvals: "Approval through an AD Category-I bank under the RBI framework; manufacturing is not a permitted branch activity"
+    pros: ["Can earn income from permitted activities such as export and import, and consultancy"]
+    cons: ["Cannot manufacture", "Taxed as a foreign company"]
+    setup_steps: [cs_lo_approval, cs_pan_tan, cs_bank_account, cs_gst]
+    source_name: "RBI, Master Direction: Establishment of Liaison / Branch / Project Office in India"
+    source_url: "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: rt_jv
+    name: Joint venture company
+    name_ja: 合弁会社
+    entity: "Indian private limited company owned with an Indian partner"
+    approvals: "Automatic route where the sector allows; FEMA reporting of the foreign investment"
+    pros: ["Partner's market access, land, licences and workforce", "Shared capital"]
+    cons: ["Governance disputes are the most common failure mode", "Exit terms must be negotiated up front"]
+    setup_steps: [cs_partner_verify, cs_spice, cs_pan_tan, cs_bank_account, cs_fcgpr, cs_gst, cs_iec, cs_shops]
+    source_name: "DPIIT Consolidated FDI Policy; MCA incorporation"
+    source_url: "https://dpiit.gov.in/policies-rules-and-acts/policies/foreign-direct-investment"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: rt_wos
+    name: Wholly owned subsidiary
+    name_ja: 100%子会社
+    entity: "Indian private limited company owned by the Japanese company"
+    approvals: "Automatic route where the sector allows; incorporation with MCA; FEMA reporting of the foreign investment"
+    pros: ["Full control of operations, brand and IP", "Can manufacture and sell locally"]
+    cons: ["Highest set-up cost and compliance load", "Needs at least one director resident in India under the Companies Act"]
+    setup_steps: [cs_spice, cs_pan_tan, cs_bank_account, cs_fcgpr, cs_gst, cs_iec, cs_shops, cs_commencement, cs_auditor, cs_annual]
+    source_name: "MCA (Companies Act, 2013); RBI Master Direction on Foreign Investment"
+    source_url: "https://www.mca.gov.in/"
+    as_of: "2026-10-24"
+    verified_by_team: false
+  - id: rt_contract_mfg
+    name: Contract manufacturing
+    name_ja: 製造委託
+    entity: "No Indian entity, or a liaison office supervising an Indian manufacturer"
+    approvals: "None for the Japanese company; the manufacturer holds factory and environmental approvals"
+    pros: ["India production without owning a plant", "Good path to test an export hub"]
+    cons: ["Quality and IP depend on the manufacturer", "Needs strong audit rights"]
+    setup_steps: [cs_partner_verify, cs_manufacturing_agreement]
+    source_name: "Invest India, setting up business in India"
+    source_url: "https://www.investindia.gov.in/setting-up-business"
+    as_of: "2026-10-24"
+    verified_by_team: false
+
+# Starting footprint by investment band and goal (team-written rule table).
+footprint:
+  - {band: "lt50m", goal: "sell", route: rt_distributor, alt: rt_liaison,
+     advice_en: "Start with a verified distributor and a light liaison presence; review after 12 months of sell-through.",
+     advice_ja: "検証済みの販売代理店と小規模な駐在員事務所から始め、12か月の販売実績を見て見直します。"}
+  - {band: "lt50m", goal: "source", route: rt_contract_mfg, alt: rt_liaison,
+     advice_en: "Source through a verified contract manufacturer, with audit rights and a liaison office for supplier visits.",
+     advice_ja: "監査権付きの検証済み製造委託先から調達し、駐在員事務所でサプライヤー訪問を行います。"}
+  - {band: "50m_300m", goal: "sell", route: rt_jv, alt: rt_distributor,
+     advice_en: "A joint venture with a verified local partner, or a distributor while the JV terms are negotiated.",
+     advice_ja: "検証済みの現地パートナーとの合弁、またはその交渉期間中は販売代理店を活用します。"}
+  - {band: "50m_300m", goal: "manufacture", route: rt_contract_mfg, alt: rt_jv,
+     advice_en: "Contract manufacturing first, moving to a JV once volumes and partner performance are proven.",
+     advice_ja: "まず製造委託で始め、数量と相手の実績を確認した上で合弁へ移行します。"}
+  - {band: "300m_1b", goal: "manufacture", route: rt_wos, alt: rt_jv,
+     advice_en: "A wholly owned subsidiary with a leased plant in a Japan Industrial Township.",
+     advice_ja: "日本工業団地（JIT）内の賃貸工場を活用した100%子会社を設立します。"}
+  - {band: "300m_1b", goal: "sell", route: rt_wos, alt: rt_jv,
+     advice_en: "A wholly owned sales subsidiary with distributors in the priority states.",
+     advice_ja: "重点州に販売代理店を置き、100%出資の販売子会社を設立します。"}
+  - {band: "gt1b", goal: "manufacture", route: rt_wos, alt: rt_jv,
+     advice_en: "A wholly owned subsidiary building its own plant, supported by a state investment agency's Japan desk.",
+     advice_ja: "州投資促進機関のジャパンデスクの支援を受け、自社工場を持つ100%子会社を設立します。"}
+  - {band: "any", goal: "export_hub", route: rt_wos, alt: rt_contract_mfg,
+     advice_en: "An export-oriented subsidiary near a major port, or contract manufacturing while volumes build.",
+     advice_ja: "主要港に近い輸出型子会社、または数量が増えるまでは製造委託を活用します。"}
