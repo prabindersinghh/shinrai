@@ -18,7 +18,7 @@ export function LangToggle({ invert = false }: { invert?: boolean }) {
   const { lang, setLang } = useI18n();
   return (
     <div className={`flex rounded-lg p-0.5 text-xs font-semibold ${invert ? "bg-white/10" : "bg-stage ring-1 ring-line"}`} role="group" aria-label="Language">
-      {(["ja", "en"] as const).map((l) => (
+      {(["en", "ja"] as const).map((l) => (
         <button key={l} onClick={() => setLang(l)} aria-pressed={lang === l}
           className={`rounded-md px-2.5 py-1 transition-colors ${lang === l ? (invert ? "bg-white text-ink" : "bg-paper text-ink shadow-card") : invert ? "text-white/70" : "text-muted"}`}>
           {l === "ja" ? "日本語" : "EN"}

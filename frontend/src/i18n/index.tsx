@@ -19,12 +19,12 @@ function initialLang(): Lang {
   const fromUrl = new URLSearchParams(window.location.search).get("lang");
   if (fromUrl === "ja" || fromUrl === "en") return fromUrl;
   try {
-    const saved = localStorage.getItem("shinrai.lang");
+    const saved = localStorage.getItem("shinrai.lang.v2");
     if (saved === "ja" || saved === "en") return saved;
   } catch {
     /* storage unavailable */
   }
-  return "ja";
+  return "en";
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
@@ -33,7 +33,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     setLangState(l);
     document.documentElement.lang = l;
     try {
-      localStorage.setItem("shinrai.lang", l);
+      localStorage.setItem("shinrai.lang.v2", l);
     } catch {
       /* storage unavailable */
     }

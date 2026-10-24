@@ -86,7 +86,7 @@ export default function Report() {
   const exportPdf = async () => {
     setPdfBusy(true);
     try {
-      const res = await fetch(`/api/investigations/${invId}/pdf?lang=bi`);
+      const res = await fetch(`/api/investigations/${invId}/pdf?lang=${lang}`);
       if (!res.ok) throw new Error(await res.text());
       const blob = await res.blob();
       const a = document.createElement("a");

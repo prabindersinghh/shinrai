@@ -529,6 +529,7 @@ async def demo_complete(inv_id: int) -> dict:
 
 # ----- 稟議書 (ringi-sho) -------------------------------------------------------------------------------------------
 SEEKING_JA = {"distributor": "販売代理店", "jv": "合弁パートナー", "supplier": "仕入先", "contract_mfg": "製造委託先"}
+SEEKING_EN = {"distributor": "distributor", "jv": "JV partner", "supplier": "supplier", "contract_mfg": "contract manufacturer"}
 
 
 def recommendation(band: str | None, flags: list[dict]) -> dict:
@@ -561,6 +562,11 @@ def ringi(inv_id: int, drafter: str = "海外事業部 担当") -> dict:
     sugg, _ = report_mod.suggestions(flags, r["claims"], inv["band"] or "standard")
     ev_co = next((e["ev_id"] for e in r["evidence"] if e["adapter"] == "mca_ogd"), None)
     name = co.get("name") or r["partner"]["input_name"]
+    overview_en = [
+        f"{name} (CIN {co.get('cin', '—')}) was incorporated in {co.get('state', '—')} on "
+        f"{co.get('date_of_incorporation', '—')}; its MCA status is {co.get('status', '—')} [{ev_co}]." if co
+        else "The company registry could not be checked.",
+    ]
     overview = [
         f"{name}（CIN {co.get('cin', '—')}）は{co.get('state', '—')}州で{co.get('date_of_incorporation', '—')}に設立された法人で、"
         f"MCA上のステータスは「{co.get('status', '—')}」です[{ev_co}]。" if co else "登記情報を確認できませんでした。",
@@ -570,12 +576,20 @@ def ringi(inv_id: int, drafter: str = "海外事業部 担当") -> dict:
         measured = (g.get("buildings") or {}).get("latest_area_m2") or (g.get("osm") or {}).get("total_area_m2")
         ev_g = (g.get("buildings") or {}).get("evidence_id") or (g.get("osm") or {}).get("evidence_id")
         overview.append(f"衛星データによる現地確認では、主張拠点の建築面積は約{measured or 0:,}㎡です[{ev_g}]。")
+        overview_en.append(f"Satellite checks measure about {measured or 0:,} m² built at the claimed site [{ev_g}].")
     if r["money"].get("status") == "received":
         m = r["money"]
         overview.append(f"同意に基づくGST申告データ（シミュレーション）では直近12か月の売上は₹{m['declared_12m'] / 1e7:,.2f}croreです"
                         f"[{m['evidence_id']}]。")
+        overview_en.append(f"Consented GST returns (simulated) declare ₹{m['declared_12m'] / 1e7:,.2f} crore over the last "
+                           f"12 filed months [{m['evidence_id']}].")
     return {
         "subject": f"インド現地パートナー候補 {name}との取引開始に関する件",
+        "subject_en": f"Approval to start trading with Indian partner candidate {name}",
+        "purpose_en": (f"For our entry into the Indian market, we request a decision on whether to start trading with "
+                       f"{name}, a candidate {SEEKING_EN.get(sme['seeking'], 'partner')}, based on Shinrai's due-diligence "
+                       "report."),
+        "overview_en": overview_en, "company_en": sme["name"],
         "drafter": drafter, "company_ja": sme.get("name_ja") or sme["name"], "date": date.today().isoformat(),
         "purpose": (f"当社のインド市場参入にあたり、{SEEKING_JA.get(sme['seeking'], 'パートナー')}候補である{name}との"
                     "取引開始の可否について、Shinraiによる信用調査結果に基づきご判断をお願いするものです。"),
@@ -612,14 +626,14 @@ async def _print(path: str, landscape: bool) -> bytes:
 
 
 @router.get("/api/investigations/{inv_id}/pdf")
-async def report_pdf(inv_id: int, lang: str = "bi") -> Response:
+async def report_pdf(inv_id: int, lang: str = "en") -> Response:
     pdf = await _print(f"/report/{inv_id}?print=1&lang={lang}", landscape=True)
     return Response(pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="shinrai_report_{inv_id}.pdf"'})
 
 
 @router.get("/api/investigations/{inv_id}/ringi.pdf")
-async def ringi_pdf(inv_id: int) -> Response:
-    pdf = await _print(f"/ringi/{inv_id}?print=1", landscape=False)
+async def ringi_pdf(inv_id: int, lang: str = "en") -> Response:
+    pdf = await _print(f"/ringi/{inv_id}?print=1&lang={'ja' if lang == 'ja' else 'en'}", landscape=False)
     return Response(pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="ringi_{inv_id}.pdf"'})

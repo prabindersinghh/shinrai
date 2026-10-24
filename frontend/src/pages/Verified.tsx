@@ -34,7 +34,7 @@ export default function Verified() {
             <div className="mt-6 text-[18px] font-semibold">{v.company?.name}</div>
             <div className="font-mono text-[12px] text-muted">{v.company?.cin}</div>
             <div className="mt-5 grid grid-cols-3 gap-3 text-center">
-              <div className="rounded-xl bg-stage p-3"><div className="num text-[30px] leading-none" style={{ color: band?.color }}>{v.score}</div><div className="label mt-1">信頼スコア</div></div>
+              <div className="rounded-xl bg-stage p-3"><div className="num text-[30px] leading-none" style={{ color: band?.color }}>{v.score}</div><div className="label mt-1">{ja ? "信頼スコア" : "Trust score"}</div></div>
               <div className="rounded-xl bg-stage p-3"><div className="jp text-[15px] font-bold" style={{ color: band?.color }}>{band?.ja}</div><div className="label mt-1">{band?.en}</div></div>
               <div className="rounded-xl bg-stage p-3"><div className="text-[15px] font-bold">{v.audited ? "✓" : "—"}</div><div className="label mt-1">{ja ? "現地監査" : "Field audit"}</div></div>
             </div>
