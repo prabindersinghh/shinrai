@@ -235,7 +235,8 @@ export default function GraphCanvas({ nodes, links, version, running, onSelect, 
             linkTarget="target"
             nodeColor={(n: any) => fillFor(n)}
             nodeVal={(n: any) => radius(n) / 2}
-            nodeLabel={(n: any) => n.label}
+            nodeLabel={() => ""}
+            onNodeHover={(n: any) => setHover(n)}
             nodeOpacity={0.95}
             linkColor={() => "#9AA0AB"}
             linkOpacity={0.5}
