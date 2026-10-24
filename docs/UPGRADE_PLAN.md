@@ -69,7 +69,6 @@ Status key: **Impl** = implemented and exercised by validation; **Impl (unrun)**
 | Pitch p.3 sample shows "SOURCES CHECKED MCA21 ✓ GST ✓ eCourts ✓" | GST, director network and courts are live only with optional keys or packages (`gst.py:27`, `mca_directors.py:17`, `courts.py:19`); otherwise "not checked" |
 | TRD §1: dark theme, shadcn/ui | White-first by owner decision (DECISIONS). shadcn/ui is not in `package.json` |
 | PRD §8: "User accounts, payments, multi-tenant auth: out of scope" | Still true. The new vision makes these in scope |
-| README: `ANTHROPIC_MODEL` default `claude-sonnet-5-5` | Matches `config.py:33` ✓ |
 
 ### 2.4 Technical debt and demo-breaking risks
 - **Hard dependency on pandas and numpy at import time.** `routes_master.py:13` → `intel/distress.py:11-12` means the API cannot start without them, even with the distress model off. I verified this in a minimal venv. Fix: P0-02.
