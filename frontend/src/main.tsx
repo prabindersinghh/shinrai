@@ -19,12 +19,24 @@ import TermSheetPage from "./pages/TermSheetPage";
 import Verified from "./pages/Verified";
 
 const AuditField = lazy(() => import("./pages/AuditField"));
+// Trust-backed procurement (frontend-only prototype), code-split so the existing app's bundle doesn't grow.
+const TradeHub = lazy(() => import("./pages/trade/TradeHub"));
+const Source = lazy(() => import("./pages/trade/Source"));
+const SupplierPage = lazy(() => import("./pages/trade/SupplierPage"));
+const PoolPage = lazy(() => import("./pages/trade/PoolPage"));
+const NewRfq = lazy(() => import("./pages/trade/NewRfq"));
+const Pools = lazy(() => import("./pages/trade/Lists").then((m) => ({ default: m.Pools })));
+const Orders = lazy(() => import("./pages/trade/Lists").then((m) => ({ default: m.Orders })));
+const OrderPage = lazy(() => import("./pages/trade/OrderPage"));
+const PayPage = lazy(() => import("./pages/trade/PayPage"));
+const SupplierConsole = lazy(() => import("./pages/trade/SupplierConsole"));
+const Ops = lazy(() => import("./pages/trade/Ops"));
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <I18nProvider>
       <BrowserRouter>
-        <Suspense fallback={null}>
+        <Suspense fallback={<div className="grid h-screen place-items-center text-sm text-muted">Loading…</div>}>
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/demo" element={<Demo />} />
@@ -41,6 +53,17 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route path="/termsheet/:id" element={<TermSheetPage />} />
             <Route path="/master-report/:smeId" element={<MasterReport />} />
             <Route path="/audit/:id/field" element={<AuditField />} />
+            <Route path="/trade" element={<TradeHub />} />
+            <Route path="/source" element={<Source />} />
+            <Route path="/supplier/:id" element={<SupplierPage />} />
+            <Route path="/rfq/new" element={<NewRfq />} />
+            <Route path="/pools" element={<Pools />} />
+            <Route path="/pool/:id" element={<PoolPage />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/orders/:id" element={<OrderPage />} />
+            <Route path="/pay/:poId" element={<PayPage />} />
+            <Route path="/s" element={<SupplierConsole />} />
+            <Route path="/ops" element={<Ops />} />
             <Route path="*" element={<Landing />} />
           </Routes>
         </Suspense>
