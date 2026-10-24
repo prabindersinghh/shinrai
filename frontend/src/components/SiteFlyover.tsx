@@ -45,6 +45,8 @@ export default function SiteFlyover({ ground, flagged, onClose }: Props) {
         animation: false, timeline: false, fullscreenButton: false, infoBox: false, selectionIndicator: false,
       });
       viewer.scene.globe.enableLighting = false;
+      viewer.scene.globe.maximumScreenSpaceError = 1.2; // sharper imagery near the site
+      viewer.scene.globe.tileCacheSize = 400;
       if (viewer.scene.skyAtmosphere) viewer.scene.skyAtmosphere.show = true;
       let base = 0;
       if (cfg.google_maps_key) {
@@ -123,7 +125,7 @@ export default function SiteFlyover({ ground, flagged, onClose }: Props) {
           if (!viewer || disposed) return;
           setPhase("orbit");
           let heading = Cesium.Math.toRadians(30);
-          const range = 520;
+          const range = 640;
           removeOrbit = viewer.scene.preRender.addEventListener(() => {
             heading += 0.0018;
             viewer!.camera.lookAt(target, new Cesium.HeadingPitchRange(heading, Cesium.Math.toRadians(-34), range));
