@@ -41,7 +41,7 @@ export default function Compare() {
                     <td className="px-4 py-3">
                       <Link to={`/report/${r.inv_id}`} className="font-semibold hover:text-hinomaru">{r.name}</Link>
                       <div className="mt-0.5 flex items-center gap-1.5">
-                        {r.is_demo && <span className="chip bg-hinomaru text-white">DEMO</span>}
+                        {r.is_demo && <span className="chip bg-stage text-ink-3 ring-1 ring-line">{ja ? "説明用" : "Illustrative"}</span>}
                         <span className={`chip ${MODE[r.mode]?.cls}`}>{MODE[r.mode]?.label}</span>
                         <span className="text-[11px] text-muted">{r.state}</span>
                       </div>

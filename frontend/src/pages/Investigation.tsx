@@ -66,7 +66,7 @@ export default function Investigation() {
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="truncate text-[14px] font-semibold">{company}</span>
-              {(state.demo || meta?.is_demo) && <span className="chip bg-hinomaru text-white">DEMO DATA</span>}
+              {(state.demo || meta?.is_demo) && <span className="chip bg-white/15 text-white/85">{lang === "ja" ? "説明用ケース" : "Illustrative case"}</span>}
               <span className={`chip ${modeChip.cls}`}>{modeChip.label}</span>
               {replaying && <span className="chip bg-white/15 text-white">{lang === "ja" ? "再生中" : "REPLAY"}</span>}
             </div>

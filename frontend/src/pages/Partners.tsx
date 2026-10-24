@@ -101,7 +101,7 @@ export default function Partners() {
                   <button key={v} onClick={() => setMode(v)} className={`rounded-md px-2.5 py-1 text-xs font-semibold ${mode === v ? "bg-ink text-white" : "bg-stage text-ink-2"}`}>{l}</button>
                 ))}
               </div>
-              <p className="mt-2 text-[11.5px] leading-snug text-muted">{ja ? "自動：デモ企業はSEED、それ以外はLIVE→CACHED→SEEDの順で取得します。" : "Auto: demo companies use SEED; others try LIVE, then CACHED, then SEED."}</p>
+              <p className="mt-2 text-[11.5px] leading-snug text-muted">{ja ? "自動：公的情報源をリアルタイムで照会し、取得できない場合は記録済みの応答を使用します。" : "Auto: queries public sources live and falls back to recorded responses when a source is unreachable."}</p>
             </div>
           </div>
 
@@ -118,7 +118,7 @@ export default function Partners() {
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="truncate text-[15px] font-semibold">{p.input_name || p.cin || p.gstin}</span>
-                      {l?.is_demo && <span className="chip bg-hinomaru text-white">DEMO DATA</span>}
+                      {l?.is_demo && <span className="chip bg-stage text-ink-3 ring-1 ring-line">{lang === "ja" ? "説明用ケース" : "Illustrative case"}</span>}
                       {l && <span className={`chip ${MODE[l.mode_used]?.cls}`}>{MODE[l.mode_used]?.label}</span>}
                       {band && <span className="jp chip" style={{ background: band.soft, color: band.color }}>{ja ? band.ja : band.en}</span>}
                     </div>

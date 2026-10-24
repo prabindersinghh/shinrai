@@ -6,7 +6,7 @@
   "nav.partners": "Partners",
   "nav.compare": "Compare",
   "landing.cta": "Start a check",
-  "landing.demo": "Run the demo",
+  "landing.demo": "See it in action",
   "landing.pillars": "Three evidence layers and a next step",
   "pillar.paper": "Paper",
   "pillar.paper.body": "Registry, GST, courts, insolvency and news. Proves the company is real and compliant, and who is behind it.",
@@ -77,7 +77,7 @@
   "audit.request": "Request on-site audit",
   "common.evidence": "Evidence",
   "common.view_evidence": "View evidence",
-  "common.demo_data": "DEMO DATA",
+  "common.demo_data": "Illustrative case",
   "common.close": "Close",
   "common.loading": "Loading…"
 }

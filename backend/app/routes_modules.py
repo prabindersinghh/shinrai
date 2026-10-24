@@ -455,7 +455,7 @@ def _demo_photo(caption: str, lat: float, lon: float, when: datetime) -> bytes:
     except OSError:
         big = font = small = ImageFont.load_default()
     d.rectangle([40, 40, 920, 680], outline=(20, 20, 20), width=3)
-    d.text((80, 90), "DEMO FIELD PHOTO", fill=(227, 18, 43), font=big)
+    d.text((80, 90), "ILLUSTRATIVE FIELD PHOTO", fill=(227, 18, 43), font=big)
     d.text((80, 190), "Placeholder for the auditor's photo.", fill=(58, 61, 69), font=font)
     words, line, y = caption.split(), "", 270
     for w in words:
@@ -502,7 +502,7 @@ async def demo_complete(inv_id: int) -> dict:
     with session() as s:
         inv = s.get(Investigation, inv_id)
         if not inv or not inv.is_demo:
-            raise HTTPException(409, "Demo audits are only available for DEMO companies")
+            raise HTTPException(409, "A completed sample audit is available only for illustrative cases")
     today = date.today()
     audit = create_audit(inv_id, AuditIn(audit_type="production_capability", start=today - timedelta(days=2),
                                          end=today + timedelta(days=1)))

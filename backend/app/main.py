@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 import logging
 import shutil
 import uuid
@@ -109,6 +110,15 @@ def create_partner(sme_id: int = Form(...), name: str = Form(""), cin: str = For
                    doc: UploadFile | None = File(None), demo_brochure: bool = Form(False)) -> Partner:
     if not (name or cin or gstin):
         raise HTTPException(400, "Enter a company name, CIN or GSTIN")
+    # Forgiving input: a CIN or GSTIN typed into the name box goes to the right field.
+    from .adapters.gstin import CIN_RE, GSTIN_RE
+
+    token = re.sub(r"\s+", "", name).upper()
+    if not cin and CIN_RE.match(token):
+        cin, name = token, ""
+    elif not gstin and GSTIN_RE.match(token):
+        gstin, name = token, ""
+    name = re.sub(r"\s+", " ", name).strip()
     doc_path = doc_name = None
     if doc is not None and doc.filename:
         doc_path, doc_name = _save_upload(doc)
@@ -269,7 +279,7 @@ def report_payload(inv_id: int) -> dict:
         "flags": flags, "claims": claims, "evidence": _evidence_rows(inv_id), "graph": graph_payload(inv_id),
         "ground": facts.get("ground") or {}, "money": facts.get("money") or {}, "audit": audit_summary(inv_id),
         "consent": consent_summary(inv_id), "directors": facts.get("directors", []),
-        "gst": facts.get("gst", []), "families": rulebook()["families"], "bands": rulebook()["bands"],
+        "gst": facts.get("gst", []), "intel": facts.get("intel") or {}, "families": rulebook()["families"], "bands": rulebook()["bands"],
         "trace_count": trace_count, "llm": llm.available(),
     }
 
@@ -353,28 +363,36 @@ def public_config() -> dict:
 # ----- demo --------------------------------------------------------------------------------------------------
 @app.post("/api/demo/setup")
 def demo_setup() -> dict:
-    """Creates the scripted demo: Tanaka Seiko K.K. plus Sunrise (with brochure), Kaveri and Maruti."""
+    """Prepares the approved scenarios: Tanaka Seiko K.K. with four partner candidates, and Hokuriku Foods (Advisor only)."""
     with session() as s:
         sme = Sme(name="Tanaka Seiko K.K.", name_ja="田中精工株式会社", industry="auto_parts", seeking="distributor",
                   target_states=["Haryana", "Maharashtra"], deal_band="mid", risk_appetite="conservative", language="en",
                   products="Precision transmission gears and shafts", hs_chapter="87", export_markets=["Thailand", "Indonesia"],
                   goal="manufacture", investment_band="300m_1b", headcount_y1=25, timeline_months=12, entry_mode="undecided",
                   must_haves=["japanese_community", "power"])
+        hokuriku = Sme(name="Hokuriku Foods Co., Ltd.", name_ja="北陸フーズ株式会社", industry="food", seeking="contract_mfg",
+                       target_states=[], deal_band="mid", risk_appetite="aggressive", language="en",
+                       products="Retort-packed ready meals and seasonings", hs_chapter="21", export_markets=["Singapore", "UAE"],
+                       goal="export_hub", investment_band="50m_300m", headcount_y1=12, timeline_months=12, entry_mode="contract_mfg",
+                       must_haves=["port", "english"])
         s.add(sme)
+        s.add(hokuriku)
         s.commit()
         s.refresh(sme)
+        s.refresh(hokuriku)
         partners = [
             Partner(sme_id=sme.id, input_name="Sunrise Auto Components Pvt Ltd",
                     doc_path=str(config.SEED_DIR / "sunrise_brochure.pdf"), doc_name="sunrise_brochure.pdf"),
             Partner(sme_id=sme.id, input_name="Kaveri Precision Engineering Pvt Ltd"),
             Partner(sme_id=sme.id, input_name="Maruti Suzuki India Ltd", cin="L34103DL1981PLC011375"),
+            Partner(sme_id=sme.id, input_name="Future Retail Limited"),
         ]
         for p in partners:
             s.add(p)
         s.commit()
         for p in partners:
             s.refresh(p)
-        return {"sme": sme.model_dump(), "partners": [p.model_dump() for p in partners]}
+        return {"sme": sme.model_dump(), "advisor_sme": hokuriku.model_dump(), "partners": [p.model_dump() for p in partners]}
 
 
 from .routes_modules import router as modules_router  # noqa: E402
@@ -383,3 +401,24 @@ app.include_router(modules_router)
 from .routes_advisor import router as advisor_router  # noqa: E402
 
 app.include_router(advisor_router)
+from .routes_master import router as master_router  # noqa: E402
+
+app.include_router(master_router)
+
+
+def _mount_analytics() -> None:
+    """Vizro (Dash, WSGI) mounted at /analytics. Built at start-up, which also warms its data layer."""
+    import warnings
+
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            from starlette.middleware.wsgi import WSGIMiddleware
+
+            from analytics.app import build
+            app.mount("/analytics", WSGIMiddleware(build().dash.server))
+    except Exception:  # noqa: BLE001 - analytics is optional; the product works without it
+        logging.getLogger("shinrai").exception("Analytics dashboard unavailable")
+
+
+_mount_analytics()

@@ -143,6 +143,7 @@ export default function Advisor() {
           </div>
           <div className="flex gap-2">
             <Link to={`/onboarding?edit=${id}`} className="btn-ghost">{ja ? "プロフィールを編集" : "Edit profile"}</Link>
+            <Link to={`/master-report/${id}`} className="btn-ghost">{ja ? "統合レポート" : "Full report · 統合レポート"}</Link>
             <button className="btn-ink" onClick={run} disabled={running}>{running ? <Loader2 size={15} className="animate-spin" /> : <RotateCcw size={15} />} {ja ? "再分析" : "Re-run analysis"}</button>
             <Link to={`/partners/${id}`} className="btn-red">{ja ? "候補企業を検証" : "Verify partners"} <ArrowRight size={15} /></Link>
           </div>

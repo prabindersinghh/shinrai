@@ -53,7 +53,7 @@ export const RADAR_FAMILIES = ["identity", "compliance", "legal", "network", "cl
 export const MODE: Record<string, { label: string; cls: string }> = {
   live: { label: "LIVE", cls: "bg-hinomaru text-white" },
   cached: { label: "CACHED", cls: "bg-ink text-white" },
-  seed: { label: "SEED", cls: "bg-stage text-ink-2 ring-1 ring-line" },
+  seed: { label: "ILLUSTRATIVE", cls: "bg-stage text-ink-3 ring-1 ring-line" },
   local: { label: "LOCAL", cls: "bg-stage text-ink-2 ring-1 ring-line" },
   upload: { label: "DOC", cls: "bg-stage text-ink-2 ring-1 ring-line" },
   user: { label: "USER", cls: "bg-stage text-ink-2 ring-1 ring-line" },

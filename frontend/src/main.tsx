@@ -4,11 +4,13 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { I18nProvider } from "./i18n";
 import "./index.css";
 import Advisor from "./pages/Advisor";
+import Analytics from "./pages/Analytics";
 import Compare from "./pages/Compare";
 import Consent from "./pages/Consent";
 import Demo from "./pages/Demo";
 import Investigation from "./pages/Investigation";
 import Landing from "./pages/Landing";
+import MasterReport from "./pages/MasterReport";
 import Onboarding from "./pages/Onboarding";
 import Partners from "./pages/Partners";
 import Report from "./pages/Report";
@@ -32,10 +34,12 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route path="/investigation/:id" element={<Investigation />} />
             <Route path="/report/:id" element={<Report />} />
             <Route path="/compare/:smeId" element={<Compare />} />
+            <Route path="/intelligence/:smeId" element={<Analytics />} />
             <Route path="/ringi/:id" element={<Ringi />} />
             <Route path="/consent/:token" element={<Consent />} />
             <Route path="/verified/:id" element={<Verified />} />
             <Route path="/termsheet/:id" element={<TermSheetPage />} />
+            <Route path="/master-report/:smeId" element={<MasterReport />} />
             <Route path="/audit/:id/field" element={<AuditField />} />
             <Route path="*" element={<Landing />} />
           </Routes>

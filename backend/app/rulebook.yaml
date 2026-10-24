@@ -199,3 +199,20 @@ rules:
     condition: audit_item_failed
     text_en: "On-site audit failed: {item} ({note})."
     text_ja: "現地監査で不合格：{item_ja}（{note}）。"
+
+  # Shinrai Intelligence (model signals; act on the score only through these rules).
+  - id: NET_DISTRESS_HIGH
+    family: network
+    severity: medium
+    deduction: 8
+    condition: distress_high
+    text_en: "Signal: the Shinrai distress model places {name} in the top {top}% of distress risk (probability {prob})."
+    text_ja: "シグナル：Shinraiの経営悪化モデルで{name}は上位{top}%のリスクです（確率 {prob}）。"
+
+  - id: CLM_CERT_INVALID
+    family: claims
+    severity: high
+    deduction: 10
+    condition: cert_invalid
+    text_en: "Certification claim not supported by the certification register: {claim} ({reason})."
+    text_ja: "認証に関する主張が認証登録簿で確認できません：{claim}（{reason}）。"

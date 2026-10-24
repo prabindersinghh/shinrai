@@ -52,7 +52,7 @@ export default function Shell({ children, wide = false }: { children: ReactNode;
                 <NavLink to={`/advisor/${sme}`} className={link}>{lang === "ja" ? "アドバイザー" : "Advisor"}</NavLink>
                 <NavLink to={`/partners/${sme}`} className={link}>{t("nav.partners")}</NavLink>
                 <NavLink to={`/compare/${sme}`} className={link}>{lang === "ja" ? "レポート" : "Reports"}</NavLink>
-                <NavLink to={`/analytics/${sme}`} className={link}>{lang === "ja" ? "分析" : "Analytics"}</NavLink>
+                <NavLink to={`/intelligence/${sme}`} className={link}>{lang === "ja" ? "分析" : "Analytics"}</NavLink>
               </>
             ) : (
               <NavLink to="/onboarding" className={link}>{lang === "ja" ? "はじめる" : "Get started"}</NavLink>

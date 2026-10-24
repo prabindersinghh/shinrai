@@ -12,6 +12,7 @@ from datetime import date, datetime, timezone
 from sqlmodel import delete, select
 
 from .. import config
+from ..config import env
 from ..adapters import ADAPTERS
 from ..adapters.base import AdapterResult, query_hash
 from ..adapters.gstin import check_gstin
@@ -411,8 +412,14 @@ class Pipeline:
                                 for c in linked if company_id(c) in self.graph.nodes]
         result, ev = await self.query("legal", "ibbi", {"names": names, "cins": [co["cin"], *linked]}, "ibbi",
                                       "IBBI / NCLT announcements")
+        from rapidfuzz import fuzz as _fz
+
+        by_name = {norm_name(co["name"]): co["cin"]}
+        by_name.update({norm_name(self.facts.linked.get(c, {}).get("name") or self.graph.nodes[company_id(c)]["label"]): c
+                        for c in linked if company_id(c) in self.graph.nodes})
         for i in result.records:
-            cin = i.get("cin")
+            cin = i.get("cin") or next((c for n, c in by_name.items() if _fz.ratio(norm_name(i.get("name", "")), n) >= 92), None)
+            i = {**i, "cin": cin}
             kid = f"k_ibbi_{short_hash(i.get('name', '') + str(i.get('announced')))}"
             await self.node(kid, "case", f"{i.get('type', 'Insolvency')} · {i.get('name', '')}", kid, kind="insolvency",
                             authority=i.get("authority"), announced=i.get("announced"), applicant=i.get("applicant"),
@@ -497,6 +504,7 @@ class Pipeline:
                  "ev_company": (self.facts.ev.get("company") or [None])[0], "ev_gst": (self.facts.ev.get("gst") or [None])[0]}
         counts = {"verified": 0, "contradicted": 0, "unverifiable": 0}
         ground_verdicts = {v["claim_node"]: v for v in self.facts.ground.get("claim_verdicts", [])}
+        cert_verdicts = await self._certificates() if env("FEATURE_CERT_CHECK", "1") == "1" else {}
         for c in self.claims_raw:
             gv = ground_verdicts.get(c["node"])
             v = claims_mod.verify(claims_mod.ExtractedClaim(c["text"], c["field"], c["value"], c["unit"]), facts,
@@ -506,6 +514,9 @@ class Pipeline:
                                        f"{v.explanation_ja}{gv['explanation_ja']}", v.evidence_ids + gv["evidence_ids"])
             elif gv and (v.verdict == "unverifiable" or gv["verdict"] == "contradicted"):
                 v = claims_mod.Verdict(gv["verdict"], gv["explanation_en"], gv["explanation_ja"], gv["evidence_ids"])
+            cv = cert_verdicts.get(c["node"])
+            if cv:
+                v = claims_mod.Verdict(cv["verdict"], cv["explanation_en"], cv["explanation_ja"], [cv["evidence_id"]])
             evidence = [e for e in v.evidence_ids if e] or self.facts.evs("doc")
             entry = {**c, "verdict": v.verdict, "evidence_ids": evidence, "explanation_en": v.explanation_en,
                      "explanation_ja": v.explanation_ja}
@@ -519,8 +530,47 @@ class Pipeline:
             await self.pause(config.DRAMA_DELAY_MS * 0.6)
         await self.end("claims", f"✅ {counts['verified']} · ❌ {counts['contradicted']} · ❓ {counts['unverifiable']}")
 
+    async def _certificates(self) -> dict:
+        from ..adapters.cert_check import verdict as cert_verdict
+
+        out = {}
+        for c in self.claims_raw:
+            if c["field"] != "certification":
+                continue
+            res, ev = await self.query("claims", "cert_check", {"cin": self.facts.company["cin"], "company": self.facts.company["name"],
+                                                                "standard": c["value"]}, "cert", f"Certificate register · {c['value']}", icon="📜")
+            if not res.checked:
+                continue
+            v, reason = cert_verdict(res.records)
+            entry = {"claim_node": c["node"], "claim": c["text"], "verdict": v, "reason": reason, "evidence_id": ev,
+                     "explanation_en": f"Certification register: {reason}.",
+                     "explanation_ja": f"認証登録簿：{reason}。"}
+            self.facts.intel.setdefault("certificates", []).append(entry)
+            out[c["node"]] = entry
+        return out
+
+    async def _distress(self) -> None:
+        from ..intel import distress
+
+        if not distress.enabled():
+            return
+        records = [self.facts.company] + [r for r in self.facts.linked.values()]
+        records = [r for r in records if r and r.get("cin") and r.get("date_of_incorporation")]
+        scores = distress.score(records)
+        top = 0
+        for s, r in zip(scores, records):
+            ev = self.evidence("distress_model", f"Shinrai Distress Model v{s['version']}", {"cin": s["cin"]}, "", "model", s,
+                               f"probability {s['probability']} · percentile {s['percentile']}", "distress")
+            entry = {**s, "evidence_id": ev, "name": r.get("name")}
+            self.facts.intel.setdefault("distress", []).append(entry)
+            top += s["percentile"] >= 90
+            await self.set_risk(company_id(s["cin"]), "none", distress_pct=s["percentile"], distress_prob=s["probability"])
+        await self.note("analytics", f"Distress model v{scores[0]['version'] if scores else ''} · {len(scores)} companies scored · "
+                                     f"{top} in the top decile", icon="🧠")
+
     async def step_analytics(self) -> None:
         await self.begin("analytics")
+        await self._distress()
         mapping = self.graph.communities()
         await self.emit("graph.communities", mapping=mapping, count=len(set(mapping.values())))
         await self.pause(config.DRAMA_DELAY_MS)

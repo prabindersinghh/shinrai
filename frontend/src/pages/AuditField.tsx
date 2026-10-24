@@ -48,7 +48,7 @@ export default function AuditField() {
   return (
     <div className="min-h-screen bg-stage">
       <header className="sticky top-0 z-10 bg-ink px-4 py-3 text-white">
-        <div className="text-[11px] text-white/60">Genba Audit · #{a.id} {a.is_demo && "· DEMO DATA"}</div>
+        <div className="text-[11px] text-white/60">Genba Audit · #{a.id} {a.is_demo && (ja ? "· 説明用ケース" : "· Illustrative case")}</div>
         <div className="truncate text-[15px] font-semibold">{a.company?.name}</div>
         <div className="mt-1 flex items-center gap-1 text-[11px] text-white/70"><MapPin size={12} /> {a.pin?.lat?.toFixed(5)}, {a.pin?.lon?.toFixed(5)} · ±300 m</div>
       </header>

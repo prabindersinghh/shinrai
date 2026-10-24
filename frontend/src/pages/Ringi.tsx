@@ -82,7 +82,7 @@ export default function Ringi() {
             <div className="text-[12px] text-ink-3">{ja ? d.company_ja : d.company_en}</div>
             <h1 className={`mt-1 text-[30px] font-bold ${ja ? "tracking-[0.4em]" : "tracking-tight"}`}>{L.title}</h1>
             {!ja && <div className="text-[12px] text-ink-3"><span className="jp">稟議書</span> · internal approval request</div>}
-            {d.is_demo && <div className="mt-1 inline-block rounded bg-hinomaru px-2 py-0.5 text-[10px] font-bold text-white">DEMO DATA</div>}
+            {d.is_demo && <div className="mt-1 inline-block rounded bg-stage px-2 py-0.5 text-[10px] font-medium text-ink-3 ring-1 ring-line">{ja ? "説明用ケース" : "Illustrative case"}</div>}
           </div>
           <table className="border-collapse text-center text-[11px]" aria-label="Approval stamps">
             <tbody>

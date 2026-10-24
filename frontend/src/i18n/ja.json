@@ -6,7 +6,7 @@
   "nav.partners": "候補企業",
   "nav.compare": "比較",
   "landing.cta": "調査をはじめる",
-  "landing.demo": "デモを実行",
+  "landing.demo": "実際の動作を見る",
   "landing.pillars": "3つの証拠レイヤーと次の一手",
   "pillar.paper": "書類",
   "pillar.paper.body": "登記・GST・訴訟・倒産・報道。法人が実在し法令を遵守しているか、誰が背後にいるかを証明します。",
@@ -77,7 +77,7 @@
   "audit.request": "現地監査を依頼",
   "common.evidence": "証拠",
   "common.view_evidence": "証拠を見る",
-  "common.demo_data": "DEMO DATA",
+  "common.demo_data": "説明用ケース",
   "common.close": "閉じる",
   "common.loading": "読み込み中…"
 }

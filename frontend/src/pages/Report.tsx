@@ -107,7 +107,7 @@ export default function Report() {
       <section className="grid gap-8 pb-10 pt-10 lg:grid-cols-[1fr_auto]">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            {inv.is_demo && <span className="chip bg-hinomaru text-white">DEMO DATA</span>}
+            {inv.is_demo && <span className="chip bg-stage text-ink-3 ring-1 ring-line">{ja ? "説明用ケース" : "Illustrative case"}</span>}
             <span className={`chip ${mode.cls}`}>{mode.label}</span>
             {audited && <span className="chip bg-verified text-white">{ja ? "監査済み" : "Audited"}</span>}
             {r.money?.status === "received" && <span className="chip bg-amber text-white">{ja ? "資金確認（SIMULATED）" : "Money (SIMULATED)"}</span>}
@@ -124,6 +124,7 @@ export default function Report() {
           {!print && (
             <div className="no-print mt-6 flex flex-wrap gap-2">
               <Link to={`/ringi/${invId}`} className="btn-red"><FileSignature size={15} /> {t("report.ringi")}</Link>
+              <Link to={`/master-report/${r.sme.id}`} className="btn-ghost">{ja ? "統合レポート" : "Full report · 統合レポート"}</Link>
               <button className="btn-ink" onClick={() => setFlyover(true)} disabled={!r.ground?.site}><Plane size={15} /> {t("report.flyover")}</button>
               <button className="btn-ghost" onClick={exportPdf} disabled={pdfBusy}>{pdfBusy ? <Loader2 size={15} className="animate-spin" /> : <FileDown size={15} />} {t("report.export")}</button>
               <Link to={`/investigation/${invId}?replay=1`} className="btn-ghost"><RotateCcw size={15} /> {t("report.replay")}</Link>
@@ -272,7 +273,7 @@ export default function Report() {
       <footer className="border-t border-line pt-6 text-[11.5px] leading-relaxed text-muted">
         <p className="jp">{t("report.disclaimer")}</p>
         {lang === "ja" && <p className="mt-1">Shinrai is a due-diligence aid, not a legal opinion.</p>}
-        {inv.is_demo && <p className="mt-1 font-semibold text-hinomaru">DEMO DATA: {ja ? "この会社と関係者は架空です。画像は実在の公開衛星データです。" : "this company and the people around it are fictional; imagery is real public satellite data."}</p>}
+        {inv.is_demo && <p className="mt-1">{ja ? "説明用ケース：この会社と関係者は架空です。衛星画像は実在の公開データです。" : "Illustrative case: this company and the people around it are fictional; satellite imagery is real public data."}</p>}
       </footer>
     </div>
   );

@@ -28,7 +28,7 @@ function ReportCard() {
           <div className="label">{lang === "ja" ? "信頼レポート · 41秒で作成" : "Trust report · generated in 41 s"}</div>
           <div className="mt-1 text-[15px] font-semibold">Sunrise Auto Components Pvt Ltd</div>
           <div className="mt-0.5 flex items-center gap-2 font-mono text-[11px] text-muted">
-            U29304HR2023PTC110482 <span className="chip bg-hinomaru text-white">DEMO DATA</span>
+            U29304HR2023PTC110482 <span className="chip bg-stage text-ink-3 ring-1 ring-line">{lang === "ja" ? "説明用ケース" : "Illustrative case"}</span>
           </div>
         </div>
         <div className="text-right">
@@ -114,7 +114,7 @@ export default function Landing() {
               [lang === "ja" ? "出典なき指摘はしない" : "No source, no flag", lang === "ja" ? "すべての指摘と主張の判定は、保存された公的記録（取得日時・SHA-256付き）に紐づきます。" : "Every flag and claim verdict links to a stored record with its retrieval time and SHA-256."],
               [lang === "ja" ? "決定論的なスコア" : "Deterministic score", lang === "ja" ? "スコアはルールブックから算出。LLMは資料からの抽出と、引用付きの文章作成のみを行います。" : "Scores come from a rulebook. The LLM only extracts claims and writes cited prose."],
               [lang === "ja" ? "わからないことはわからない" : "Unknown stays unknown", lang === "ja" ? "確認できない主張は❓、取得できない情報源は「未確認」と表示します。" : "Unverifiable claims show ❓; unreachable sources show “not checked”."],
-              [lang === "ja" ? "デモは止まらない" : "The demo cannot fail", lang === "ja" ? "各情報源は LIVE → CACHED → SEED の順に自動で切り替わり、モードを常に表示します。" : "Every source falls back LIVE → CACHED → SEED, and the mode is always shown."],
+              [lang === "ja" ? "常に稼働" : "Always available", lang === "ja" ? "情報源に接続できない場合は記録済みの応答に自動で切り替え、出典の種類を常に表示します。" : "When a source is unreachable, Shinrai falls back to recorded responses and always shows where each record came from."],
             ].map(([h, b]) => (
               <div key={h} className="border-t-2 border-ink pt-3">
                 <div className="jp text-[15px] font-semibold">{h}</div>

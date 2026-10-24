@@ -365,7 +365,7 @@
   "news": [
     {
       "title": "GST officers probe fake-invoice ring linked to Gurugram logistics firms",
-      "source": "Demo Business Daily",
+      "source": "Business daily (illustrative)",
       "date": "2023-11-08",
       "about": "U63090HR2020PTC089904",
       "tone": "adverse",
@@ -373,7 +373,7 @@
     },
     {
       "title": "IMT Manesar auto-component cluster sees order book recover",
-      "source": "Demo Auto Wire",
+      "source": "Auto industry wire (illustrative)",
       "date": "2026-07-02",
       "about": null,
       "tone": "neutral",
@@ -381,7 +381,7 @@
     },
     {
       "title": "Exhibitor list: Auto Components Expo North 2025",
-      "source": "Demo Trade Fair Portal",
+      "source": "Trade fair listing (illustrative)",
       "date": "2025-02-11",
       "about": "U29304HR2023PTC110482",
       "tone": "neutral",
@@ -389,7 +389,7 @@
     },
     {
       "title": "Haryana unveils incentive scheme for MSME component makers",
-      "source": "Demo State News",
+      "source": "State news (illustrative)",
       "date": "2026-03-19",
       "about": null,
       "tone": "neutral",
@@ -397,7 +397,7 @@
     },
     {
       "title": "Faridabad foundry admitted to insolvency over unpaid dues",
-      "source": "Demo Legal Brief",
+      "source": "Legal brief (illustrative)",
       "date": "2025-12-06",
       "about": "U27310HR2016PTC061177",
       "tone": "adverse",
@@ -405,7 +405,7 @@
     },
     {
       "title": "Sunrise Auto Components launches B2B parts catalogue",
-      "source": "Demo PR Feed",
+      "source": "Company press release (illustrative)",
       "date": "2024-01-15",
       "about": "U29304HR2023PTC110482",
       "tone": "neutral",

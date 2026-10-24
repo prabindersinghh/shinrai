@@ -1,17 +1,17 @@
 [
-  {"id": "aud_pune_1", "name": "A. Kulkarni (demo auditor)", "city": "Pune", "lat": 18.5204, "lon": 73.8567,
+  {"id": "aud_pune_1", "name": "A. Kulkarni (illustrative)", "city": "Pune", "lat": 18.5204, "lon": 73.8567,
    "languages": ["English", "Marathi", "Hindi", "Japanese (JLPT N2)"], "rating": 4.9, "audits": 212,
    "specialties": ["site_existence", "production_capability", "full_partner"]},
-  {"id": "aud_chakan_2", "name": "S. Deshmukh (demo auditor)", "city": "Chakan", "lat": 18.7606, "lon": 73.8636,
+  {"id": "aud_chakan_2", "name": "S. Deshmukh (illustrative)", "city": "Chakan", "lat": 18.7606, "lon": 73.8636,
    "languages": ["English", "Marathi", "Hindi"], "rating": 4.7, "audits": 96,
    "specialties": ["site_existence", "production_capability"]},
-  {"id": "aud_gurugram_3", "name": "R. Malik (demo auditor)", "city": "Gurugram", "lat": 28.4595, "lon": 77.0266,
+  {"id": "aud_gurugram_3", "name": "R. Malik (illustrative)", "city": "Gurugram", "lat": 28.4595, "lon": 77.0266,
    "languages": ["English", "Hindi", "Japanese (JLPT N1)"], "rating": 4.8, "audits": 301,
    "specialties": ["site_existence", "production_capability", "full_partner"]},
-  {"id": "aud_blr_4", "name": "K. Rao (demo auditor)", "city": "Bengaluru", "lat": 12.9716, "lon": 77.5946,
+  {"id": "aud_blr_4", "name": "K. Rao (illustrative)", "city": "Bengaluru", "lat": 12.9716, "lon": 77.5946,
    "languages": ["English", "Kannada", "Tamil"], "rating": 4.6, "audits": 140,
    "specialties": ["site_existence", "production_capability"]},
-  {"id": "aud_chennai_5", "name": "M. Iyer (demo auditor)", "city": "Chennai", "lat": 13.0827, "lon": 80.2707,
+  {"id": "aud_chennai_5", "name": "M. Iyer (illustrative)", "city": "Chennai", "lat": 13.0827, "lon": 80.2707,
    "languages": ["English", "Tamil", "Japanese (JLPT N3)"], "rating": 4.8, "audits": 175,
    "specialties": ["site_existence", "production_capability", "full_partner"]}
 ]

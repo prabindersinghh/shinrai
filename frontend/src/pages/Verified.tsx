@@ -23,7 +23,7 @@ export default function Verified() {
         <div className={`overflow-hidden rounded-2xl border bg-paper shadow-lift ${v.eligible ? "border-verified" : "border-line"}`}>
           <div className="flex items-center justify-between border-b border-line px-6 py-4">
             <Wordmark />
-            {v.is_demo && <span className="chip bg-hinomaru text-white">DEMO DATA</span>}
+            {v.is_demo && <span className="chip bg-stage text-ink-3 ring-1 ring-line">{lang === "ja" ? "説明用ケース" : "Illustrative case"}</span>}
           </div>
           <div className="p-6">
             {v.eligible ? (

@@ -1,250 +1,262 @@
-import { motion } from "framer-motion";
-import { ArrowRight, Check, Loader2, Play, RotateCcw, Zap } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, Check, Copy, FileText, Loader2, Play, Search } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Shell, { rememberSme } from "../components/Shell";
 import { useI18n } from "../i18n";
 import { api } from "../lib/api";
-import { BAND } from "../lib/visual";
 
-interface DemoState {
+interface Workspace {
   smeId: number;
-  partners: { sunrise: number; kaveri: number; maruti: number };
-  invs: Partial<Record<"sunrise" | "kaveri" | "maruti" | "live", number>>;
+  advisorSmeId: number;
+  invs: Record<string, number>;
 }
 
-const KEY = "shinrai.demo";
-function load(): DemoState | null {
+const KEY = "shinrai.workspace.v2";
+const read = (): Workspace | null => {
   try {
     return JSON.parse(localStorage.getItem(KEY) || "null");
   } catch {
     return null;
   }
-}
-function save(s: DemoState | null) {
+};
+const write = (w: Workspace | null) => {
   try {
-    s ? localStorage.setItem(KEY, JSON.stringify(s)) : localStorage.removeItem(KEY);
+    w ? localStorage.setItem(KEY, JSON.stringify(w)) : localStorage.removeItem(KEY);
   } catch {
     /* storage unavailable */
   }
+};
+
+type Tone = "green" | "red" | "amber" | "ink";
+const TONE: Record<Tone, string> = { green: "bg-verified-soft text-verified", red: "bg-hinomaru-soft text-hinomaru", amber: "bg-amber-soft text-amber", ink: "bg-ink text-white" };
+
+interface Scenario {
+  id: string;
+  title: [string, string];
+  type: string;
+  outcome: [string, string];
+  tone: Tone;
+  points: [string, string][];
+  provenance: [string, string];
+  runtime: string;
+  brochure?: boolean;
+  advisor?: boolean;
 }
 
-function Step({ n, secs, title, body, done, children }: { n: number; secs: number; title: string; body: string; done?: boolean; children?: ReactNode }) {
-  const { lang } = useI18n();
-  return (
-    <motion.li initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: n * 0.04 }} className="relative grid grid-cols-[56px_1fr] gap-4 pb-7">
-      <div className="flex flex-col items-center">
-        <div className={`grid h-11 w-11 place-items-center rounded-full border-2 ${done ? "border-ink bg-ink text-white" : "border-line bg-paper text-ink"}`}>
-          {done ? <Check size={18} strokeWidth={3} /> : <span className="num text-[20px]">{n}</span>}
-        </div>
-        <div className="mt-1 w-px flex-1 bg-line" />
-      </div>
-      <div className="min-w-0 pt-1">
-        <div className="flex items-baseline gap-3">
-          <h3 className={`text-[16px] font-semibold ${lang === "ja" ? "jp" : ""}`}>{title}</h3>
-          <span className="font-mono text-[11px] text-muted">{secs}s</span>
-        </div>
-        <p className={`mt-1 max-w-[46rem] text-[13px] leading-relaxed text-ink-3 ${lang === "ja" ? "jp" : ""}`}>{body}</p>
-        {children && <div className="mt-3 flex flex-wrap items-center gap-2">{children}</div>}
-      </div>
-    </motion.li>
-  );
-}
+const SCENARIOS: Scenario[] = [
+  { id: "maruti", title: ["Clean, Japan-linked manufacturer", "健全な日系関連メーカー"], type: "L34103DL1981PLC011375", outcome: ["Low risk", "低リスク"], tone: "green",
+    points: [["Active on the MCA register since 1981, Suzuki Motor Corporation as parent", "1981年からMCA登記上有効、親会社はスズキ株式会社"], ["Manesar plant confirmed on real satellite imagery and building footprints", "マネサール工場を実際の衛星画像と建物データで確認"], ["No findings; unchecked sources are shown as such", "指摘なし。未確認の情報源はその旨を表示"]],
+    provenance: ["Public records (MCA, IBBI, satellite)", "公的記録（MCA・IBBI・衛星）"], runtime: "35 s" },
+  { id: "future", title: ["Company in insolvency proceedings", "倒産手続き中の企業"], type: "future retail", outcome: ["High risk", "高リスク"], tone: "red",
+    points: [["IBBI public announcements: CIRP (23-07-2022) and liquidation (02-08-2024)", "IBBI公告：CIRP（2022-07-23）、清算（2024-08-02）"], ["Every finding cites the official record; stated factually", "すべての指摘は公式記録を引用し、事実のみを記載"], ["Term sheet adds litigation and insolvency protections", "契約条件書に訴訟・倒産への保護条項を追加"]],
+    provenance: ["Public records (MCA, IBBI)", "公的記録（MCA・IBBI）"], runtime: "35 s" },
+  { id: "kaveri", title: ["Mid-risk supplier", "中程度リスクのサプライヤー"], type: "kaveri precision", outcome: ["Standard", "標準"], tone: "amber",
+    points: [["Overdue annual filings and two pending cases as respondent", "年次報告の遅延と被告としての係属訴訟2件"], ["A director holding 11 directorships", "11社の取締役を兼任する取締役"], ["Conditional approval with document requests", "書類提出を条件とした承認"]],
+    provenance: ["Illustrative case", "説明用ケース"], runtime: "40 s" },
+  { id: "sunrise", title: ["Brochure claims against the record", "会社資料の主張を記録と照合"], type: "sunrise auto components", outcome: ["High risk", "高リスク"], tone: "red", brochure: true,
+    points: [["Brochure claims a 50,000 sq ft factory since 2005; satellite shows a 353 m² shed built in 2022", "5万平方フィート・2005年創業の主張に対し、衛星では2022年築の353㎡"], ["Seven risk-driven contract clauses, each linked to its evidence", "証拠に紐づくリスク連動条項7件"], ["Consented GST data, Genba Audit and the 稟議書", "同意に基づくGSTデータ、現地監査、稟議書"]],
+    provenance: ["Illustrative case · financial data simulated", "説明用ケース・財務データはシミュレーション"], runtime: "50 s" },
+  { id: "advisor", title: ["Market entry plan for a new company", "新規企業の市場参入計画"], type: "Hokuriku Foods Co., Ltd.", outcome: ["Advisor", "アドバイザー"], tone: "ink", advisor: true,
+    points: [["Food processing, export hub, ¥50–300M, aggressive, needs a port", "食品加工・輸出拠点・5,000万〜3億円・積極的・港湾必須"], ["3D India map, white space, entry route and compliance roadmap", "3Dインド地図、ホワイトスペース、参入形態、手続き工程"], ["Growth plan and institutional contacts", "成長戦略と主要窓口"]],
+    provenance: ["Cited knowledge base", "出典付きナレッジベース"], runtime: "22 s" },
+];
+
+const SCRIPT: [string, string, string][] = [
+  ["Landing and onboarding", "ランディングと登録", "/"], ["Advisor run on the 3D map", "3D地図でのアドバイザー分析", "advisor"],
+  ["Contacts and verified partners", "主要窓口と検証済みパートナー", "advisor"], ["Verify: Sunrise", "検証：Sunrise", "theater:sunrise"],
+  ["Ground truth and 3D flyover", "現地確認と3Dフライオーバー", "report:sunrise#ground"], ["Risk-driven term sheet", "リスク連動の契約条件", "report:sunrise#termsheet"],
+  ["Financial data and 稟議書", "財務データと稟議書", "report:sunrise#money"], ["Genba Audit", "現地監査", "report:sunrise#audit"],
+  ["Analytics", "分析", "analytics"], ["Live company, then Maruti Suzuki", "実企業の調査とマルチ・スズキ", "theater:maruti"],
+];
 
 export default function Demo() {
   const { lang } = useI18n();
-  const nav = useNavigate();
-  const [demo, setDemo] = useState<DemoState | null>(load);
-  const [busy, setBusy] = useState<string | null>(null);
-  const [scores, setScores] = useState<Record<string, { score: number | null; band: string | null; status: string }>>({});
-  const [liveName, setLiveName] = useState("");
-  const [msg, setMsg] = useState<string | null>(null);
   const ja = lang === "ja";
+  const nav = useNavigate();
+  const [ws, setWs] = useState<Workspace | null>(read);
+  const [query, setQuery] = useState("");
+  const [brochure, setBrochure] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const prepare = useCallback(async () => {
+    setBusy("prepare");
+    try {
+      const r: any = await api.demoSetup();
+      const w = { smeId: r.sme.id, advisorSmeId: r.advisor_sme.id, invs: {} };
+      write(w);
+      setWs(w);
+      rememberSme(r.sme.id);
+    } finally {
+      setBusy(null);
+    }
+  }, []);
 
   useEffect(() => {
-    if (!demo) return;
-    let stop = false;
-    const poll = async () => {
-      const out: typeof scores = {};
-      for (const [k, id] of Object.entries(demo.invs)) {
-        if (!id) continue;
-        try {
-          const inv = await api.investigation(id);
-          out[k] = { score: inv.overall_score, band: inv.band, status: inv.status };
-        } catch {
-          /* investigation may have been cleared */
-        }
+    if (!ws) prepare();
+  }, [ws, prepare]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "r") {
+        e.preventDefault();
+        write(null);
+        setWs(null);
+        setQuery("");
+        setBrochure(false);
       }
-      if (!stop) setScores(out);
     };
-    poll();
-    const t = setInterval(poll, 3000);
-    return () => {
-      stop = true;
-      clearInterval(t);
-    };
-  }, [demo]);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
-  const update = (s: DemoState | null) => {
-    save(s);
-    setDemo(s);
-  };
-
-  const setup = async () => {
-    setBusy("setup");
-    setMsg(null);
-    try {
-      const r = await api.demoSetup();
-      rememberSme(r.sme.id);
-      update({ smeId: r.sme.id, partners: { sunrise: r.partners[0].id, kaveri: r.partners[1].id, maruti: r.partners[2].id }, invs: {} });
-    } catch (e: any) {
-      setMsg(e.message);
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  const investigate = async (key: "sunrise" | "kaveri" | "maruti", go: boolean) => {
-    if (!demo) return;
+  const investigate = async (text: string, attach: boolean, key: string) => {
+    if (!ws || !text.trim()) return;
+    setError(null);
     setBusy(key);
     try {
-      const { id } = await api.investigate(demo.partners[key]);
-      update({ ...demo, invs: { ...demo.invs, [key]: id } });
-      if (go) nav(`/investigation/${id}`);
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  const prepCompare = async () => {
-    if (!demo) return;
-    setBusy("prep");
-    try {
-      const k = await api.investigate(demo.partners.kaveri);
-      const m = await api.investigate(demo.partners.maruti);
-      update({ ...demo, invs: { ...demo.invs, kaveri: k.id, maruti: m.id } });
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  const runLive = async () => {
-    if (!demo || !liveName.trim()) return;
-    setBusy("live");
-    try {
       const f = new FormData();
-      f.append("sme_id", String(demo.smeId));
-      f.append("name", liveName.trim());
+      f.append("sme_id", String(ws.smeId));
+      f.append("name", text.trim());
+      if (attach) f.append("demo_brochure", "true");
       const p = await api.createPartner(f);
-      const { id } = await api.investigate(p.id, "live");
-      update({ ...demo, invs: { ...demo.invs, live: id } });
+      const { id } = await api.investigate(p.id, "auto");
+      const w = { ...ws, invs: { ...ws.invs, [key]: id } };
+      write(w);
+      setWs(w);
+      rememberSme(ws.smeId);
       nav(`/investigation/${id}`);
     } catch (e: any) {
-      setMsg(e.message);
+      setError(e.message);
     } finally {
       setBusy(null);
     }
   };
 
-  const demoAudit = async () => {
-    const id = demo?.invs.sunrise;
-    if (!id) return;
-    setBusy("audit");
-    setMsg(null);
-    try {
-      const r = await api.demoAudit(id);
-      setMsg(ja ? `監査完了。スコアは ${r.overall} に更新されました。` : `Audit completed. Score updated to ${r.overall}.`);
-    } catch (e: any) {
-      setMsg(e.message);
-    } finally {
-      setBusy(null);
+  const runScenario = (s: Scenario) => {
+    if (s.advisor) {
+      if (ws) {
+        rememberSme(ws.advisorSmeId);
+        nav(`/advisor/${ws.advisorSmeId}`);
+      }
+      return;
     }
+    investigate(s.type, !!s.brochure, s.id);
   };
 
-  const sunrise = demo?.invs.sunrise;
-  const sunriseDone = scores.sunrise?.status === "done";
-  const chip = (k: string) => {
-    const s = scores[k];
-    if (!s) return null;
-    if (s.status !== "done") return <span className="chip bg-stage text-ink-2 ring-1 ring-line"><Loader2 size={11} className="animate-spin" /> {s.status}</span>;
-    const b = BAND[s.band ?? ""];
-    return <span className="chip" style={{ background: b?.soft, color: b?.color }}>{s.score} · {ja ? b?.ja : b?.en}</span>;
+  const copy = (t: string) => {
+    navigator.clipboard?.writeText(t);
+    setCopied(t);
+    setTimeout(() => setCopied(null), 1200);
   };
-  const spin = (k: string) => (busy === k ? <Loader2 size={15} className="animate-spin" /> : null);
+
+  const link = (target: string): string | null => {
+    if (!ws) return null;
+    if (target === "/") return "/";
+    if (target === "advisor") return `/advisor/${ws.smeId}`;
+    if (target === "analytics") return `/intelligence/${ws.smeId}`;
+    const [kind, rest] = target.split(":");
+    const [key, hash] = rest.split("#");
+    const inv = ws.invs[key];
+    if (!inv) return null;
+    return kind === "theater" ? `/investigation/${inv}` : `/report/${inv}${hash ? `#${hash}` : ""}`;
+  };
 
   return (
-    <Shell>
-      <section className="mx-auto max-w-[1100px] px-4 pb-24 pt-12 sm:px-6">
-        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-8">
+    <Shell wide>
+      <div className="mx-auto max-w-[1440px] px-4 pb-24 pt-8 sm:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-[12px] font-semibold text-hinomaru"><span className="h-2 w-2 rounded-full bg-hinomaru" /> {ja ? "デモ台本 · 3分" : "Demo run sheet · 3 minutes"}</div>
-            <h1 className="jp mt-2 text-[40px] font-bold leading-tight tracking-tight">{ja ? "デモを、ワンクリックで。" : "The whole pitch, one click at a time."}</h1>
-            <p className={`mt-2 max-w-[44rem] text-[14px] text-ink-3 ${ja ? "jp" : ""}`}>
-              {ja ? "田中精工株式会社（自動車部品、ハリヤナ州で販売代理店を探す、保守的）が、インド企業3社を調査します。Sunrise と Kaveri は架空のデモ企業、Maruti Suzuki は公開情報に基づく実在企業です。"
-                : "Tanaka Seiko K.K. (auto parts, looking for a distributor in Haryana, conservative) checks three Indian companies. Sunrise and Kaveri are fictional demo companies; Maruti Suzuki is a real company from public records."}
-            </p>
+            <div className="label">{ja ? "田中精工株式会社 · ワークスペース" : "Tanaka Seiko K.K. · Workspace"}</div>
+            <h1 className="jp mt-1 text-[32px] font-bold tracking-tight">{ja ? "シナリオ" : "Scenarios"}</h1>
           </div>
-          <div className="flex gap-2">
-            {demo && <button className="btn-ghost" onClick={() => { update(null); setScores({}); }}><RotateCcw size={15} /> {ja ? "リセット" : "Reset"}</button>}
-            <button className="btn-red px-5 py-2.5" onClick={setup} disabled={busy === "setup"}>
-              {spin("setup") ?? <Zap size={16} />} {demo ? (ja ? "新しいデモを準備" : "Set up a fresh demo") : ja ? "デモを準備" : "Set up the demo"}
-            </button>
-          </div>
+          {ws && (
+            <div className="flex gap-2">
+              <Link to={`/advisor/${ws.smeId}`} className="btn-ghost">{ja ? "アドバイザー" : "Advisor"}</Link>
+              <Link to={`/master-report/${ws.smeId}`} className="btn-ghost"><FileText size={15} /> {ja ? "統合レポート" : "Full report"}</Link>
+            </div>
+          )}
         </div>
-        {msg && <div className="mt-4 rounded-lg border border-line bg-wash px-4 py-2.5 text-[13px]">{msg}</div>}
 
-        <ol className="mt-10">
-          <Step n={1} secs={15} done={!!demo} title={ja ? "ランディングと会社登録" : "Landing page and onboarding"}
-            body={ja ? "新しいポジショニングと4つの柱を見せ、田中精工を日本語で登録します（準備ボタンで登録済み）。" : "Show the positioning and the four pillars, then onboard Tanaka Seiko in Japanese (the setup button does this)."}>
-            <Link to="/" className="btn-ghost">{ja ? "ランディング" : "Landing"}</Link>
-            <Link to="/onboarding?demo=1" className="btn-ghost">{ja ? "登録画面（入力済み）" : "Onboarding (prefilled)"}</Link>
-          </Step>
-          <Step n={2} secs={10} done={!!demo} title={ja ? "候補企業と会社資料を追加" : "Add the partner and its brochure"}
-            body={ja ? "「Sunrise Auto Components（DEMO）」とパンフレットPDF（20年の実績、プネーの5万平方フィート工場、売上50億ルピーと主張）。" : "“Sunrise Auto Components (DEMO)” with its brochure PDF (claims 20 years, a 50,000 sq ft Pune factory since 2005, ₹50 crore turnover)."}>
-            {demo && <Link to={`/partners/${demo.smeId}`} className="btn-ghost">{ja ? "候補企業一覧" : "Partner list"}</Link>}
-          </Step>
-          <Step n={3} secs={50} done={sunriseDone} title={ja ? "調査シアター" : "Investigation Theater"}
-            body={ja ? "書類系の情報源、続いて🛰️衛星の確認。グラフが約40ノードまで成長し、主張拠点のノードが赤く脈打ち、スコアが確定して判が押されます。" : "Paper sources run, then the 🛰️ ground lines. The graph grows to ~40 nodes, the claimed-site node pulses red, the score settles and the seal stamps."}>
-            <button className="btn-ink" disabled={!demo || busy === "sunrise"} onClick={() => investigate("sunrise", true)}>
-              {spin("sunrise") ?? <Play size={15} />} {ja ? "Sunrise を調査" : "Investigate Sunrise"}
+        {/* live input */}
+        <div className="mt-6 rounded-2xl border border-line bg-paper p-5 shadow-card">
+          <form className="flex flex-wrap items-center gap-3" onSubmit={(e) => { e.preventDefault(); investigate(query, brochure, `q${Date.now()}`); }}>
+            <div className="flex min-w-[280px] flex-1 items-center gap-2 rounded-xl border border-line-strong px-4 py-3 focus-within:border-ink">
+              <Search size={18} className="text-muted" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} autoComplete="off"
+                placeholder={ja ? "企業名、CIN、またはGSTINを入力" : "Company name, CIN or GSTIN"} className="flex-1 bg-transparent text-[16px] outline-none" />
+            </div>
+            <label className="flex cursor-pointer items-center gap-2 text-[13px] text-ink-2">
+              <input type="checkbox" checked={brochure} onChange={(e) => setBrochure(e.target.checked)} className="h-4 w-4 accent-ink" />
+              {ja ? "会社資料を添付（sunrise_brochure.pdf）" : "Attach partner brochure (sunrise_brochure.pdf)"}
+            </label>
+            <button className="btn-red px-6 py-3 text-[15px]" disabled={!ws || !query.trim() || !!busy}>
+              {busy?.startsWith("q") ? <Loader2 size={16} className="animate-spin" /> : <Play size={16} />} {ja ? "調査開始" : "Investigate"}
             </button>
-            {sunrise && <Link to={`/investigation/${sunrise}?replay=1`} className="btn-ghost"><RotateCcw size={14} /> {ja ? "再生" : "Replay"}</Link>}
-            {chip("sunrise")}
-          </Step>
-          <Step n={4} secs={30} done={false} title={ja ? "現地現物：タイムラプスと3Dフライオーバー" : "Ground truth: time-lapse and 3D flyover"}
-            body={ja ? "2016〜2021年は空き地、2022年に小さな建屋。続いて東京から拠点へ飛び、主張された5万平方フィートの枠と実際の小さな建物を3Dで比較します。" : "Empty land 2016–2021, a small shed in 2022. Then fly from Tokyo to the site and compare the ghost “50,000 sq ft” box with the real small building."}>
-            <Link to={sunrise ? `/report/${sunrise}#ground` : "#"} className={`btn-ghost ${sunriseDone ? "" : "pointer-events-none opacity-40"}`}>{ja ? "現地確認パネル" : "Ground Truth panel"} <ArrowRight size={14} /></Link>
-          </Step>
-          <Step n={5} secs={15} title={ja ? "資金：GST申告データの同意（シミュレーション）" : "Money: consented GST returns (simulated)"}
-            body={ja ? "財務確認を依頼 → 相手方の同意画面で承認 → 申告売上 約3.1億ルピー vs 主張50億ルピーのグラフ。全画面に「SIMULATED」と表示。" : "Request verification → the partner approves on its mock consent screen → the chart shows about ₹3.1 crore declared against ₹50 crore claimed. Every screen says SIMULATED."}>
-            <Link to={sunrise ? `/report/${sunrise}#money` : "#"} className={`btn-ghost ${sunriseDone ? "" : "pointer-events-none opacity-40"}`}>{ja ? "資金パネル" : "Money panel"} <ArrowRight size={14} /></Link>
-          </Step>
-          <Step n={6} secs={15} title={ja ? "レポートと稟議書" : "Report and 稟議書"}
-            body={ja ? "項目別スコア、主張検証表、証拠付きの指摘、日本語の総評。続いて「見送り」の推奨判断が入った稟議書を作成します。" : "Sub-scores, the claims table, a flag with its evidence, the Japanese summary. Then the 稟議書 with the rule-derived recommendation 見送り."}>
-            <Link to={sunrise ? `/report/${sunrise}` : "#"} className={`btn-ghost ${sunriseDone ? "" : "pointer-events-none opacity-40"}`}>{ja ? "レポート" : "Report"}</Link>
-            <Link to={sunrise ? `/ringi/${sunrise}` : "#"} className={`btn-ghost ${sunriseDone ? "" : "pointer-events-none opacity-40"}`}>稟議書</Link>
-          </Step>
-          <Step n={7} secs={15} title={ja ? "現場監査（Genba Audit）" : "Genba Audit"}
-            body={ja ? "指摘から自動生成されたチェックリストと、GPS検証済みの写真付き完了監査（1枚は位置未検証として表示）。スコアが再計算されます。" : "The checklist generated from the flags, and a completed demo audit with GPS-verified photos (one is marked “location not verified”). The score is recomputed."}>
-            <button className="btn-ink" disabled={!sunriseDone || busy === "audit"} onClick={demoAudit}>{spin("audit")} {ja ? "完了済みデモ監査を読み込む" : "Load the completed demo audit"}</button>
-            <Link to={sunrise ? `/report/${sunrise}#audit` : "#"} className={`btn-ghost ${sunriseDone ? "" : "pointer-events-none opacity-40"}`}>{ja ? "監査パネル" : "Audit panel"}</Link>
-          </Step>
-          <Step n={8} secs={20} title={ja ? "LIVE：審査員の指定企業と、健全な実在企業" : "LIVE: a judge's company, and a clean real company"}
-            body={ja ? "審査員が挙げたインド企業をLIVEモードで調査（取得できない情報源は✗で表示）。続いてMaruti Suzuki（CACHED実データ）が緑で返ってきます。" : "Run a company a judge names in LIVE mode (sources that can't be reached show ✗). Then Maruti Suzuki (a CACHED real record) comes back green."}>
-            <input value={liveName} onChange={(e) => setLiveName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && runLive()}
-              placeholder={ja ? "例：Tata Motors Limited" : "e.g. Tata Motors Limited"} className="w-64 rounded-lg border border-line px-3 py-2 text-sm" />
-            <button className="btn-red" disabled={!demo || !liveName.trim() || busy === "live"} onClick={runLive}>{spin("live")} LIVE</button>
-            <button className="btn-ink" disabled={!demo || busy === "maruti"} onClick={() => investigate("maruti", true)}>{spin("maruti")} Maruti Suzuki</button>
-            {chip("maruti")}
-          </Step>
-          <Step n={9} secs={20} title={ja ? "比較と締めくくり" : "Compare and close"}
-            body={ja ? "全候補をスコア順に並べて締めくくり：「数週間を60秒に。JETROの紹介案件はすべて事前検証済みに。」" : "Rank every candidate and close: “Weeks to 60 seconds. Every JETRO introduction arrives pre-verified.”"}>
-            <button className="btn-ghost" disabled={!demo || busy === "prep"} onClick={prepCompare}>{spin("prep")} {ja ? "Kaveri と Maruti を事前実行" : "Pre-run Kaveri and Maruti"}</button>
-            {chip("kaveri")}
-            {demo && <Link to={`/compare/${demo.smeId}`} className="btn-ghost">{ja ? "比較表" : "Compare"} <ArrowRight size={14} /></Link>}
-          </Step>
-        </ol>
-      </section>
+          </form>
+          {error && <p className="mt-3 text-[13px] text-hinomaru">{error}</p>}
+        </div>
+
+        <div className="mt-8 grid gap-6 xl:grid-cols-[1fr_320px]">
+          <div className="grid gap-4 md:grid-cols-2">
+            {SCENARIOS.map((s, i) => (
+              <motion.div key={s.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                className={`flex flex-col rounded-2xl border border-line bg-paper p-5 shadow-card ${s.advisor ? "md:col-span-2" : ""}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <span className="num text-[15px] text-muted">{String.fromCharCode(65 + i)}</span>
+                    <h2 className="jp mt-0.5 text-[17px] font-semibold">{ja ? s.title[1] : s.title[0]}</h2>
+                  </div>
+                  <span className={`chip ${TONE[s.tone]}`}>{ja ? s.outcome[1] : s.outcome[0]}</span>
+                </div>
+                <div className="mt-3 flex items-center gap-2">
+                  <code className="flex-1 truncate rounded-lg bg-stage px-3 py-2 font-mono text-[13px] text-ink">{s.type}</code>
+                  <button className="btn-ghost !px-2.5 !py-2" onClick={() => copy(s.type)} aria-label="Copy input">{copied === s.type ? <Check size={14} /> : <Copy size={14} />}</button>
+                  {!s.advisor && <button className="btn-ghost !py-2 text-xs" onClick={() => { setQuery(s.type); setBrochure(!!s.brochure); window.scrollTo({ top: 0, behavior: "smooth" }); }}>{ja ? "入力欄へ" : "Use"}</button>}
+                </div>
+                <ul className={`mt-3 flex-1 space-y-1.5 text-[13px] text-ink-2 ${ja ? "jp" : ""}`}>
+                  {s.points.map((p) => <li key={p[0]} className="flex gap-2"><span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-ink-3" />{ja ? p[1] : p[0]}</li>)}
+                </ul>
+                <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
+                  <span className="text-[11.5px] text-muted">{ja ? s.provenance[1] : s.provenance[0]} · {s.runtime}</span>
+                  <button className="btn-ink !py-1.5 text-[13px]" disabled={!ws || !!busy} onClick={() => runScenario(s)}>
+                    {busy === s.id ? <Loader2 size={14} className="animate-spin" /> : <ArrowRight size={14} />} {s.advisor ? (ja ? "分析を開く" : "Open analysis") : ja ? "実行" : "Run"}
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <aside className="h-fit rounded-2xl border border-line bg-paper p-5 shadow-card xl:sticky xl:top-20">
+            <h2 className="text-[14px] font-semibold">{ja ? "進行（約4分）" : "Run of show (about 4 minutes)"}</h2>
+            <ol className="mt-3 space-y-0.5">
+              {SCRIPT.map(([en, jaT, target], i) => {
+                const href = link(target);
+                const inner = (
+                  <>
+                    <span className="num w-5 text-[14px] text-hinomaru">{i + 1}</span>
+                    <span className={`flex-1 text-[13px] ${href ? "text-ink" : "text-muted"}`}>{ja ? jaT : en}</span>
+                    {href && <ArrowRight size={13} className="text-muted" />}
+                  </>
+                );
+                return (
+                  <li key={en}>
+                    {href ? <Link to={href} className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-wash">{inner}</Link>
+                      : <div className="flex items-center gap-2 px-2 py-1.5">{inner}</div>}
+                  </li>
+                );
+              })}
+            </ol>
+          </aside>
+        </div>
+        <AnimatePresence>{busy === "prepare" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed bottom-5 right-5 flex items-center gap-2 rounded-lg bg-ink px-4 py-2.5 text-[13px] text-white shadow-lift">
+            <Loader2 size={14} className="animate-spin" /> {ja ? "ワークスペースを準備しています" : "Preparing workspace"}
+          </motion.div>
+        )}</AnimatePresence>
+      </div>
     </Shell>
   );
 }

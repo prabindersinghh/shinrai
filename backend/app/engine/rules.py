@@ -41,6 +41,7 @@ class Facts:
     ground: dict = field(default_factory=dict)  # addresses, buildings series, night lights, verdicts
     money: dict = field(default_factory=dict)  # consented GSTR-3B turnover (simulated AA)
     audit: dict = field(default_factory=dict)  # completed Genba audit items
+    intel: dict = field(default_factory=dict)  # model outputs: distress scores, certificate checks
     ev: dict[str, list[str]] = field(default_factory=dict)
 
     def evs(self, *keys: str) -> list[str]:
@@ -232,8 +233,9 @@ def shared_address_cluster(f: Facts) -> list[Hit]:
 
 @predicate
 def claim_contradicted(f: Facts) -> list[Hit]:
+    cert_nodes = {c["claim_node"] for c in f.intel.get("certificates", [])}  # CLM_CERT_INVALID covers these
     return [Hit([c["node"]], c["evidence_ids"] + f.evs("doc"), {"claim": c["text"]})
-            for c in f.claims if c["verdict"] == "contradicted"]
+            for c in f.claims if c["verdict"] == "contradicted" and c["node"] not in cert_nodes]
 
 
 @predicate
@@ -343,6 +345,27 @@ def audit_item_failed(f: Facts) -> list[Hit]:
     return [Hit([it["claim_node"] or f.company_node], it["evidence_ids"],
                 {"item": it["text_en"], "item_ja": it["text_ja"], "note": it.get("note") or "see photos"})
             for it in a.get("items", []) if it["status"] == "fail" and it.get("evidence_ids")]
+
+
+@predicate
+def distress_high(f: Facts) -> list[Hit]:
+    """Fires for the target or a linked company in the model's top 10% of risk. Model output is evidence."""
+    hits = []
+    for s in f.intel.get("distress", []):
+        if s["percentile"] >= 90 and s.get("evidence_id"):
+            node = f"c_{s['cin']}"
+            hits.append(Hit([node], [s["evidence_id"]], {"name": s.get("name", s["cin"]), "top": round(100 - s["percentile"], 1),
+                                                         "prob": s["probability"]}))
+    return hits
+
+
+@predicate
+def cert_invalid(f: Facts) -> list[Hit]:
+    out = []
+    for c in f.intel.get("certificates", []):
+        if c["verdict"] == "contradicted" and c.get("evidence_id"):
+            out.append(Hit([c["claim_node"]], [c["evidence_id"]], {"claim": c["claim"], "reason": c["reason"]}))
+    return out
 
 
 @lru_cache(maxsize=1)

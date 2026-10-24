@@ -147,7 +147,7 @@ export default function AuditPanel({ invId, audit, onUpdated, onEvidence, isDemo
             : "When the digital check is not enough, a local auditor verifies each finding with photos. Every photo is checked against the pin's GPS and the audit window, then stored as tamper-evident evidence (SHA-256)."}
         </p>
         <div className="flex gap-2">
-          {isDemo && <button className="btn-ghost" disabled={busy} onClick={demo}>{busy && <Loader2 size={14} className="animate-spin" />} {ja ? "デモ監査を読み込む" : "Load demo audit"}</button>}
+          {isDemo && <button className="btn-ghost" disabled={busy} onClick={demo}>{busy && <Loader2 size={14} className="animate-spin" />} {ja ? "完了済み監査を表示" : "Load completed audit"}</button>}
           <button className="btn-red" onClick={() => setWizard(true)}>{ja ? "現地監査を依頼" : "Request on-site audit"}</button>
         </div>
         <AnimatePresence>{wizard && <Wizard invId={invId} onClose={() => setWizard(false)} onCreated={onUpdated} />}</AnimatePresence>
@@ -164,7 +164,7 @@ export default function AuditPanel({ invId, audit, onUpdated, onEvidence, isDemo
           <div className="flex flex-wrap items-center gap-2">
             <span className="jp text-[15px] font-semibold">{ja ? audit.pricing?.ja : audit.pricing?.en}</span>
             {done ? <span className="chip bg-verified text-white">{ja ? "監査済み" : "Audited"}</span> : <span className="chip bg-stage text-ink-2">{audit.status}</span>}
-            {audit.is_demo && <span className="chip bg-hinomaru text-white">DEMO DATA</span>}
+            {audit.is_demo && <span className="chip bg-stage text-ink-3 ring-1 ring-line">{ja ? "説明用ケース" : "Illustrative case"}</span>}
           </div>
           <div className="mt-0.5 text-[12px] text-muted">
             {audit.auditor?.name} · {audit.auditor?.city} · ¥{audit.price_jpy.toLocaleString()} · {audit.window_start?.slice(0, 10)} → {audit.window_end?.slice(0, 10)}

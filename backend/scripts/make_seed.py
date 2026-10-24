@@ -125,21 +125,21 @@ def sunrise() -> dict:
         ],
         "news": [
             {"title": "GST officers probe fake-invoice ring linked to Gurugram logistics firms",
-             "source": "Demo Business Daily", "date": "2023-11-08", "about": "U63090HR2020PTC089904",
+             "source": "Business daily (illustrative)", "date": "2023-11-08", "about": "U63090HR2020PTC089904",
              "tone": "adverse", "snippet": "Brightline Logistics was among the entities named in a show-cause notice over input tax credit claims."},
             {"title": "IMT Manesar auto-component cluster sees order book recover",
-             "source": "Demo Auto Wire", "date": "2026-07-02", "about": None, "tone": "neutral",
+             "source": "Auto industry wire (illustrative)", "date": "2026-07-02", "about": None, "tone": "neutral",
              "snippet": "Tier-2 suppliers in the cluster report improving demand from two-wheeler makers."},
-            {"title": "Exhibitor list: Auto Components Expo North 2025", "source": "Demo Trade Fair Portal",
+            {"title": "Exhibitor list: Auto Components Expo North 2025", "source": "Trade fair listing (illustrative)",
              "date": "2025-02-11", "about": cin, "tone": "neutral",
              "snippet": "Sunrise Auto Components listed among 412 exhibitors in Hall 3."},
-            {"title": "Haryana unveils incentive scheme for MSME component makers", "source": "Demo State News",
+            {"title": "Haryana unveils incentive scheme for MSME component makers", "source": "State news (illustrative)",
              "date": "2026-03-19", "about": None, "tone": "neutral",
              "snippet": "The scheme covers capital subsidy for firms in Gurugram and Faridabad districts."},
-            {"title": "Faridabad foundry admitted to insolvency over unpaid dues", "source": "Demo Legal Brief",
+            {"title": "Faridabad foundry admitted to insolvency over unpaid dues", "source": "Legal brief (illustrative)",
              "date": "2025-12-06", "about": "U27310HR2016PTC061177", "tone": "adverse",
              "snippet": "NCLT admitted an operational creditor's petition against Vardhan Castings."},
-            {"title": "Sunrise Auto Components launches B2B parts catalogue", "source": "Demo PR Feed",
+            {"title": "Sunrise Auto Components launches B2B parts catalogue", "source": "Company press release (illustrative)",
              "date": "2024-01-15", "about": cin, "tone": "neutral",
              "snippet": "The company says it serves OEM and aftermarket buyers across North India."},
         ],
@@ -187,10 +187,10 @@ def kaveri() -> dict:
         ],
         "insolvency": [],
         "news": [
-            {"title": "Bengaluru engine-parts makers expand capacity for EV transition", "source": "Demo Auto Wire",
+            {"title": "Bengaluru engine-parts makers expand capacity for EV transition", "source": "Auto industry wire (illustrative)",
              "date": "2026-05-12", "about": cin, "tone": "neutral",
              "snippet": "Kaveri Precision said it added two CNC lines at its Bommasandra plant."},
-            {"title": "Karnataka MSME exporters rise 9% year on year", "source": "Demo State News",
+            {"title": "Karnataka MSME exporters rise 9% year on year", "source": "State news (illustrative)",
              "date": "2026-02-01", "about": None, "tone": "neutral", "snippet": "Machined parts led the gains."},
         ],
         "sources": {"mca": MCA, "gst": GST, "courts": ECOURTS, "ibbi": IBBI, "news": DEMO_NEWS},
@@ -303,7 +303,7 @@ def brochure(path: Path) -> None:
 
     c.setFillColor(colors.HexColor("#E3122B"))
     c.setFont("Helvetica-Bold", 9)
-    c.drawString(48, 40, "DEMO DATA - synthetic company created for the Shinrai hackathon demo. Not a real business.")
+    c.drawString(48, 40, "Illustrative case: a fictional company created for Shinrai. Not a real business.")
     c.setFillColor(colors.HexColor("#777777"))
     c.setFont("Helvetica", 9)
     c.drawString(48, 28, "info@sunriseauto-demo.in   |   Gurugram, Haryana")
@@ -317,11 +317,11 @@ def lists(seeds: list[dict]) -> None:
         for cin, c in s["linked_companies"].items():
             if c["status"] == "Strike Off":
                 struck.append({"cin": cin, "name": c["name"], "section": "248(1)", "notice_date": "2024-03-28",
-                               "roc": c["roc"], "source": "MCA Sec 248 strike-off notice (demo extract)"})
+                               "roc": c["roc"], "source": "MCA Sec 248 strike-off notice (illustrative extract)"})
     (SEED_DIR / "strikeoff_list.json").write_text(json.dumps(struck, indent=2), encoding="utf-8")
-    disq = [{"din": "10999001", "name": "Demo Director X", "section": "164(2)(a)", "from": "2022-11-01",
+    disq = [{"din": "10999001", "name": "Director X (illustrative)", "section": "164(2)(a)", "from": "2022-11-01",
              "to": "2027-10-31", "company_cin": "U63090HR2020PTC089904",
-             "source": "MCA Sec 164(2) disqualified directors list (demo extract)"}]
+             "source": "MCA Sec 164(2) disqualified directors list (illustrative extract)"}]
     (SEED_DIR / "disqualified_directors.json").write_text(json.dumps(disq, indent=2), encoding="utf-8")
 
 

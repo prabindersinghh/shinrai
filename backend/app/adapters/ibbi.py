@@ -27,8 +27,10 @@ class Ibbi(SourceAdapter):
         for row in ROW.findall(resp.text):
             cells = [html.unescape(TAG.sub(" ", c)).strip() for c in CELL.findall(row)]
             if len(cells) >= 3 and norm_name(name) in norm_name(" ".join(cells)):
-                rows.append({"name": name, "type": cells[1] if len(cells) > 1 else "Announcement",
-                             "announced": cells[0], "detail": " | ".join(cells[2:5]), "url": self.url})
+                kind = cells[0]
+                rows.append({"name": name, "type": "Liquidation" if "liquidation" in kind.lower() else "CIRP" if "insolvency" in kind.lower() else kind,
+                             "announcement": kind, "announced": cells[1], "last_date_of_claims": cells[2] if len(cells) > 2 else None,
+                             "detail": " | ".join(cells[3:6]), "url": self.url})
         return rows
 
     async def live(self, query: dict) -> list[dict]:

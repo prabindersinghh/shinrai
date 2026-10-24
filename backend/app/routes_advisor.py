@@ -144,6 +144,8 @@ def termsheet_docx(inv_id: int, lang: str = "en") -> Response:
     from docx import Document
     from docx.shared import Pt, RGBColor
 
+    if lang not in ("en", "ja"):
+        raise HTTPException(400, "lang must be en or ja")
     pack = get_clauses(inv_id)
     ja = lang == "ja"
     doc = Document()
