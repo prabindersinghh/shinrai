@@ -48,6 +48,13 @@ def verified_partners(sme_id: int, states: list[str]) -> list[dict]:
     return sorted(out, key=lambda x: (not x["in_recommended_state"], -(x["score"] or 0)))
 
 
+@router.get("/api/advisor/preview")
+def preview() -> dict:
+    """Fit for a default profile (sell in India, balanced): real model, cited KB, no SME needed."""
+    plan = advise({"industry": "auto_parts", "goal": "sell", "investment_band": "50m_300m", "risk_appetite": "balanced"})
+    return {"states": plan["states"], "support_network": plan["support_network"], "top": plan["top"]}
+
+
 @router.get("/api/advisor/{sme_id}")
 def get_plan(sme_id: int) -> dict:
     sme = _sme(sme_id)

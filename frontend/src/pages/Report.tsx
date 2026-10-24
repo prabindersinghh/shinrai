@@ -6,6 +6,7 @@ import { EvidenceDrawer, NodeDrawer } from "../components/Drawers";
 import { SignalCard, VerdictBadge } from "../components/FindingCards";
 import GraphCanvas from "../components/GraphCanvas";
 import HankoSeal from "../components/HankoSeal";
+import IndiaMapSvg from "../components/IndiaMapSvg";
 import MoneyPanel from "../components/MoneyPanel";
 import { CitedText, FlagRow, Section, SubscoreBars, SubscoreRadar, TraceTimeline } from "../components/ReportParts";
 import ScoreDial from "../components/ScoreDial";
@@ -144,6 +145,14 @@ export default function Report() {
         <div className="relative flex flex-col items-center">
           <ScoreDial score={inv.overall_score} band={inv.band} final size={230} />
           <div className="absolute -left-10 top-[150px]"><HankoSeal band={inv.band} size={92} stamped={!print} delay={0.3} /></div>
+          {co.state && (
+            <div className="mt-3 w-[230px] rounded-lg border border-line p-3">
+              <div className="label mb-1">{ja ? "所在地" : "Location"}</div>
+              <IndiaMapSvg values={{ [co.state]: 80 }} highlight={[co.state, ...(r.ground?.addresses ?? []).map((a) => a.state ?? "")].filter(Boolean)}
+                pins={(r.ground?.addresses ?? []).map((a) => ({ lat: a.lat, lon: a.lon, kind: a.role === "claimed_site" ? "jetro" : "consulate" }))} width={204} />
+              <div className="mt-1 text-[11px] text-muted">{co.state}{r.ground?.site && r.ground.site.state !== co.state ? ` · ${ja ? "主張拠点" : "claimed site"}: ${r.ground.site.state}` : ""}</div>
+            </div>
+          )}
           {inv.fit_score != null && (
             <div className="mt-2 w-[230px] rounded-lg border border-line p-3">
               <div className="flex items-baseline justify-between">

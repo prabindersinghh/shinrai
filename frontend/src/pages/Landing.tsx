@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import HankoSeal from "../components/HankoSeal";
 import Shell from "../components/Shell";
+const IndiaMap3D = lazy(() => import("../components/IndiaMap3D"));
 import { useI18n } from "../i18n";
 
 const PILLARS = [
@@ -53,6 +55,47 @@ function ReportCard() {
   );
 }
 
+function MapBand() {
+  const { lang } = useI18n();
+  const [d, setD] = useState<any>(null);
+  useEffect(() => {
+    fetch("/api/advisor/preview").then((r) => r.json()).then(setD).catch(() => setD(null));
+  }, []);
+  const scores = d ? Object.fromEntries(d.states.map((s: any) => [s.state, s])) : {};
+  const pins = d ? [...d.support_network.offices.map((o: any) => ({ id: o.id, name: o.name, kind: o.kind === "jetro" ? "jetro" : "consulate", lat: o.lat, lon: o.lon })),
+    ...d.support_network.jits.map((j: any) => ({ id: j.id, name: j.name, kind: "jit", lat: j.lat, lon: j.lon }))] : [];
+  return (
+    <section className="border-t border-line">
+      <div className="mx-auto grid max-w-[1240px] items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1.5fr]">
+        <div>
+          <h2 className="jp text-[28px] font-bold leading-snug tracking-tight">{lang === "ja" ? "どの州で、どの規模で参入すべきか。" : "Where in India, and at what scale."}</h2>
+          <p className={`mt-4 text-[15px] leading-relaxed text-ink-2 ${lang === "ja" ? "jp" : ""}`}>
+            {lang === "ja" ? "製造業の厚み、日系企業の集積、日本工業団地、港湾、投資の勢いから各州の適合度を算出します。すべての数値に公的な出典があります。"
+              : "Shinrai scores each state on manufacturing depth, Japanese company clusters, Japan Industrial Townships, port access and investment momentum. Every figure carries its official source."}
+          </p>
+          {d && (
+            <ol className="mt-6 space-y-2">
+              {d.top.map((t: any, i: number) => (
+                <li key={t.state} className="flex items-baseline gap-3 border-b border-line pb-2">
+                  <span className="num text-[20px] text-hinomaru">{i + 1}</span>
+                  <span className="flex-1 text-[15px] font-semibold">{lang === "ja" ? t.name_ja : t.state}</span>
+                  <span className="num text-[20px]">{t.fit}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+          <p className="mt-3 text-[11.5px] text-muted">{lang === "ja" ? "例：インドで販売・標準的なリスク許容度" : "Example profile: sell in India, balanced risk appetite"}</p>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-line bg-paper shadow-card">
+          <Suspense fallback={<div className="h-[520px] animate-pulse bg-stage" />}>
+            <IndiaMap3D scores={scores} layer="fit" pins={pins} height={520} />
+          </Suspense>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Landing() {
   const { t, lang } = useI18n();
   return (
@@ -85,6 +128,8 @@ export default function Landing() {
         </div>
         <ReportCard />
       </section>
+
+      <MapBand />
 
       <section className="border-t border-line bg-wash">
         <div className="mx-auto max-w-[1240px] px-4 py-16 sm:px-6">

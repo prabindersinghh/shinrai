@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import IndiaMapSvg from "../components/IndiaMapSvg";
 import Shell from "../components/Shell";
 import { useI18n } from "../i18n";
 import { api } from "../lib/api";
@@ -19,6 +20,25 @@ export default function Compare() {
       <section className="mx-auto max-w-[1240px] px-4 py-12 sm:px-6">
         <h1 className="jp text-[32px] font-bold tracking-tight">{ja ? "候補企業の比較" : "Compare candidates"}</h1>
         <p className="jp mt-1 text-[13px] text-muted">{ja ? "信頼スコア順。最も重大な指摘と、貴社ニーズとの適合度を並べています。" : "Ranked by 信頼スコア, with each company's most serious flag and its fit with your needs."}</p>
+        {rows && rows.length > 0 && (
+          <div className="mt-8 grid items-center gap-8 rounded-xl border border-line p-6 md:grid-cols-[300px_1fr]">
+            <IndiaMapSvg values={Object.fromEntries(rows.filter((r) => r.state && r.score != null).map((r) => [r.state, r.score]))}
+              highlight={rows.filter((r) => r.band === "high").map((r) => r.state)} width={300} />
+            <div>
+              <div className="label">{ja ? "候補企業の所在州" : "Where your candidates are"}</div>
+              <ul className="mt-2 space-y-1.5 text-[13px]">
+                {rows.map((r) => (
+                  <li key={r.inv_id} className="flex items-baseline gap-2">
+                    <span className="w-32 shrink-0 text-muted">{r.state ?? "—"}</span>
+                    <span className="flex-1">{r.name}</span>
+                    <span className="num text-[16px]" style={{ color: (BAND[r.band] ?? BAND.insufficient).color }}>{r.score ?? "—"}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-[11.5px] text-muted">{ja ? "色の濃さ＝信頼スコア、赤枠＝高リスク" : "Shade = trust score; red outline = high risk"}</p>
+            </div>
+          </div>
+        )}
         <div className="mt-8 overflow-x-auto rounded-xl border border-line">
           <table className="w-full min-w-[980px] text-left text-[13px]">
             <thead className="bg-wash text-[11px] text-muted">
