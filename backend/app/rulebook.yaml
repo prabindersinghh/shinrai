@@ -1,0 +1,201 @@
+# Shinrai rulebook (TRD §6). Rules are data: `condition` names a predicate in engine/rules.py.
+# Text templates are filled from the predicate's params. Every rule must attach evidence.
+
+families:
+  identity:   {cap: 25, label_en: Identity,         label_ja: 実在性}
+  compliance: {cap: 20, label_en: Compliance,       label_ja: コンプライアンス}
+  legal:      {cap: 25, label_en: Legal,            label_ja: 法的リスク}
+  network:    {cap: 20, label_en: Network,          label_ja: ネットワーク}
+  claims:     {cap: 30, overall_cap: 10, label_en: Claim consistency, label_ja: 主張整合性}
+  reputation: {cap: 10, label_en: Reputation,       label_ja: 評判}
+  ground:     {cap: 20, label_en: Ground truth,     label_ja: 現地}
+  money:      {cap: 15, label_en: Money,            label_ja: 資金}
+  audit:      {cap: 15, label_en: Field audit,      label_ja: 現地監査}
+
+critical_overall_cap: 39
+
+bands:
+  - {min: 80, id: low,      ja: 低リスク, en: Low risk}
+  - {min: 60, id: standard, ja: 標準,     en: Standard}
+  - {min: 40, id: caution,  ja: 要注意,   en: Caution}
+  - {min: 0,  id: high,     ja: 高リスク, en: High risk}
+
+rules:
+  - id: ID_NOT_FOUND
+    family: identity
+    severity: critical
+    deduction: 40
+    condition: registry_no_match
+    text_en: "No company matching \"{input}\" was found in the MCA registry."
+    text_ja: "MCA登記簿に「{input}」に該当する法人が見つかりません。"
+
+  - id: ID_STATUS_NOT_ACTIVE
+    family: identity
+    severity: critical
+    deduction: 40
+    condition: status_not_active
+    text_en: "Company status on MCA is \"{status}\", not Active."
+    text_ja: "MCA上の法人ステータスが「{status}」であり、有効（Active）ではありません。"
+
+  - id: ID_GSTIN_PAN_MISMATCH
+    family: identity
+    severity: high
+    deduction: 20
+    condition: gstin_pan_mismatch
+    text_en: "GSTIN {gstin} does not belong to this company ({reason})."
+    text_ja: "GSTIN {gstin} はこの法人のものではありません（{reason_ja}）。"
+
+  - id: ID_STATE_MISMATCH
+    family: identity
+    severity: medium
+    deduction: 8
+    condition: state_mismatch
+    text_en: "GSTIN state ({gst_state}) differs from the registered state ({reg_state}), and the claimed location matches neither."
+    text_ja: "GSTINの州（{gst_state}）が登記上の州（{reg_state}）と異なり、主張する所在地もどちらにも一致しません。"
+
+  - id: CMP_GST_CANCELLED
+    family: compliance
+    severity: high
+    deduction: 20
+    condition: gst_cancelled
+    text_en: "GST registration {gstin} is {status} (since {since})."
+    text_ja: "GST登録 {gstin} は「{status_ja}」です（{since}以降）。"
+
+  - id: CMP_FILING_OVERDUE
+    family: compliance
+    severity: medium
+    deduction: 10
+    condition: filing_overdue
+    text_en: "Annual filings are {months} months overdue (last filing: {last})."
+    text_ja: "年次報告書の提出が{months}か月遅延しています（最終提出：{last_ja}）。"
+
+  - id: CMP_YOUNG_LOW_CAPITAL
+    family: compliance
+    severity: low
+    deduction: 5
+    condition: young_low_capital
+    text_en: "Incorporated {months} months ago with paid-up capital of {capital}."
+    text_ja: "設立後{months}か月で、払込資本金は{capital}です。"
+
+  - id: LEG_INSOLVENCY
+    family: legal
+    severity: critical
+    deduction: 25
+    condition: insolvency
+    text_en: "{kind} proceedings involve the company ({authority}, {date})."
+    text_ja: "当該法人に対する{kind}手続きがあります（{authority}、{date}）。"
+
+  - id: LEG_CASES_AS_RESPONDENT
+    family: legal
+    severity: medium
+    deduction: 10
+    condition: cases_as_respondent
+    text_en: "{count} pending court cases name the company as respondent or accused."
+    text_ja: "当該法人を被告・被申立人とする係属中の訴訟が{count}件あります。"
+
+  - id: NET_DIRECTOR_DISQUALIFIED
+    family: network
+    severity: critical
+    deduction: 20
+    condition: director_disqualified
+    text_en: "Director {name} (DIN {din}) is on the Sec 164(2) disqualified list."
+    text_ja: "取締役 {name}（DIN {din}）は会社法164条2項の資格停止リストに掲載されています。"
+
+  - id: NET_STRUCKOFF_LINKS
+    family: network
+    severity: high
+    deduction: 20
+    condition: struckoff_links
+    text_en: "{name} is linked to {count} struck-off companies: {companies}."
+    text_ja: "{name}は登記抹消済みの会社{count}社に関与しています：{companies}。"
+
+  - id: NET_HIGH_DEGREE_DIRECTOR
+    family: network
+    severity: medium
+    deduction: 8
+    condition: high_degree_director
+    text_en: "{name} holds {count} directorships."
+    text_ja: "{name}は{count}社の取締役を兼任しています。"
+
+  - id: NET_SHARED_ADDRESS_CLUSTER
+    family: network
+    severity: medium
+    deduction: 8
+    condition: shared_address_cluster
+    text_en: "The registered address is shared with {count} other companies."
+    text_ja: "登記上の住所を他の{count}社と共有しています。"
+
+  - id: CLM_CONTRADICTED
+    family: claims
+    severity: high
+    deduction: 10
+    condition: claim_contradicted
+    text_en: "Brochure claim contradicted by records: \"{claim}\"."
+    text_ja: "会社資料の主張が公的記録と矛盾しています：「{claim}」。"
+
+  - id: REP_ADVERSE_NEWS
+    family: reputation
+    severity: medium
+    deduction: 10
+    condition: adverse_news
+    text_en: "{count} adverse news item(s) mention {subject}."
+    text_ja: "{subject}に関する否定的な報道が{count}件あります。"
+
+  # Ground truth (現地現物). Satellites show structures, not operations. Approximate pins cap severity at medium.
+  - id: ADDRESS_MISMATCH
+    family: identity
+    severity: medium
+    deduction: 8
+    condition: address_mismatch
+    text_en: "The company's addresses sit in {count} different states ({listing})."
+    text_ja: "法人の各住所が{count}つの異なる州にあります（{listing}）。"
+
+  - id: GROUND_NO_BUILDING
+    family: ground
+    severity: high
+    deduction: 20
+    condition: ground_no_building
+    text_en: "No building at the claimed site: {area} m² built area in {year}."
+    text_ja: "主張された拠点に建物がありません（{year}年の建築面積 {area}㎡）。"
+
+  - id: GROUND_AFTER_CLAIMED_YEAR
+    family: ground
+    severity: high
+    deduction: 15
+    condition: ground_after_claimed_year
+    text_en: "The building at the claimed site first appears in {first}, but operations are claimed since {claimed}."
+    text_ja: "主張拠点の建物は{first}年に初めて出現していますが、{claimed}年からの操業が主張されています。"
+
+  - id: GROUND_AREA_MISMATCH
+    family: ground
+    severity: medium
+    deduction: 10
+    condition: ground_area_mismatch
+    text_en: "Claimed site area {claimed} m² ({claimed_sqft} sq ft) is over 3× the measured built area of {measured} m²."
+    text_ja: "主張された敷地面積{claimed}㎡（{claimed_sqft}平方フィート）は、実測の建築面積{measured}㎡の3倍を超えています。"
+
+  - id: GROUND_LOW_ACTIVITY
+    family: ground
+    severity: low
+    deduction: 5
+    condition: ground_low_activity
+    text_en: "Signal: night-time light at the site is no brighter than its surroundings (ratio {ratio}) despite claimed production."
+    text_ja: "シグナル：生産を主張していますが、夜間光量が周辺と同程度です（比率 {ratio}）。"
+
+  # Money (SIMULATED Account Aggregator data, shared with the partner's consent).
+  - id: MONEY_TURNOVER_MISMATCH
+    family: money
+    severity: high
+    deduction: 15
+    condition: money_turnover_mismatch
+    text_en: "Claimed turnover {claimed} is {ratio}× the {declared} declared in GSTR-3B over the last 12 filed months."
+    text_ja: "主張売上高{claimed}は、直近12か月のGSTR-3B申告額{declared}の{ratio}倍です。"
+
+  # Genba Audit: an item fails only on GPS- and time-verified field photos.
+  - id: AUDIT_ITEM_FAILED
+    family: audit
+    severity: high
+    deduction: 10
+    condition: audit_item_failed
+    text_en: "On-site audit failed: {item} ({note})."
+    text_ja: "現地監査で不合格：{item_ja}（{note}）。"

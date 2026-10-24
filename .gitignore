@@ -1,0 +1,12 @@
+node_modules/
+dist/
+__pycache__/
+*.pyc
+.env
+backend/shinrai.db
+backend/data/cache/
+backend/data/ground/
+backend/data/uploads/
+backend/data/audits/
+frontend/.vite/
+*.log

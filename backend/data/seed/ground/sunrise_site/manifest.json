@@ -1,0 +1,87 @@
+{
+ "current": {
+  "provider": "esri_world_imagery",
+  "attribution": "Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+  "half_m": 220,
+  "path": "seed/ground/sunrise_site/current.png"
+ },
+ "frames": [
+  {
+   "year": 2016,
+   "scene": "S2A_MSIL2A_20160329T053622_R005_T43QCA_20210528T202100",
+   "date": "2016-03-29",
+   "cloud": 0.03,
+   "path": "seed/ground/sunrise_site/s2_2016.png"
+  },
+  {
+   "year": 2017,
+   "scene": "S2A_MSIL2A_20170520T052651_R105_T43QCA_20210209T164531",
+   "date": "2017-05-20",
+   "cloud": 0.19,
+   "path": "seed/ground/sunrise_site/s2_2017.png"
+  },
+  {
+   "year": 2018,
+   "scene": "S2B_MSIL2A_20180430T052649_R105_T43QCA_20201013T043848",
+   "date": "2018-04-30",
+   "cloud": 0.13,
+   "path": "seed/ground/sunrise_site/s2_2018.png"
+  },
+  {
+   "year": 2019,
+   "scene": "S2B_MSIL2A_20190525T052659_R105_T43QCA_20201006T181645",
+   "date": "2019-05-25",
+   "cloud": 0.53,
+   "path": "seed/ground/sunrise_site/s2_2019.png"
+  },
+  {
+   "year": 2020,
+   "scene": "S2B_MSIL2A_20200509T052649_R105_T43QCA_20200921T042746",
+   "date": "2020-05-09",
+   "cloud": 0.15,
+   "path": "seed/ground/sunrise_site/s2_2020.png"
+  },
+  {
+   "year": 2021,
+   "scene": "S2B_MSIL2A_20210504T052639_R105_T43QCA_20210610T234929",
+   "date": "2021-05-04",
+   "cloud": 0.33,
+   "path": "seed/ground/sunrise_site/s2_2021.png"
+  },
+  {
+   "year": 2022,
+   "scene": "S2B_MSIL2A_20220330T052639_R105_T43QCA_20240522T115955",
+   "date": "2022-03-30",
+   "cloud": 0.0,
+   "path": "seed/ground/sunrise_site/s2_2022.png"
+  },
+  {
+   "year": 2023,
+   "scene": "S2B_MSIL2A_20230524T052649_R105_T43QCA_20240906T032827",
+   "date": "2023-05-24",
+   "cloud": 0.76,
+   "path": "seed/ground/sunrise_site/s2_2023.png"
+  },
+  {
+   "year": 2024,
+   "scene": "S2B_MSIL2A_20240428T052649_R105_T43QCA_20240428T094345",
+   "date": "2024-04-28",
+   "cloud": 0.0,
+   "path": "seed/ground/sunrise_site/s2_2024.png"
+  },
+  {
+   "year": 2025,
+   "scene": "S2C_MSIL2A_20250428T052711_R105_T43QCA_20250428T103005",
+   "date": "2025-04-28",
+   "cloud": 0.0,
+   "path": "seed/ground/sunrise_site/s2_2025.png"
+  },
+  {
+   "year": 2026,
+   "scene": "S2C_MSIL2A_20260423T053021_R105_T43QCA_20260423T103511",
+   "date": "2026-04-23",
+   "cloud": 0.0,
+   "path": "seed/ground/sunrise_site/s2_2026.png"
+  }
+ ]
+}

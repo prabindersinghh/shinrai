@@ -1,0 +1,110 @@
+{
+  "id": "maruti_suzuki",
+  "demo": false,
+  "mode": "cached",
+  "aliases": [
+    "Maruti Suzuki",
+    "Maruti Suzuki India",
+    "Maruti Suzuki India Ltd",
+    "Maruti"
+  ],
+  "company": {
+    "cin": "L34103DL1981PLC011375",
+    "name": "Maruti Suzuki India Limited",
+    "status": "Active",
+    "date_of_incorporation": "1981-02-24",
+    "state": "Delhi",
+    "roc": "RoC-Delhi",
+    "company_class": "Public",
+    "category": "Company limited by Shares",
+    "sub_category": "Non-govt company",
+    "listed": true,
+    "authorized_capital": 168755000000,
+    "paid_up_capital": 1572012870,
+    "last_agm_date": "2026-08-28",
+    "last_bs_date": "2026-03-31",
+    "registered_address": "Plot No.1, Nelson Mandela Road, Vasant Kunj, New Delhi, Delhi 110070",
+    "email": null,
+    "pan": "AAACM0829Q",
+    "nic_code": "34103",
+    "activity": "Manufacture of motor vehicles"
+  },
+  "gst": [
+    {
+      "gstin": "06AAACM0829Q1Z8",
+      "legal_name": "Maruti Suzuki India Limited",
+      "trade_name": "Maruti Suzuki India Limited",
+      "status": "Active",
+      "registration_date": "2017-07-01",
+      "cancellation_date": null,
+      "state": "Haryana",
+      "taxpayer_type": "Regular",
+      "filing_frequency": "Monthly",
+      "last_return_filed": "2026-09",
+      "address": "Maruti Suzuki India Limited, Sector 3A, IMT Manesar, Gurugram, Haryana 122051",
+      "address_note": "Manesar plant (public OSM location) used for the ground check; the GST principal place of business is not part of this cached record."
+    }
+  ],
+  "directors": [
+    {
+      "din": null,
+      "name": "R. C. Bhargava",
+      "designation": "Chairman",
+      "appointed_on": null,
+      "address": null,
+      "companies": [
+        "L34103DL1981PLC011375"
+      ]
+    },
+    {
+      "din": null,
+      "name": "Hisashi Takeuchi",
+      "designation": "Managing Director & CEO",
+      "appointed_on": null,
+      "address": null,
+      "companies": [
+        "L34103DL1981PLC011375"
+      ]
+    }
+  ],
+  "parent": {
+    "cin": "JP-SMC",
+    "relation": "subsidiary_of",
+    "holding": "Promoter, majority shareholder"
+  },
+  "linked_companies": {
+    "JP-SMC": {
+      "cin": "JP-SMC",
+      "name": "Suzuki Motor Corporation",
+      "status": "Active",
+      "date_of_incorporation": "1920-03-15",
+      "state": "Shizuoka, Japan",
+      "roc": "Foreign entity (not in MCA)",
+      "company_class": "Public (foreign)",
+      "category": "Company limited by Shares",
+      "sub_category": "Non-govt company",
+      "listed": true,
+      "authorized_capital": 100000,
+      "paid_up_capital": 0,
+      "last_agm_date": null,
+      "last_bs_date": null,
+      "registered_address": "300 Takatsuka-cho, Chuo-ku, Hamamatsu, Shizuoka, Japan",
+      "email": null,
+      "pan": null,
+      "nic_code": "29304",
+      "activity": "Manufacture of motor vehicles"
+    }
+  },
+  "linked_gst": {},
+  "cases": [],
+  "insolvency": [],
+  "news": [],
+  "sources": {
+    "mca": "https://www.mca.gov.in/content/mca/global/en/mca/master-data/MDS.html",
+    "gst": "https://services.gst.gov.in/services/searchtp",
+    "annual_report": "https://www.marutisuzuki.com/corporate/investors",
+    "courts": "https://services.ecourts.gov.in/ecourtindia_v6/",
+    "ibbi": "https://ibbi.gov.in/en/public-announcement"
+  },
+  "note": "Public facts recorded for offline demo. LIVE adapters override these when keys are configured."
+}

@@ -1,0 +1,87 @@
+{
+ "current": {
+  "provider": "esri_world_imagery",
+  "attribution": "Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+  "half_m": 220,
+  "path": "seed/ground/maruti_plant/current.png"
+ },
+ "frames": [
+  {
+   "year": 2016,
+   "scene": "S2A_MSIL2A_20160518T053652_R005_T43RFM_20210211T120936",
+   "date": "2016-05-18",
+   "cloud": 0.16,
+   "path": "seed/ground/maruti_plant/s2_2016.png"
+  },
+  {
+   "year": 2017,
+   "scene": "S2A_MSIL2A_20170430T052651_R105_T43RFM_20210209T115215",
+   "date": "2017-04-30",
+   "cloud": 0.07,
+   "path": "seed/ground/maruti_plant/s2_2017.png"
+  },
+  {
+   "year": 2018,
+   "scene": "S2B_MSIL2A_20180510T052649_R105_T43RFM_20201012T081328",
+   "date": "2018-05-10",
+   "cloud": 0.04,
+   "path": "seed/ground/maruti_plant/s2_2018.png"
+  },
+  {
+   "year": 2019,
+   "scene": "S2B_MSIL2A_20190525T052659_R105_T43RFM_20201006T181648",
+   "date": "2019-05-25",
+   "cloud": 0.07,
+   "path": "seed/ground/maruti_plant/s2_2019.png"
+  },
+  {
+   "year": 2020,
+   "scene": "S2B_MSIL2A_20200509T052649_R105_T43RFM_20200921T042831",
+   "date": "2020-05-09",
+   "cloud": 0.03,
+   "path": "seed/ground/maruti_plant/s2_2020.png"
+  },
+  {
+   "year": 2021,
+   "scene": "S2B_MSIL2A_20210524T052649_R105_T43RFM_20210524T230103",
+   "date": "2021-05-24",
+   "cloud": 0.16,
+   "path": "seed/ground/maruti_plant/s2_2021.png"
+  },
+  {
+   "year": 2022,
+   "scene": "S2B_MSIL2A_20220529T052649_R105_T43RFM_20240613T071026",
+   "date": "2022-05-29",
+   "cloud": 0.11,
+   "path": "seed/ground/maruti_plant/s2_2022.png"
+  },
+  {
+   "year": 2023,
+   "scene": "S2B_MSIL2A_20230404T052649_R105_T43RFM_20240825T203015",
+   "date": "2023-04-04",
+   "cloud": 0.0,
+   "path": "seed/ground/maruti_plant/s2_2023.png"
+  },
+  {
+   "year": 2024,
+   "scene": "S2B_MSIL2A_20240528T052649_R105_T43RFM_20240528T132006",
+   "date": "2024-05-28",
+   "cloud": 0.0,
+   "path": "seed/ground/maruti_plant/s2_2024.png"
+  },
+  {
+   "year": 2025,
+   "scene": "S2C_MSIL2A_20250518T052701_R105_T43RFM_20250518T094414",
+   "date": "2025-05-18",
+   "cloud": 0.0,
+   "path": "seed/ground/maruti_plant/s2_2025.png"
+  },
+  {
+   "year": 2026,
+   "scene": "S2C_MSIL2A_20260503T053021_R105_T43RFM_20260503T084016",
+   "date": "2026-05-03",
+   "cloud": 0.68,
+   "path": "seed/ground/maruti_plant/s2_2026.png"
+  }
+ ]
+}

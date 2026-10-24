@@ -1,0 +1,23 @@
+# Genba Audit pricing (placeholders, JPY, tax excluded). Edit freely.
+types:
+  site_existence:
+    en: Site existence check
+    ja: 拠点実在確認
+    price_jpy: 48000
+    days: 1
+    covers_en: Exterior photos from four sides, signage, gate, GPS-stamped arrival
+    covers_ja: 四方向からの外観写真、看板、門、GPS付き到着記録
+  production_capability:
+    en: Production capability audit
+    ja: 生産能力監査
+    price_jpy: 128000
+    days: 1
+    covers_en: Site existence plus production floor, machines, shifts and workforce
+    covers_ja: 拠点実在確認に加え、生産フロア・設備・シフト・従業員数を確認
+  full_partner:
+    en: Full partner audit
+    ja: 総合パートナー監査
+    price_jpy: 298000
+    days: 2
+    covers_en: Production audit plus documents, certificates, books and management interview
+    covers_ja: 生産能力監査に加え、書類・認証・帳簿・経営者面談

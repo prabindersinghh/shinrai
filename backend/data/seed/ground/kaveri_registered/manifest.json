@@ -1,0 +1,87 @@
+{
+ "current": {
+  "provider": "esri_world_imagery",
+  "attribution": "Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+  "half_m": 220,
+  "path": "seed/ground/kaveri_registered/current.png"
+ },
+ "frames": [
+  {
+   "year": 2016,
+   "scene": "S2A_MSIL2A_20160522T051702_R062_T43PGQ_20210211T131730",
+   "date": "2016-05-22",
+   "cloud": 0.4,
+   "path": "seed/ground/kaveri_registered/s2_2016.png"
+  },
+  {
+   "year": 2017,
+   "scene": "S2A_MSIL2A_20170404T050651_R019_T43PGQ_20210209T043217",
+   "date": "2017-04-04",
+   "cloud": 0.14,
+   "path": "seed/ground/kaveri_registered/s2_2017.png"
+  },
+  {
+   "year": 2018,
+   "scene": "S2B_MSIL2A_20180424T050649_R019_T43PGQ_20201013T021105",
+   "date": "2018-04-24",
+   "cloud": 0.4,
+   "path": "seed/ground/kaveri_registered/s2_2018.png"
+  },
+  {
+   "year": 2019,
+   "scene": "S2B_MSIL2A_20190519T050659_R019_T43PGQ_20201006T161101",
+   "date": "2019-05-19",
+   "cloud": 0.15,
+   "path": "seed/ground/kaveri_registered/s2_2019.png"
+  },
+  {
+   "year": 2020,
+   "scene": "S2B_MSIL2A_20200413T050649_R019_T43PGQ_20200923T090549",
+   "date": "2020-04-13",
+   "cloud": 0.1,
+   "path": "seed/ground/kaveri_registered/s2_2020.png"
+  },
+  {
+   "year": 2021,
+   "scene": "S2B_MSIL2A_20210309T050649_R019_T43PGQ_20210309T172245",
+   "date": "2021-03-09",
+   "cloud": 0.49,
+   "path": "seed/ground/kaveri_registered/s2_2021.png"
+  },
+  {
+   "year": 2022,
+   "scene": "S2B_MSIL2A_20220314T050649_R019_T43PGQ_20240525T150546",
+   "date": "2022-03-14",
+   "cloud": 0.2,
+   "path": "seed/ground/kaveri_registered/s2_2022.png"
+  },
+  {
+   "year": 2023,
+   "scene": "S2B_MSIL2A_20230418T050659_R019_T43PGQ_20240905T094026",
+   "date": "2023-04-18",
+   "cloud": 0.04,
+   "path": "seed/ground/kaveri_registered/s2_2023.png"
+  },
+  {
+   "year": 2024,
+   "scene": "S2B_MSIL2A_20240323T050649_R019_T43PGQ_20240323T095105",
+   "date": "2024-03-23",
+   "cloud": 0.01,
+   "path": "seed/ground/kaveri_registered/s2_2024.png"
+  },
+  {
+   "year": 2025,
+   "scene": "S2C_MSIL2A_20250512T050711_R019_T43PGQ_20250512T110716",
+   "date": "2025-05-12",
+   "cloud": 0.59,
+   "path": "seed/ground/kaveri_registered/s2_2025.png"
+  },
+  {
+   "year": 2026,
+   "scene": "S2C_MSIL2A_20260427T050651_R019_T43PGQ_20260427T102509",
+   "date": "2026-04-27",
+   "cloud": 0.25,
+   "path": "seed/ground/kaveri_registered/s2_2026.png"
+  }
+ ]
+}
