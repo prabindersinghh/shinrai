@@ -110,6 +110,10 @@ def aa_gst() -> dict:
         base = 2_350_000 + 420_000 * math.sin(i / 2.3) + (i % 4) * 95_000
         sunrise.append({"period": f"{y}-{m + 1:02d}", "taxable_turnover": round(base), "tax_paid": round(base * 0.18),
                         "filed_on": f"{y}-{m + 1:02d}-20", "return": "GSTR-3B"})
+    scale = 31_000_000 / sum(r["taxable_turnover"] for r in sunrise[-12:])
+    for r in sunrise:
+        r["taxable_turnover"] = round(r["taxable_turnover"] * scale)
+        r["tax_paid"] = round(r["taxable_turnover"] * 0.18)
     kaveri = []
     for i in range(18):
         y, m = divmod(2025 * 12 + 3 + i, 12)

@@ -17,6 +17,7 @@ ROLE_LABEL = {"registered": ("registered office", "登記上の本店"), "gst_pp
 SQFT_TO_M2 = 0.092903
 SITE_KINDS = ("factory", "plant", "facility", "manufacturing unit", "warehouse", "site")
 YEARS = list(range(2016, 2027))
+LIVE_YEARS = [2016, 2018, 2020, 2022, 2024, 2026]  # fewer scenes keeps a LIVE run demo-length
 
 
 def _claimed(pipe) -> dict:
@@ -139,7 +140,8 @@ async def run(pipe) -> str:
                 "footprints": [{k: r[k] for k in ("osm_id", "area_m2", "footprint", "distance_m")} for r in osm.records[:40]],
                 "nearest": nearest and {k: nearest[k] for k in ("osm_id", "area_m2", "footprint", "distance_m")}}
 
-    tl, ev_tl = await pipe.query("ground", "imagery_timelapse", {"lat": lat, "lon": lon, "site": key, "years": YEARS,
+    years = YEARS if pipe.adapter_mode in ("seed", "cached") else LIVE_YEARS
+    tl, ev_tl = await pipe.query("ground", "imagery_timelapse", {"lat": lat, "lon": lon, "site": key, "years": years,
                                                                  "half_m": 500},
                                  "ground_timelapse", "Sentinel-2 yearly scenes", icon="🛰️")
     g["frames"] = tl.records

@@ -307,15 +307,21 @@ def store_photo(audit: Audit, item: AuditItem, data: bytes, filename: str) -> Au
     from PIL import Image
 
     img = Image.open(io.BytesIO(data))
+    if img.format not in ("JPEG", "PNG"):
+        raise OSError("unsupported image format")
     lat, lon, when = _gps(img)
     pin = audit.pin or {}
     dist = distance_m((lat, lon), (pin["lat"], pin["lon"])) if lat is not None and pin.get("lat") is not None else None
     loc_ok = dist is not None and dist <= GPS_TOLERANCE_M
     time_ok = bool(when and audit.window_start and audit.window_start <= when.astimezone(timezone.utc) <= audit.window_end)
-    sha = hashlib.sha256(data).hexdigest()
-    rel = f"audits/{audit.id}/{sha[:16]}{Path(filename).suffix.lower() or '.jpg'}"
+    sha = hashlib.sha256(data).hexdigest()  # hash of the original upload, as received
+    # Never trust the client's filename: store a re-encoded copy with an extension from the detected format.
+    ext = ".jpg" if img.format == "JPEG" else ".png"
+    rel = f"audits/{audit.id}/{sha[:16]}{ext}"
     (config.DATA_DIR / rel).parent.mkdir(parents=True, exist_ok=True)
-    (config.DATA_DIR / rel).write_bytes(data)
+    clean = io.BytesIO()
+    img.convert("RGB").save(clean, "JPEG" if ext == ".jpg" else "PNG", exif=img.getexif())
+    (config.DATA_DIR / rel).write_bytes(clean.getvalue())
     with session() as s:
         n = len(list(s.exec(select(Evidence.id).where(Evidence.inv_id == audit.inv_id)))) + 1
         ev_id = f"ev_{n}"
@@ -348,6 +354,8 @@ async def upload_photo(audit_id: int, item_id: int, photo: UploadFile = File(...
         a, it = s.get(Audit, audit_id), s.get(AuditItem, item_id)
         if not a or not it or it.audit_id != audit_id:
             raise HTTPException(404, "Audit item not found")
+        if a.status == "completed":
+            raise HTTPException(409, "This audit is completed; its evidence can no longer change")
     data = await photo.read()
     try:
         p = store_photo(a, it, data, photo.filename or "photo.jpg")
@@ -369,6 +377,8 @@ def set_item_result(audit_id: int, item_id: int, body: ItemResult) -> dict:
         it = s.get(AuditItem, item_id)
         if not it or it.audit_id != audit_id:
             raise HTTPException(404, "Audit item not found")
+        if s.get(Audit, audit_id).status == "completed":
+            raise HTTPException(409, "This audit is completed; its results can no longer change")
         photos = list(s.exec(select(AuditPhoto).where(AuditPhoto.item_id == item_id)))
         verified = [p for p in photos if p.location_verified and p.time_verified]
         # A result counts only with at least one GPS- and time-verified photo.
@@ -384,6 +394,8 @@ async def complete_audit(audit_id: int) -> dict:
         a = s.get(Audit, audit_id)
         if not a:
             raise HTTPException(404, "Audit not found")
+        if a.status == "completed":
+            raise HTTPException(409, "This audit is already completed")
         a.status = "completed"
         a.completed_at = utcnow()
         s.add(a)
@@ -429,23 +441,30 @@ async def complete(audit_id: int) -> dict:
     return await complete_audit(audit_id)
 
 
-def _demo_photo(site_png: Path | None, caption: str, lat: float, lon: float, when: datetime) -> bytes:
-    """A labelled DEMO field photo with real EXIF GPS + timestamp (no real business is shown)."""
-    from PIL import Image, ImageDraw, ImageFilter, ImageFont
+def _demo_photo(caption: str, lat: float, lon: float, when: datetime) -> bytes:
+    """A clearly labelled DEMO placeholder "photo" carrying real EXIF GPS + timestamp. Shows no real place."""
+    from PIL import Image, ImageDraw, ImageFont
 
-    if site_png and site_png.exists():
-        base = Image.open(site_png).convert("RGB").resize((960, 720)).filter(ImageFilter.GaussianBlur(3))
-    else:
-        base = Image.new("RGB", (960, 720), (200, 196, 188))
-    d = ImageDraw.Draw(base)
-    d.rectangle([0, 560, 960, 720], fill=(20, 20, 20))
+    img = Image.new("RGB", (960, 720), (236, 237, 240))
+    d = ImageDraw.Draw(img)
+    for y in range(0, 720, 24):
+        d.line([(0, y), (960, y)], fill=(228, 229, 233))
     try:
-        font = ImageFont.truetype("arial.ttf", 30)
-        small = ImageFont.truetype("arial.ttf", 20)
+        big, font, small = (ImageFont.truetype("arialbd.ttf", 54), ImageFont.truetype("arial.ttf", 30),
+                            ImageFont.truetype("arial.ttf", 22))
     except OSError:
-        font = small = ImageFont.load_default()
-    d.text((28, 580), caption[:60], fill=(255, 255, 255), font=font)
-    d.text((28, 630), f"DEMO FIELD PHOTO · {lat:.5f}, {lon:.5f} · {when:%Y-%m-%d %H:%M} IST", fill=(227, 18, 43), font=small)
+        big = font = small = ImageFont.load_default()
+    d.rectangle([40, 40, 920, 680], outline=(20, 20, 20), width=3)
+    d.text((80, 90), "DEMO FIELD PHOTO", fill=(227, 18, 43), font=big)
+    d.text((80, 190), "Placeholder for the auditor's photo.", fill=(58, 61, 69), font=font)
+    words, line, y = caption.split(), "", 270
+    for w in words:
+        if len(line) + len(w) > 52:
+            d.text((80, y), line, fill=(20, 20, 20), font=font)
+            line, y = "", y + 44
+        line += w + " "
+    d.text((80, y), line, fill=(20, 20, 20), font=font)
+    d.text((80, 600), f"EXIF GPS {lat:.5f}, {lon:.5f}  ·  {when:%Y-%m-%d %H:%M} IST", fill=(92, 97, 108), font=small)
     exif = Image.Exif()
     exif[306] = when.strftime("%Y:%m:%d %H:%M:%S")
 
@@ -457,7 +476,7 @@ def _demo_photo(site_png: Path | None, caption: str, lat: float, lon: float, whe
 
     exif[0x8825] = {1: "N" if lat >= 0 else "S", 2: dms(lat), 3: "E" if lon >= 0 else "W", 4: dms(lon)}
     buf = io.BytesIO()
-    base.save(buf, "JPEG", quality=86, exif=exif)
+    img.save(buf, "JPEG", quality=88, exif=exif)
     return buf.getvalue()
 
 
@@ -466,9 +485,14 @@ DEMO_RESULTS = {
     "GROUND_AFTER_CLAIMED_YEAR": ("fail", "Electricity connection dated 2022-08; no structure before 2022"),
     "GROUND_LOW_ACTIVITY": ("fail", "Day shift: 9 workers and 4 machines running"),
     "ADDRESS_MISMATCH": ("pass", "Signage found at the GST place of business in Delhi"),
-    "claim:certification": ("pass", "Certificate photographed"),
+    "CMP_GST_CANCELLED": ("fail", "The certificate on display carries the cancelled GSTIN; no active registration shown"),
+    "CMP_FILING_OVERDUE": ("fail", "No audited accounts or AOC-4 receipts available on site"),
+    "NET_SHARED_ADDRESS_CLUSTER": ("pass", "Nameplates of 6 companies photographed at the registered address"),
+    "claim:certification": ("pass", "Certificate shown on site"),
     "claim:employees": ("fail", "Roster lists 14 employees against 350+ claimed"),
     "claim:capacity": ("fail", "6 CNC machines counted against 40 claimed"),
+    "claim:turnover": ("fail", "Sales register shows about ₹25 lakh a month"),
+    "claim:clients": ("fail", "Purchase orders are from local traders; no OEM orders found"),
 }
 
 
@@ -488,15 +512,13 @@ async def demo_complete(inv_id: int) -> dict:
         a.is_demo = True
         s.add(a)
         s.commit()
-    site_png = config.DATA_DIR / ((inv.state or {}).get("facts", {}).get("ground", {}).get("current") or {}).get("path", "x")
     when = datetime.now(timezone(timedelta(hours=5, minutes=30))).replace(microsecond=0) - timedelta(hours=20)
     for i, it in enumerate(audit["items"]):
         offset = (i % 4 - 1.5) * 0.00018
         lat, lon = site["lat"] + offset, site["lon"] - offset
-        caption = it["text_en"].split(":")[0].split(";")[0]
         if it["source"] == "claim:certification":
             lat, lon = site["lat"] + 0.08, site["lon"] - 0.07  # taken ~12 km away: must fail the GPS check
-        data = _demo_photo(site_png, caption, lat, lon, when + timedelta(minutes=12 * i))
+        data = _demo_photo(it["text_en"], lat, lon, when + timedelta(minutes=12 * i))
         with session() as s:
             a, item = s.get(Audit, audit["id"]), s.get(AuditItem, it["id"])
         store_photo(a, item, data, f"demo_{i}.jpg")
@@ -574,17 +596,19 @@ def ringi(inv_id: int, drafter: str = "海外事業部 担当") -> dict:
 
 # ----- PDF export (Playwright prints the same React pages) ---------------------------------------------------------
 async def _print(path: str, landscape: bool) -> bytes:
-    from playwright.async_api import async_playwright
+    """Renders the same React page to PDF in a child process (see app/pdfprint.py)."""
+    import asyncio
+    import subprocess
+    import sys
+    import tempfile
 
-    async with async_playwright() as p:
-        browser = await p.chromium.launch()
-        page = await browser.new_page(viewport={"width": 1400 if landscape else 1000, "height": 1000})
-        await page.goto(f"{config.FRONTEND_URL}{path}", wait_until="networkidle", timeout=45000)
-        await page.wait_for_selector("[data-print-ready='true']", timeout=30000)
-        pdf = await page.pdf(format="A4", landscape=landscape, print_background=True,
-                             margin={"top": "10mm", "bottom": "10mm", "left": "10mm", "right": "10mm"})
-        await browser.close()
-        return pdf
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp) / "out.pdf"
+        cmd = [sys.executable, "-m", "app.pdfprint", f"{config.FRONTEND_URL}{path}", str(out), "1" if landscape else "0"]
+        proc = await asyncio.to_thread(subprocess.run, cmd, cwd=str(config.BASE_DIR), capture_output=True, timeout=120)
+        if proc.returncode != 0 or not out.exists():
+            raise HTTPException(502, f"PDF rendering failed: {proc.stderr.decode(errors='ignore')[-300:]}")
+        return out.read_bytes()
 
 
 @router.get("/api/investigations/{inv_id}/pdf")

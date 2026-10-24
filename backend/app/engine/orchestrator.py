@@ -512,6 +512,9 @@ class Pipeline:
             self.facts.claims.append(entry)
             counts[v.verdict] += 1
             await self.emit("claim.checked", claim=entry)
+            mark = {"verified": "✅", "contradicted": "❌", "unverifiable": "❓"}[v.verdict]
+            await self.note("claims", f"{mark} “{c['text'][:64]}” → {v.verdict} {evidence}", "warn" if v.verdict == "contradicted" else "info",
+                            icon=mark)
             await self.set_risk(c["node"], "high" if v.verdict == "contradicted" else "none", verdict=v.verdict)
             await self.pause(config.DRAMA_DELAY_MS * 0.6)
         await self.end("claims", f"✅ {counts['verified']} · ❌ {counts['contradicted']} · ❓ {counts['unverifiable']}")

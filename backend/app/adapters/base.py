@@ -11,6 +11,8 @@ from typing import Any
 from ..config import ADAPTER_MODE_DEFAULT, CACHE_DIR, env
 
 MODES = ("live", "cached", "seed")
+# Some government APIs (data.gov.in) stall requests with a library default User-Agent.
+HTTP_HEADERS = {"User-Agent": "Shinrai/1.0 (partner due-diligence research)"}
 
 
 class NotAvailable(Exception):
@@ -79,6 +81,17 @@ class SourceAdapter:
         payload = {"adapter": self.name, "query": query, "saved_at": time.time(), "records": records}
         self._cache_path(query).write_text(json.dumps(payload, indent=1, default=str), encoding="utf-8")
 
+    async def _live_with_deadline(self, query: dict) -> list[dict]:
+        """Hard deadline. asyncio.wait_for waits for a cancelled call to unwind, which never happens when a client
+        is stuck in DNS or a thread; here an overrunning call is cancelled and abandoned instead."""
+        task = asyncio.ensure_future(self.live(query))
+        done, _ = await asyncio.wait({task}, timeout=self.timeout_s)
+        if not done:
+            task.cancel()
+            task.add_done_callback(lambda t: t.cancelled() or t.exception())  # silence "never retrieved"
+            raise asyncio.TimeoutError
+        return task.result()
+
     async def fetch(self, query: dict, mode: str = "auto") -> AdapterResult:
         result = AdapterResult(adapter=self.name, source_name=self.source_name, query=query, url=self.url)
         started = time.perf_counter()
@@ -86,7 +99,7 @@ class SourceAdapter:
             t0 = time.perf_counter()
             try:
                 if m == "live":
-                    records = await asyncio.wait_for(self.live(query), timeout=self.timeout_s)
+                    records = await self._live_with_deadline(query)
                     try:
                         self._write_cache(query, records)
                     except OSError:

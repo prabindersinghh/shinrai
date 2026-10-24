@@ -38,7 +38,8 @@ def compute(flags: list[dict], coverage: dict[str, str]) -> dict:
         overall = min(overall, rulebook()["critical_overall_cap"])
     identity_checked = coverage.get("mca_ogd") in ("ok", "empty")
     band = band_for(overall) if identity_checked else {"id": "insufficient", "ja": "確認不足", "en": "Insufficient data"}
-    return {"overall": overall, "band": band["id"], "band_ja": band["ja"], "band_en": band["en"],
+    # Without a registry check there is nothing to score: show no number rather than a misleading 100.
+    return {"overall": overall if identity_checked else None, "band": band["id"], "band_ja": band["ja"], "band_en": band["en"],
             "subscores": subscores, "deductions": capped}
 
 

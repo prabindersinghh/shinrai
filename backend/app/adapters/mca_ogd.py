@@ -7,7 +7,7 @@ import re
 import httpx
 
 from ..config import DATA_GOV_IN_KEY, DATA_GOV_IN_RESOURCE
-from .base import NotAvailable, SourceAdapter, pick
+from .base import HTTP_HEADERS, NotAvailable, SourceAdapter, pick
 from .seed_store import store
 
 API = "https://api.data.gov.in/resource/{res}"
@@ -52,7 +52,7 @@ class McaOgd(SourceAdapter):
     async def live(self, query: dict) -> list[dict]:
         if not DATA_GOV_IN_KEY:
             raise NotAvailable("DATA_GOV_IN_KEY not set")
-        async with httpx.AsyncClient(timeout=self.timeout_s) as client:
+        async with httpx.AsyncClient(timeout=self.timeout_s, headers=HTTP_HEADERS) as client:
             if "cin" in query:
                 return await self._get(client, "CIN", query["cin"].upper())
             if "cins" in query:
@@ -61,10 +61,14 @@ class McaOgd(SourceAdapter):
             base = re.sub(r"\s+", " ", query["name"].upper().replace(".", " ")).strip()
             base = re.sub(r"\b(PVT|PRIVATE)\s*(LTD|LIMITED)?$", "", base).strip()
             base = re.sub(r"\b(LTD|LIMITED)$", "", base).strip()
-            for variant in (query["name"].upper().strip(), f"{base} PRIVATE LIMITED", f"{base} LIMITED", base):
-                rows = await self._get(client, "CompanyName", variant)
-                if rows:
+            variants = list(dict.fromkeys((query["name"].upper().strip(), f"{base} PRIVATE LIMITED", f"{base} LIMITED", base)))
+            results = await asyncio.gather(*(self._get(client, "CompanyName", v) for v in variants), return_exceptions=True)
+            for rows in results:  # first variant in priority order that returned records
+                if isinstance(rows, list) and rows:
                     return rows
+            errors = [r for r in results if isinstance(r, Exception)]
+            if len(errors) == len(results):
+                raise errors[0]
             return []
 
     def seed(self, query: dict) -> tuple[list[dict], str]:

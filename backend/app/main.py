@@ -25,7 +25,7 @@ from .models import (Claim, Edge, Entity, Evidence, Flag, Investigation, Partner
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 app = FastAPI(title="Shinrai 信頼", version="1.0")
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=[config.FRONTEND_URL], allow_methods=["*"], allow_headers=["*"])
 TASKS: set[asyncio.Task] = set()
 
 
@@ -195,6 +195,15 @@ def _evidence_rows(inv_id: int, with_payload: bool = False) -> list[dict]:
     return out
 
 
+@app.get("/api/investigations/{inv_id}/trace")
+def get_trace(inv_id: int) -> list[dict]:
+    with session() as s:
+        rows = list(s.exec(select(TraceEvent).where(TraceEvent.inv_id == inv_id).order_by(TraceEvent.seq)))
+    keep = ("step.started", "step.finished", "query.finished", "log.note", "flag.raised", "claim.checked",
+            "score.updated", "reassess.started", "money.received", "done", "error")
+    return [r.payload for r in rows if r.type in keep]
+
+
 @app.get("/api/investigations/{inv_id}/evidence/{ev_id}")
 def get_evidence(inv_id: int, ev_id: str) -> dict:
     with session() as s:
@@ -297,7 +306,11 @@ def data_file(path: str) -> FileResponse:
     allowed = [(config.DATA_DIR / d).resolve() for d in ("ground", "seed/ground", "audits", "seed/audits")]
     if not any(str(target).startswith(str(a)) for a in allowed) or not target.is_file():
         raise HTTPException(404, "File not found")
-    return FileResponse(target, headers={"Cache-Control": "public, max-age=86400"})
+    media = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg"}.get(target.suffix.lower())
+    if media is None:
+        raise HTTPException(404, "File not found")
+    return FileResponse(target, media_type=media,
+                        headers={"Cache-Control": "public, max-age=86400", "X-Content-Type-Options": "nosniff"})
 
 
 @app.get("/api/meta")

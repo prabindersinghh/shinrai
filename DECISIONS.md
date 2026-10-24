@@ -89,3 +89,19 @@ environment. The EE path is implemented and is used when `EE_PROJECT` is set. Un
 
 **Sentinel-2 framing.** Frames cover about 1 km around the pin. At 10 m resolution a 150 m buffer is only about
 15 pixels, so the buffer circle and footprint are drawn on top of the wider frame.
+
+## Security posture (hackathon scope)
+
+The PRD puts user accounts and multi-tenant auth out of scope, so these are known production gaps, not oversights:
+- **No authentication.** Any client that can reach the API can read any investigation. Production needs accounts,
+  with every query scoped by the owning SME (investigation → partner → sme_id).
+- **Consent is SIMULATED.** The requester's screen shows the partner's consent link, which is what makes the demo
+  work. A real Account Aggregator flow delivers the request to the partner through the AA app, with the partner
+  authenticating there; Shinrai would only receive the signed consent artefact.
+- **Genba Audit evidence trusts EXIF.** GPS and timestamp checks catch honest mistakes, not a determined forger.
+  Production needs per-audit auditor tokens and attested capture (a signed device nonce). Completed audits are
+  already locked against changes.
+- Hardening already in place: CORS limited to `FRONTEND_URL`; uploaded photos are re-encoded with an extension
+  taken from the detected format; `/api/data` serves only PNG/JPEG with `nosniff`; the LLM writes only the cited
+  summary (partner-document text is marked as quotation, not instruction), and suggestions come from a fixed
+  playbook.

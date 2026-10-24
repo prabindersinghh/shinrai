@@ -1,0 +1,127 @@
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/noto-sans-jp/400.css";
+@import "@fontsource/noto-sans-jp/500.css";
+@import "@fontsource/noto-sans-jp/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/bebas-neue/400.css";
+@import "leaflet/dist/leaflet.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #ffffff;
+  --stage: #f6f7f9;
+  --ink: #141414;
+  --line: #e4e5e9;
+  --red: #e3122b;
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Inter, "Noto Sans JP", system-ui, sans-serif;
+  font-feature-settings: "cv11", "ss01", "tnum";
+  -webkit-font-smoothing: antialiased;
+}
+
+:lang(ja),
+.jp {
+  font-family: "Noto Sans JP", Inter, sans-serif;
+  letter-spacing: 0.01em;
+}
+
+::selection {
+  background: #fde2e5;
+}
+
+:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-xl border border-line bg-paper;
+  }
+  .hairline {
+    @apply border-line;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-ink {
+    @apply btn bg-ink text-white hover:bg-ink-2;
+  }
+  .btn-red {
+    @apply btn bg-hinomaru text-white hover:bg-hinomaru-deep;
+  }
+  .btn-ghost {
+    @apply btn border border-line bg-paper text-ink hover:border-line-strong hover:bg-wash;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium leading-4;
+  }
+  .label {
+    @apply text-[11px] font-medium text-muted;
+  }
+  .num {
+    @apply font-display tracking-wide;
+  }
+  .stage-grid {
+    background-color: var(--stage);
+    background-image: radial-gradient(rgba(20, 20, 20, 0.07) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #d6d8dd transparent;
+  }
+}
+
+.leaflet-container {
+  font-family: Inter, sans-serif;
+  background: var(--stage);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+  .no-print {
+    display: none !important;
+  }
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-break {
+    break-before: page;
+  }
+  .avoid-break {
+    break-inside: avoid;
+  }
+}

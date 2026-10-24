@@ -4,7 +4,7 @@ from __future__ import annotations
 import httpx
 
 from ..config import DATA_DIR
-from .base import NotAvailable
+from .base import HTTP_HEADERS, NotAvailable
 from .ground_common import GOOGLE_MAPS_KEY, GroundAdapter, bbox, site_dir, seed_site_near
 
 ESRI_EXPORT = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export"
@@ -19,7 +19,7 @@ class ImageryCurrent(GroundAdapter):
     async def live(self, query: dict) -> list[dict]:
         lat, lon, half = query["lat"], query["lon"], query.get("half_m", 220)
         rel = f"{site_dir(query['site'])}/current.png"
-        async with httpx.AsyncClient(timeout=self.timeout_s) as client:
+        async with httpx.AsyncClient(timeout=self.timeout_s, headers=HTTP_HEADERS) as client:
             if GOOGLE_MAPS_KEY:
                 resp = await client.get("https://maps.googleapis.com/maps/api/staticmap", params={
                     "center": f"{lat},{lon}", "zoom": 18, "size": "640x640", "maptype": "satellite", "key": GOOGLE_MAPS_KEY})

@@ -6,7 +6,7 @@ import asyncio
 import httpx
 
 from ..config import DATA_DIR
-from .base import NotAvailable
+from .base import HTTP_HEADERS, NotAvailable
 from .ground_common import GroundAdapter, bbox, site_dir, seed_site_near
 
 STAC = "https://planetarycomputer.microsoft.com/api/stac/v1/search"
@@ -17,7 +17,7 @@ class ImageryTimelapse(GroundAdapter):
     name = "imagery_timelapse"
     source_name = "Sentinel-2 L2A (Planetary Computer)"
     url = "https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a"
-    timeout_s = 60.0
+    timeout_s = 45.0
 
     async def _year(self, client: httpx.AsyncClient, sem: asyncio.Semaphore, lat: float, lon: float, year: int,
                     b: tuple, rel_dir: str) -> dict | None:
@@ -48,7 +48,7 @@ class ImageryTimelapse(GroundAdapter):
         b = bbox(lat, lon, query.get("half_m", 500))
         rel_dir = site_dir(query['site'])
         sem = asyncio.Semaphore(4)
-        async with httpx.AsyncClient(timeout=40) as client:
+        async with httpx.AsyncClient(timeout=40, headers=HTTP_HEADERS) as client:
             frames = await asyncio.gather(*(self._year(client, sem, lat, lon, y, b, rel_dir) for y in query["years"]),
                                           return_exceptions=True)
         return [{**f, "bbox": b} for f in frames if isinstance(f, dict)]

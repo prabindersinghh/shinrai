@@ -4,7 +4,7 @@ from __future__ import annotations
 import httpx
 
 from ..config import GST_API_KEY, GST_PROVIDER
-from .base import NotAvailable, SourceAdapter, pick
+from .base import HTTP_HEADERS, NotAvailable, SourceAdapter, pick
 from .gstin import STATE_CODES
 from .seed_store import store
 
@@ -30,7 +30,7 @@ class Gst(SourceAdapter):
         if "gstin" not in query:
             raise NotAvailable("live search needs a GSTIN")
         g = query["gstin"]
-        async with httpx.AsyncClient(timeout=self.timeout_s) as client:
+        async with httpx.AsyncClient(timeout=self.timeout_s, headers=HTTP_HEADERS) as client:
             if GST_PROVIDER == "surepass":
                 resp = await client.post("https://kyc-api.surepass.io/api/v1/corporate/gstin",
                                          json={"id_number": g}, headers={"Authorization": f"Bearer {GST_API_KEY}"})

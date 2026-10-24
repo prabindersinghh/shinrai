@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import httpx
 
-from .base import NotAvailable, SourceAdapter
+from .base import HTTP_HEADERS, NotAvailable, SourceAdapter
 from .seed_store import store
 
 GDELT = "https://api.gdeltproject.org/api/v2/doc/doc"
@@ -17,9 +17,9 @@ class News(SourceAdapter):
     async def live(self, query: dict) -> list[dict]:
         terms = " OR ".join(f'"{t}"' for t in query["terms"][:4])
         q = f"({terms}) sourcecountry:IN" if len(query["terms"]) > 1 else f"{terms} sourcecountry:IN"
-        async with httpx.AsyncClient(timeout=self.timeout_s) as client:
+        async with httpx.AsyncClient(timeout=self.timeout_s, headers=HTTP_HEADERS) as client:
             resp = await client.get(GDELT, params={"query": q, "mode": "artlist", "format": "json",
-                                                   "maxrecords": 15, "timespan": "24months", "sort": "datedesc"})
+                                                   "maxrecords": 15, "timespan": "3months", "sort": "datedesc"})
             resp.raise_for_status()
             body = resp.json() if resp.text.strip().startswith("{") else {}
         return [{"title": a.get("title", ""), "url": a.get("url", ""), "source": a.get("domain", ""),

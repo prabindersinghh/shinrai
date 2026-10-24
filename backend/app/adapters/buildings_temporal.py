@@ -75,7 +75,7 @@ class OsmBuildings(GroundAdapter):
     name = "osm_buildings"
     source_name = "OpenStreetMap buildings"
     url = "https://www.openstreetmap.org/"
-    timeout_s = 60.0
+    timeout_s = 30.0
 
     async def live(self, query: dict) -> list[dict]:
         lat, lon, r = query["lat"], query["lon"], query["radius_m"]
