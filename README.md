@@ -204,6 +204,21 @@ Shinrai is a decision-support tool, not legal advice.
 
 ---
 
+## Sourcing prototype (frontend only)
+
+The **Sourcing** tab (`/trade`) is a browser-only prototype of the procurement upgrade described in [docs/UPGRADE_PLAN.md](docs/UPGRADE_PLAN.md). It needs no backend: start the frontend and open http://localhost:5173/trade.
+
+| Route | What it shows |
+|---|---|
+| `/trade` | 3D trade-corridor globe, live counts, and one-click scenarios (positive, fast-forward to shipped, unavailable data, failed pool, failed payment, cancelled order) |
+| `/source`, `/supplier/:id` | Supplier discovery with deterministic verification levels (L0–L3), export readiness, a 3D tier staircase and a 3D relationship graph with provenance-coloured edges |
+| `/pool/:id`, `/rfq/new` | Pooled RFQ: a 3D container filling with commitments, a private maximum price, versioned and hashed quotes, and a three-way landed-cost comparison (consumption tax shown, never counted as a saving) |
+| `/orders/:id`, `/pay/:poId` | One purchase order per buyer, a shipment on the globe, hashed documents, a JPY payable quote with expiry, and a SIMULATED provider with signed webhooks |
+| `/s` | Mobile-first supplier console (quote against aggregate demand, orders, catalogue) |
+| `/ops` | Hash-chained audit log with a tamper demo, payment exceptions, and the demo clock |
+
+Use the persona switcher in the black bar to act as each buyer, the supplier or ops. All companies, prices, orders and payments are fictional and labelled ILLUSTRATIVE or SIMULATED. State lives in `localStorage`, and **Reset workspace** restores the starting point. The domain logic (money in integer minor units, state machines, landed cost, badge rules) is in `frontend/src/trade/`.
+
 ## Configuration
 
 Copy `.env.example` to `.env` in the project root. All keys are optional.
