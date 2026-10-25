@@ -79,6 +79,7 @@ export interface Partner {
   input_name: string;
   cin?: string | null;
   gstin?: string | null;
+  domain?: string | null;
   doc_name?: string | null;
   status: string;
   latest?: { id: number; status: string; overall_score: number | null; band: string | null; mode_used: string; is_demo: boolean; fit_score: number | null } | null;

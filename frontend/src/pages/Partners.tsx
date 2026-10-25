@@ -13,7 +13,7 @@ export default function Partners() {
   const nav = useNavigate();
   const [sme, setSme] = useState<Sme | null>(null);
   const [partners, setPartners] = useState<Partner[]>([]);
-  const [form, setForm] = useState({ name: "", cin: "", gstin: "" });
+  const [form, setForm] = useState({ name: "", cin: "", gstin: "", domain: "" });
   const [file, setFile] = useState<File | null>(null);
   const [mode, setMode] = useState("auto");
   const [busy, setBusy] = useState<string | null>(null);
@@ -39,9 +39,10 @@ export default function Partners() {
       f.append("name", form.name);
       f.append("cin", form.cin);
       f.append("gstin", form.gstin);
+      f.append("domain", form.domain);
       if (file) f.append("doc", file);
       await api.createPartner(f);
-      setForm({ name: "", cin: "", gstin: "" });
+      setForm({ name: "", cin: "", gstin: "", domain: "" });
       setFile(null);
       refresh();
     } catch (e: any) {
@@ -84,6 +85,9 @@ export default function Partners() {
                 <label className="block"><span className="label">{t("partners.gstin")}</span>
                   <input className="mt-1 w-full rounded-lg border border-line px-3 py-2 font-mono text-[12px]" value={form.gstin} onChange={(e) => setForm({ ...form, gstin: e.target.value })} placeholder="06AAACM0829Q1Z…" /></label>
               </div>
+              <label className="block"><span className="label">{t("partners.domain")}</span>
+                <input className="mt-1 w-full rounded-lg border border-line px-3 py-2 font-mono text-[12px]" value={form.domain} onChange={(e) => setForm({ ...form, domain: e.target.value })} placeholder="example.co.in" inputMode="url" autoCapitalize="none" spellCheck={false} />
+                <span className="mt-1 block text-[11.5px] text-muted">{t("partners.domain_hint")}</span></label>
               <label className="block cursor-pointer rounded-lg border border-dashed border-line-strong p-3 hover:bg-wash">
                 <span className="flex items-center gap-2 text-[13px] font-medium"><Upload size={15} /> {t("partners.doc")}</span>
                 <span className="mt-1 block text-[11.5px] text-muted">{file ? file.name : t("partners.doc_hint")}</span>
