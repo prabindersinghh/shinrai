@@ -36,6 +36,8 @@
   "partners.cin": "CIN（法人識別番号）",
   "partners.gstin": "GSTIN（GST登録番号）",
   "partners.doc": "相手方資料（会社概要・パンフレット・メール）",
+  "partners.domain": "ウェブサイト（任意）",
+  "partners.domain_hint": "受動的なサイバー確認に使用します：証明書、なりすましメール対策、公開ソフトウェア。",
   "partners.doc_hint": "PDFまたはテキスト。記載された主張をすべて公的記録と照合します。",
   "partners.investigate": "調査開始",
   "partners.open": "レポートを開く",

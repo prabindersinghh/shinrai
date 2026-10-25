@@ -36,6 +36,8 @@
   "partners.cin": "CIN",
   "partners.gstin": "GSTIN",
   "partners.doc": "Partner document (brochure, profile, email)",
+  "partners.domain": "Website (optional)",
+  "partners.domain_hint": "Used for passive cyber checks: certificate, email spoofing protection, exposed software.",
   "partners.doc_hint": "PDF or text. Shinrai checks every claim in it against official records.",
   "partners.investigate": "Investigate",
   "partners.open": "Open report",
