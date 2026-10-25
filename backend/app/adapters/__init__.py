@@ -2,6 +2,7 @@ from .aa_gst import AaGst
 from .buildings_temporal import BuildingsTemporal, OsmBuildings
 from .cert_check import CertCheck
 from .courts import Courts
+from .cyber_posture import CyberPosture
 from .geocode import Geocode
 from .gst import Gst
 from .ibbi import Ibbi
@@ -15,4 +16,4 @@ from .strikeoff import StrikeOff
 
 ADAPTERS = {a.name: a for a in (McaOgd(), McaDirectors(), Gst(), Courts(), Ibbi(), StrikeOff(), News(), Geocode(),
                                 ImageryCurrent(), ImageryTimelapse(), BuildingsTemporal(), OsmBuildings(),
-                                NightLights(), AaGst(), CertCheck())}
+                                NightLights(), AaGst(), CertCheck(), CyberPosture())}
