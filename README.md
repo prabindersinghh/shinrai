@@ -6,6 +6,25 @@
 
 Thapar Japan Hackathon 2026 · JETRO problem statement 01JETRO-PS-01
 
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![three.js](https://img.shields.io/badge/three.js-3D_map-000000?style=for-the-badge&logo=threedotjs&logoColor=white)
+![CesiumJS](https://img.shields.io/badge/CesiumJS-flyover-6CADDF?style=for-the-badge&logo=cesium&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-SQLModel-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![LightGBM](https://img.shields.io/badge/LightGBM-distress_model-2E7D32?style=for-the-badge)
+![Vizro](https://img.shields.io/badge/Vizro-analytics-E3122B?style=for-the-badge)
+![Playwright](https://img.shields.io/badge/Playwright-PDF_export-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)
+![Claude](https://img.shields.io/badge/Claude-cited_narrative-D97757?style=for-the-badge&logo=anthropic&logoColor=white)
+
+![Data](https://img.shields.io/badge/Data-MCA_·_IBBI_·_GST_·_eCourts-141414?style=for-the-badge)
+![Satellite](https://img.shields.io/badge/Satellite-Sentinel--2_·_Esri_·_OSM-141414?style=for-the-badge)
+![Languages](https://img.shields.io/badge/Languages-English_·_日本語-E3122B?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-hackathon_build-F59E0B?style=for-the-badge)
+
 </div>
 
 ---
