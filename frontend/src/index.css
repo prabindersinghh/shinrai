@@ -97,6 +97,67 @@ body {
   background: var(--stage);
 }
 
+/* Comic stage (CyberDissection): inked panel frame, screentone, speech bubble, stamp, sound effect */
+.cy-frame {
+  border: 3px solid var(--ink);
+  background: #fff;
+  box-shadow: 7px 7px 0 var(--ink);
+}
+.cy-tone {
+  background-image: radial-gradient(rgba(20, 20, 20, 0.2) 1.25px, transparent 1.6px);
+  background-size: 9px 9px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 36% 48%, transparent 38%, #000 100%);
+  mask-image: radial-gradient(ellipse 70% 70% at 36% 48%, transparent 38%, #000 100%);
+}
+.cy-bubble {
+  position: relative;
+  border: 3px solid var(--ink);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.cy-bubble:not(.cy-static)::before,
+.cy-bubble:not(.cy-static)::after {
+  content: "";
+  position: absolute;
+  top: 40%;
+  border-style: solid;
+  border-color: transparent;
+}
+.cy-bubble:not(.cy-static)::before { left: -25px; border-width: 15px 24px 15px 0; border-right-color: var(--ink); }
+.cy-bubble:not(.cy-static)::after { left: -17px; top: calc(40% + 3.5px); border-width: 11.5px 19px 11.5px 0; border-right-color: #fff; }
+@media (max-width: 767px) {
+  .cy-bubble:not(.cy-static)::before { left: 22%; top: -25px; border-width: 0 15px 24px 15px; border-right-color: transparent; border-bottom-color: var(--ink); }
+  .cy-bubble:not(.cy-static)::after { left: calc(22% + 3.5px); top: -17px; border-width: 0 11.5px 19px 11.5px; border-right-color: transparent; border-bottom-color: #fff; }
+}
+.cy-stamp {
+  display: inline-block;
+  border: 2.5px solid;
+  border-radius: 4px;
+  padding: 2px 9px 0;
+  font-family: "Bebas Neue", "Noto Sans JP", sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  line-height: 1.15;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+}
+.cy-sfx-text {
+  font-family: "Bebas Neue", "Noto Sans JP", sans-serif;
+  font-weight: 900;
+  paint-order: stroke fill;
+  stroke: #fff;
+  stroke-width: 8px;
+  stroke-linejoin: round;
+}
+.cy-speedmask {
+  -webkit-mask-image: radial-gradient(closest-side, #000 52%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 52%, transparent 100%);
+}
+.cy-hint { animation: cyNudge 1.4s ease-in-out infinite; }
+@keyframes cyNudge { 50% { transform: translateY(4px); } }
+@media print { .cy-bubble { box-shadow: none; break-inside: avoid; } }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }

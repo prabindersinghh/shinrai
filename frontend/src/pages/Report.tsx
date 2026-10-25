@@ -19,6 +19,7 @@ import { MODE } from "../lib/visual";
 
 const GroundTruthPanel = lazy(() => import("../components/GroundTruthPanel"));
 const SiteFlyover = lazy(() => import("../components/SiteFlyover"));
+const CyberDissection = lazy(() => import("../components/CyberDissection"));
 
 function Layer({ kanji, label, state, tone }: { kanji: string; label: string; state: string; tone: "ok" | "bad" | "pending" | "sim" }) {
   const color = { ok: "#15803D", bad: "#E3122B", pending: "#7A808C", sim: "#D97706" }[tone];
@@ -229,36 +230,26 @@ export default function Report() {
         )}
       </section>
 
-      {((r as any).intel?.cyber || (r as any).intel?.distress) && (
-        <Section id="intel" title={ja ? "サイバー対策とモデルのシグナル" : "Cyber posture and model signals"} kicker={inv.is_demo ? (ja ? "説明用ケース" : "Illustrative case") : undefined}>
-          <div className="grid gap-5 md:grid-cols-2">
-            {(r as any).intel?.cyber && (
-              <div className="panel p-5">
-                <div className="text-[14px] font-semibold">{ja ? "サイバー対策（受動的確認）" : "Cyber posture (passive checks)"} · <span className="font-mono text-[12px] text-muted">{(r as any).intel.cyber.domain}</span></div>
-                <ul className="mt-3 space-y-2">
-                  {(r as any).intel.cyber.checks.map((c: any) => (
-                    <li key={c.check} className="flex items-start gap-2 text-[13px]">
-                      <span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${c.status === "fail" ? "bg-hinomaru" : c.status === "warn" ? "bg-amber" : "bg-verified"}`} />
-                      <span><span className="font-medium">{c.check}</span> · <span className="text-ink-2">{c.result}</span></span>
-                    </li>
-                  ))}
-                </ul>
-                <button onClick={() => setEv((r as any).intel.cyber.evidence_id)} className="mt-3 rounded border border-line px-1.5 font-mono text-[10px] hover:text-hinomaru">{(r as any).intel.cyber.evidence_id}</button>
-              </div>
-            )}
-            {(r as any).intel?.distress && (
-              <div className="panel p-5">
-                <div className="text-[14px] font-semibold">{ja ? "経営悪化モデル" : "Shinrai Distress Model"}</div>
-                <table className="mt-3 w-full text-[12.5px]">
-                  <thead className="text-left text-[11px] text-muted"><tr><th className="py-1">{ja ? "企業" : "Company"}</th><th>{ja ? "確率" : "Probability"}</th><th>{ja ? "パーセンタイル" : "Percentile"}</th></tr></thead>
-                  <tbody>{(r as any).intel.distress.map((d: any) => (
-                    <tr key={d.cin} className="border-t border-line"><td className="py-1.5 pr-2">{d.name}</td><td>{d.probability}</td>
-                      <td className={d.percentile >= 90 ? "font-semibold text-hinomaru" : ""}>{d.percentile}</td></tr>
-                  ))}</tbody>
-                </table>
-                <p className="mt-2 text-[11px] text-muted">{ja ? "シグナルであり、判断ではありません。上位10%で NET_DISTRESS_HIGH ルールが適用されます。" : "A signal, not a finding. The NET_DISTRESS_HIGH rule applies in the top 10%."}</p>
-              </div>
-            )}
+      {(r as any).intel?.cyber && (
+        <Section id="cyber" title={ja ? "サイバー対策" : "Cyber posture"} kicker={inv.is_demo ? (ja ? "説明用ケース" : "Illustrative case") : (ja ? "受動的な外部確認" : "Passive external checks")}>
+          <Suspense fallback={<div className="grid h-[420px] place-items-center"><Loader2 className="animate-spin text-muted" /></div>}>
+            <CyberDissection data={(r as any).intel.cyber} onEvidence={setEv} print={print} />
+          </Suspense>
+        </Section>
+      )}
+
+      {(r as any).intel?.distress && (
+        <Section id="intel" title={ja ? "モデルのシグナル" : "Model signals"} kicker={inv.is_demo ? (ja ? "説明用ケース" : "Illustrative case") : undefined}>
+          <div className="panel p-5">
+            <div className="text-[14px] font-semibold">{ja ? "経営悪化モデル" : "Shinrai Distress Model"}</div>
+            <table className="mt-3 w-full text-[12.5px]">
+              <thead className="text-left text-[11px] text-muted"><tr><th className="py-1">{ja ? "企業" : "Company"}</th><th>{ja ? "確率" : "Probability"}</th><th>{ja ? "パーセンタイル" : "Percentile"}</th></tr></thead>
+              <tbody>{(r as any).intel.distress.map((d: any) => (
+                <tr key={d.cin} className="border-t border-line"><td className="py-1.5 pr-2">{d.name}</td><td>{d.probability}</td>
+                  <td className={d.percentile >= 90 ? "font-semibold text-hinomaru" : ""}>{d.percentile}</td></tr>
+              ))}</tbody>
+            </table>
+            <p className="mt-2 text-[11px] text-muted">{ja ? "シグナルであり、判断ではありません。上位10%で NET_DISTRESS_HIGH ルールが適用されます。" : "A signal, not a finding. The NET_DISTRESS_HIGH rule applies in the top 10%."}</p>
           </div>
         </Section>
       )}
