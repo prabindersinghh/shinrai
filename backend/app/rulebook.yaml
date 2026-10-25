@@ -11,6 +11,7 @@ families:
   ground:     {cap: 20, label_en: Ground truth,     label_ja: 現地}
   money:      {cap: 15, label_en: Money,            label_ja: 資金}
   audit:      {cap: 15, label_en: Field audit,      label_ja: 現地監査}
+  cyber:      {cap: 10, label_en: Cyber posture,    label_ja: サイバー対策}
 
 critical_overall_cap: 39
 
@@ -216,3 +217,11 @@ rules:
     condition: cert_invalid
     text_en: "Certification claim not supported by the certification register: {claim} ({reason})."
     text_ja: "認証に関する主張が認証登録簿で確認できません：{claim}（{reason}）。"
+
+  - id: CYB_WEAK_POSTURE
+    family: cyber
+    severity: medium
+    deduction: 8
+    condition: cyber_weak
+    text_en: "Cyber posture of {domain}: {count} failed checks ({checks})."
+    text_ja: "{domain}のサイバー対策：{count}件の確認項目で不備（{checks}）。"

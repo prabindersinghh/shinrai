@@ -144,6 +144,27 @@ def sunrise() -> dict:
              "snippet": "The company says it serves OEM and aftermarket buyers across North India."},
         ],
         "sources": {"mca": MCA, "gst": GST, "courts": ECOURTS, "ibbi": IBBI, "news": DEMO_NEWS},
+        # Illustrative-case extras: shown only for this fictional company.
+        "regional_news": [
+            {"language": "Hindi", "title": "गुरुग्राम की लॉजिस्टिक्स फर्मों पर फर्जी इनवॉइस की जांच",
+             "translated": "Fake-invoice probe into Gurugram logistics firms", "source": "Regional daily (illustrative)",
+             "date": "2023-11-09", "about": "U63090HR2020PTC089904", "tone": "adverse"},
+            {"language": "Marathi", "title": "चाकण औद्योगिक क्षेत्रात नवीन लघुउद्योगांची नोंदणी",
+             "translated": "New small units registered in the Chakan industrial area", "source": "Regional daily (illustrative)",
+             "date": "2025-06-14", "about": None, "tone": "neutral"},
+        ],
+        "cyber": {"domain": "sunriseauto-demo.in", "checks": [
+            {"check": "TLS certificate", "result": "expired 2025-12-31", "status": "fail"},
+            {"check": "TLS protocols", "result": "TLS 1.0 and 1.1 still enabled", "status": "fail"},
+            {"check": "Email spoofing protection", "result": "No SPF record; no DMARC policy", "status": "fail"},
+            {"check": "Exposed software", "result": "PHP 7.4 on the public web server (end of life since Nov 2022)", "status": "warn"},
+        ]},
+        "distress": [
+            {"cin": "U29304HR2023PTC110482", "probability": 0.41, "percentile": 93.0},
+            {"cin": "U22209HR2023PTC109140", "probability": 0.37, "percentile": 91.5},
+            {"cin": "U25999HR2022PTC105871", "probability": 0.29, "percentile": 86.0},
+            {"cin": "U29109HR2022PTC104662", "probability": 0.18, "percentile": 71.0},
+        ],
     }
 
 

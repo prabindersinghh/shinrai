@@ -368,6 +368,15 @@ def cert_invalid(f: Facts) -> list[Hit]:
     return out
 
 
+@predicate
+def cyber_weak(f: Facts) -> list[Hit]:
+    c = f.intel.get("cyber")
+    if not c:
+        return []
+    failed = [x["check"] for x in c["checks"] if x["status"] == "fail"]
+    return [Hit([f.company_node], [c["evidence_id"]], {"domain": c["domain"], "count": len(failed), "checks": ", ".join(failed)})] if failed else []
+
+
 @lru_cache(maxsize=1)
 def rulebook() -> dict:
     return yaml.safe_load(RULEBOOK.read_text(encoding="utf-8"))

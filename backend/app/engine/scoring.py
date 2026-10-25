@@ -8,7 +8,7 @@ from .rules import Facts, _d, months_between, rulebook
 FAMILY_SOURCES = {
     "identity": ["mca_ogd"], "compliance": ["gst", "mca_ogd"], "legal": ["courts", "ibbi"],
     "network": ["mca_directors"], "claims": ["document"], "reputation": ["news"],
-    "ground": ["buildings_temporal", "osm_buildings"], "money": ["aa_gst"], "audit": ["genba_audit"],
+    "ground": ["buildings_temporal", "osm_buildings"], "money": ["aa_gst"], "audit": ["genba_audit"], "cyber": ["cyber_posture"],
 }
 
 

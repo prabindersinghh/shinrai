@@ -34,7 +34,7 @@ function ReportCard() {
           </div>
         </div>
         <div className="text-right">
-          <div className="flex items-baseline justify-end gap-1"><span className="num text-[64px] leading-[0.85] text-hinomaru">22</span><span className="num text-lg text-muted">/100</span></div>
+          <div className="flex items-baseline justify-end gap-1"><span className="num text-[64px] leading-[0.85] text-hinomaru">14</span><span className="num text-lg text-muted">/100</span></div>
           <div className="jp text-[13px] font-bold text-hinomaru">高リスク · {lang === "ja" ? "見送り推奨" : "Do not proceed"}</div>
         </div>
       </div>

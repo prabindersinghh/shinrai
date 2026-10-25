@@ -85,3 +85,8 @@ clauses:
      text_en: "The Partner confirms its registered office, GST places of business and operating sites in Schedule 1, and notifies any change before it takes effect.",
      text_ja: "相手方は登記上の本店、GST上の事業所および操業拠点を別表1で確認し、変更の際は事前に通知するものとします。",
      law: "Companies Act, 2013; CGST Act, 2017", source_url: "https://www.mca.gov.in/", as_of: "2026-10-24", verified_by_team: false}
+  - {id: cl_cyber, partner_types: [distributor, supplier, contract_mfg, jv], base: false, triggered_by: [CYB_WEAK_POSTURE],
+     title_en: "Information security", title_ja: "情報セキュリティ",
+     text_en: "The Partner maintains current TLS, SPF and DMARC on its domains, patches internet-facing software, and notifies any security incident affecting shared data within 72 hours.",
+     text_ja: "相手方は自社ドメインで最新のTLS・SPF・DMARCを維持し、インターネットに公開されたソフトウェアを更新し、共有データに影響するセキュリティ事故を72時間以内に通知するものとします。",
+     law: "Information Technology Act, 2000; Digital Personal Data Protection Act, 2023", source_url: "https://www.meity.gov.in/", as_of: "2026-10-25", verified_by_team: false}

@@ -53,13 +53,13 @@ Status key: **Live** works end to end · **Simulated** works end to end on sandb
 
 | # | Feature | What it does | Status |
 |---|---|---|---|
-| 6 | **Paper check** | Reads registry (MCA), GST, court, insolvency (IBBI) and news records to confirm the partner is real and compliant. | Live (registry, insolvency, news); GST and courts with provider keys. Regional-language press: **Planned** |
+| 6 | **Paper check** | Reads registry (MCA), GST, court, insolvency (IBBI) and news records to confirm the partner is real and compliant. | Live (registry, insolvency, news); GST and courts with provider keys. Regional-language press (Hindi, Marathi, translated): shown in the illustrative case; live sources planned |
 | 7 | **People graph** | A live-forming graph of the directors and their other companies, exposing struck-off links, shared-address clusters and shell patterns. | Live |
 | 8 | **Ground Truth (現地現物 from space)** | Satellite building history, a 2016–2026 Sentinel-2 time-lapse ending on high-resolution imagery, night-light activity, and a **3D flyover from Tokyo** to the site, showing whether the claimed factory exists, how big it is and since when. | Live (imagery and footprints); building history and night lights with Earth Engine |
 | 9 | **Claim check** | Every claim in the partner's brochure marked ✅ verified / ❌ contradicted / ❓ unverifiable against registry records, satellite data and certificate registers. | Live |
 | 10 | **Money check** | Consent-based GST turnover through India's Account Aggregator framework, comparing declared turnover with claimed turnover. | **Simulated** |
-| 11 | **Cyber posture** | Passive checks of the partner's internet-facing systems: TLS, email-spoofing protection (SPF / DMARC), exposed software with known vulnerabilities. | **Planned** |
-| 12 | **Shinrai Distress Model** | Our own LightGBM model trained on Indian registry data, predicting strike-off risk with SHAP explanations and a model card of real measured metrics. | Pipeline complete; trains once a data.gov.in key is set. Until then the model card shows "not trained" (no metric is invented). |
+| 11 | **Cyber posture** | Passive checks of the partner's internet-facing systems: TLS, email-spoofing protection (SPF / DMARC), exposed end-of-life software. Failed checks add an information-security clause to the term sheet. | Shown in the illustrative case; live checks planned |
+| 12 | **Shinrai Distress Model** | Our own LightGBM model trained on Indian registry data, predicting strike-off risk with SHAP explanations and a model card of real measured metrics. | Distress scores, percentiles and the NET_DISTRESS_HIGH rule shown in the illustrative case. The training pipeline is complete; the model card shows real metrics once trained on MCA data (a data.gov.in key is required) and says "not trained" until then. |
 | 13 | **信頼スコア** | A 0–100 trust score with sub-scores, computed by a transparent rulebook. AI never decides a flag; every flag links to its source. | Live |
 
 ### Act: decide, protect, follow through

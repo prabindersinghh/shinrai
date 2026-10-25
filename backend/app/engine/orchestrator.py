@@ -451,7 +451,39 @@ class Pipeline:
                 await self.set_risk(nid, "med")
             self.facts.news.append({"node": nid, "about_node": about_node, "tone": tone["tone"], "title": art.get("title")})
         await self.note("news", f"{len(result.records)} articles scanned, {adverse} adverse ({tones and tones[0]['method'] or 'n/a'})")
+        await self._illustrative_regional_and_cyber()
         await self.end("news", f"{len(result.records)} articles · {adverse} adverse")
+
+    async def _illustrative_regional_and_cyber(self) -> None:
+        """Regional-language press and cyber posture: present only in illustrative cases' curated data."""
+        seed = self.seed_file or {}
+        cid = self.facts.company_node
+        regional = seed.get("regional_news") or []
+        by_lang: dict[str, list] = {}
+        for a in regional:
+            by_lang.setdefault(a["language"], []).append(a)
+        for lang, items in by_lang.items():
+            ev = self.evidence("regional_news", f"{lang} press (translated)", {"language": lang, "target": self.facts.company["cin"]},
+                               "", "seed", items, f"{len(items)} articles", "news")
+            adverse = 0
+            for a in items:
+                nid = f"n_{short_hash(a['title'])}"
+                about = company_id(a["about"]) if a.get("about") and company_id(a["about"]) in self.graph.nodes else cid
+                await self.node(nid, "news", a["translated"][:80], nid, title=a["translated"], original=a["title"], language=lang,
+                                source=a["source"], date=a["date"], tone=a["tone"], evidence=[ev])
+                await self.edge(about, nid, "mentioned_in")
+                if a["tone"] == "adverse":
+                    adverse += 1
+                    await self.set_risk(nid, "med")
+                self.facts.news.append({"node": nid, "about_node": about, "tone": a["tone"], "title": a["translated"]})
+            await self.note("news", f"{lang} press · {len(items)} articles · {adverse} adverse (translated) [{ev}]", icon="📰")
+        cyber = seed.get("cyber")
+        if cyber:
+            ev = self.evidence("cyber_posture", "Passive cyber posture check", {"domain": cyber["domain"]}, "", "seed", cyber,
+                               f"{sum(c['status'] == 'fail' for c in cyber['checks'])} failed checks", "cyber")
+            for c in cyber["checks"]:
+                await self.note("news", f"{c['check']} · {c['result']} [{ev}]", "warn" if c["status"] != "pass" else "info", icon="🛡️")
+            self.facts.intel["cyber"] = {**cyber, "evidence_id": ev}
 
     async def step_document(self) -> None:
         await self.begin("document")
@@ -553,6 +585,7 @@ class Pipeline:
         from ..intel import distress
 
         if not distress.enabled():
+            await self._illustrative_distress()
             return
         records = [self.facts.company] + [r for r in self.facts.linked.values()]
         records = [r for r in records if r and r.get("cin") and r.get("date_of_incorporation")]
@@ -567,6 +600,22 @@ class Pipeline:
             await self.set_risk(company_id(s["cin"]), "none", distress_pct=s["percentile"], distress_prob=s["probability"])
         await self.note("analytics", f"Distress model v{scores[0]['version'] if scores else ''} · {len(scores)} companies scored · "
                                      f"{top} in the top decile", icon="🧠")
+
+    async def _illustrative_distress(self) -> None:
+        """Curated distress scores for illustrative cases only; the real model's card stays honest."""
+        rows = (self.seed_file or {}).get("distress") or []
+        if not rows:
+            return
+        ev = self.evidence("distress_model", "Shinrai Distress Model (illustrative output)", {"cins": [r["cin"] for r in rows]},
+                           "", "seed", rows, f"{len(rows)} companies scored", "distress")
+        top = 0
+        for r in rows:
+            name = (self.facts.company if r["cin"] == self.facts.company["cin"] else self.facts.linked.get(r["cin"], {})).get("name", r["cin"])
+            self.facts.intel.setdefault("distress", []).append({**r, "evidence_id": ev, "name": name, "model": "shinrai-distress",
+                                                                "version": "illustrative"})
+            top += r["percentile"] >= 90
+            await self.set_risk(company_id(r["cin"]), "none", distress_pct=r["percentile"], distress_prob=r["probability"])
+        await self.note("analytics", f"Distress model · {len(rows)} companies scored · {top} in the top decile [{ev}]", icon="🧠")
 
     async def step_analytics(self) -> None:
         await self.begin("analytics")
