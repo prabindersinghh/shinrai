@@ -17,13 +17,17 @@ Thapar Japan Hackathon 2026 · JETRO problem statement 01JETRO-PS-01
 3. [Quick start](#quick-start)
 4. [Demo inputs](#demo-inputs)
 5. [Four-minute walkthrough](#four-minute-walkthrough)
-6. [How decisions are made](#how-decisions-are-made)
-7. [Configuration](#configuration)
-8. [Data sources](#data-sources)
-9. [Architecture](#architecture)
-10. [Scripts](#scripts)
-11. [Troubleshooting](#troubleshooting)
-12. [Credits](#credits)
+6. [Screens and routes](#screens-and-routes)
+7. [How decisions are made](#how-decisions-are-made)
+8. [Validation](#validation)
+9. [Sourcing prototype](#sourcing-prototype-frontend-only)
+10. [Configuration](#configuration)
+11. [Data sources](#data-sources)
+12. [Architecture](#architecture)
+13. [Scripts](#scripts)
+14. [Troubleshooting](#troubleshooting)
+15. [Roadmap](#roadmap)
+16. [Credits and licence](#credits-and-licence)
 
 ---
 
@@ -191,6 +195,27 @@ Close with the **master report (統合レポート)**: a board-ready PDF in Engl
 
 ---
 
+## Screens and routes
+
+| Screen | Route | What it shows |
+|---|---|---|
+| Landing | `/` | Pitch, live 3D map of India for an example profile, the four evidence layers |
+| Onboarding | `/onboarding` | Three-step profile wizard (JA / EN) |
+| Advisor | `/advisor/:id` | 3D map with fit, white-space and support-coverage layers; weights; top 3; entry route; compliance Gantt; growth plan; contacts |
+| Partners | `/partners/:id` | Add candidates (name, CIN, GSTIN, brochure) and start investigations |
+| Investigation Theater | `/investigation/:id` | Live research log, network graph, ground-truth tab, findings and score |
+| Partner report | `/report/:id` | Score, sub-scores, findings with evidence, claims, Ground Truth, cyber and model signals, money, term sheet, audit, trace |
+| Compare | `/compare/:id` | Candidates ranked on a map and in a table |
+| Analytics | `/intelligence/:id` | Vizro: market explorer, partner portfolio, model cards, ground overview |
+| Master report | `/master-report/:id` | 統合レポート with contents and page numbers; PDF in EN, JA or both |
+| 稟議書 | `/ringi/:id` | Internal approval document with stamp grid; PDF |
+| Term sheet | `/termsheet/:id` | Base and risk-driven clauses; Word and PDF |
+| Partner consent | `/consent/:token` | Account Aggregator consent screen (simulated) |
+| Auditor field view | `/audit/:id/field` | Mobile checklist with photo upload and GPS check |
+| Demo | `/demo` | The five scenarios, typed input, run of show |
+
+---
+
 ## How decisions are made
 
 - **No source, no finding.** Every flag and claim verdict links to a stored evidence record with its source, retrieval time and SHA-256.
@@ -201,6 +226,24 @@ Close with the **master report (統合レポート)**: a board-ready PDF in Engl
 - **Every record shows its provenance:** LIVE (queried now), CACHED (a recorded real response) or ILLUSTRATIVE.
 
 Shinrai is a decision-support tool, not legal advice.
+
+---
+
+## Validation
+
+`python -m scripts.validate` (run from `backend/`) produces:
+
+| Check | Result |
+|---|---|
+| Red-flag recall on labelled rule fixtures (15 cases) | 100% (target ≥ 90%) |
+| False red-flag rate on clean fixtures (6 cases) | 0% (target ≤ 5%) |
+| Illustrative case D (Sunrise) | 14 / 100, high risk, 17 findings, 6 contradicted claims |
+| Illustrative case C (Kaveri) | 72 / 100, standard |
+| Maruti Suzuki (recorded real data) | 100 / 100, low risk, no findings |
+| Findings and claims linked to stored evidence | 100% |
+| Master report export | about 12–14 s per language |
+
+The fixtures are synthetic and test the rulebook, not real-world accuracy. A labelled set of real companies is the next validation step.
 
 ---
 
@@ -300,7 +343,18 @@ Run from `backend/`.
 
 ---
 
-## Credits
+## Roadmap
+
+- Live cyber-posture checks (TLS, SPF / DMARC, exposed software) for any partner domain
+- Live regional-language press (Hindi, Marathi, Tamil, Gujarati) with translation
+- Train the distress model on full MCA master data and publish its model card
+- Earth Engine building history and night lights for every real company
+- Continuous monitoring: weekly re-checks with alerts on status, GST or director changes
+- Pilot with a JETRO business-matching desk
+
+---
+
+## Credits and licence
 
 Built with FastAPI, React, three.js, CesiumJS, Leaflet, react-force-graph, Recharts, LightGBM, SHAP and [Vizro](https://github.com/mckinsey/vizro) (Apache-2.0). India state boundaries: [datta07/INDIAN-SHAPEFILES](https://github.com/datta07/INDIAN-SHAPEFILES) (MIT). Satellite imagery: Esri, Maxar, Earthstar Geographics; Copernicus Sentinel-2 via Microsoft Planetary Computer. Building footprints © OpenStreetMap contributors (ODbL).
 
