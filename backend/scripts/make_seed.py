@@ -154,10 +154,10 @@ def sunrise() -> dict:
              "date": "2025-06-14", "about": None, "tone": "neutral"},
         ],
         "cyber": {"domain": "sunriseauto-demo.in", "checks": [
-            {"check": "TLS certificate", "result": "expired 2025-12-31", "status": "fail"},
-            {"check": "TLS protocols", "result": "TLS 1.0 and 1.1 still enabled", "status": "fail"},
-            {"check": "Email spoofing protection", "result": "No SPF record; no DMARC policy", "status": "fail"},
-            {"check": "Exposed software", "result": "PHP 7.4 on the public web server (end of life since Nov 2022)", "status": "warn"},
+            {"check": "TLS certificate", "result": "expired 2025-12-31", "result_ja": "2025-12-31に期限切れ", "status": "fail"},
+            {"check": "TLS protocols", "result": "TLS 1.0 and 1.1 still enabled", "result_ja": "TLS 1.0/1.1が有効のまま", "status": "fail"},
+            {"check": "Email spoofing protection", "result": "No SPF record; no DMARC policy", "result_ja": "SPFレコードなし、DMARCポリシーなし", "status": "fail"},
+            {"check": "Exposed software", "result": "PHP 7.4 on the public web server (end of life since Nov 2022)", "result_ja": "公開サーバーでPHP 7.4を使用（2022年11月に保守終了）", "status": "warn"},
         ]},
         "distress": [
             {"cin": "U29304HR2023PTC110482", "probability": 0.41, "percentile": 93.0},
