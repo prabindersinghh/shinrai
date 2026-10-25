@@ -81,7 +81,7 @@ Status key: **Live** works end to end · **Simulated** works end to end on sandb
 | 8 | **Ground Truth (現地現物 from space)** | Satellite building history, a 2016–2026 Sentinel-2 time-lapse ending on high-resolution imagery, night-light activity, and a **3D flyover from Tokyo** to the site, showing whether the claimed factory exists, how big it is and since when. | Live (imagery and footprints); building history and night lights with Earth Engine |
 | 9 | **Claim check** | Every claim in the partner's brochure marked ✅ verified / ❌ contradicted / ❓ unverifiable against registry records, satellite data and certificate registers. | Live |
 | 10 | **Money check** | Consent-based GST turnover through India's Account Aggregator framework, comparing declared turnover with claimed turnover. | **Simulated** |
-| 11 | **Cyber posture** | Passive checks of the partner's internet-facing systems: TLS, email-spoofing protection (SPF / DMARC), exposed end-of-life software. Failed checks add an information-security clause to the term sheet. | Shown in the illustrative case; live checks planned |
+| 11 | **Cyber posture** | Passive checks of the partner's internet-facing systems: TLS, email-spoofing protection (SPF / DMARC), exposed end-of-life software. Failed checks add an information-security clause to the term sheet. The report presents it as a scroll-driven dissection of a four-floor building. | **Live** for any partner with a website (entered on the partner card, read from the registry email, or found in the brochure); the illustrative case uses curated results |
 | 12 | **Shinrai Distress Model** | Our own LightGBM model trained on Indian registry data, predicting strike-off risk with SHAP explanations and a model card of real measured metrics. | Distress scores, percentiles and the NET_DISTRESS_HIGH rule shown in the illustrative case. The training pipeline is complete; the model card shows real metrics once trained on MCA data (a data.gov.in key is required) and says "not trained" until then. |
 | 13 | **信頼スコア** | A 0–100 trust score with sub-scores, computed by a transparent rulebook. AI never decides a flag; every flag links to its source. | Live |
 
@@ -364,7 +364,6 @@ Run from `backend/`.
 
 ## Roadmap
 
-- Live cyber-posture checks (TLS, SPF / DMARC, exposed software) for any partner domain
 - Live regional-language press (Hindi, Marathi, Tamil, Gujarati) with translation
 - Train the distress model on full MCA master data and publish its model card
 - Earth Engine building history and night lights for every real company
