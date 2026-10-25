@@ -107,9 +107,16 @@ def _save_upload(doc: UploadFile) -> tuple[str, str]:
 
 @app.post("/api/partners")
 def create_partner(sme_id: int = Form(...), name: str = Form(""), cin: str = Form(""), gstin: str = Form(""),
-                   doc: UploadFile | None = File(None), demo_brochure: bool = Form(False)) -> Partner:
+                   domain: str = Form(""), doc: UploadFile | None = File(None), demo_brochure: bool = Form(False)) -> Partner:
     if not (name or cin or gstin):
         raise HTTPException(400, "Enter a company name, CIN or GSTIN")
+    if domain.strip():
+        from .adapters.cyber_posture import clean_domain
+
+        try:
+            domain = clean_domain(domain)
+        except ValueError:
+            raise HTTPException(400, "Website must be a domain name such as example.in")
     # Forgiving input: a CIN or GSTIN typed into the name box goes to the right field.
     from .adapters.gstin import CIN_RE, GSTIN_RE
 
@@ -126,7 +133,7 @@ def create_partner(sme_id: int = Form(...), name: str = Form(""), cin: str = For
         doc_path, doc_name = str(config.SEED_DIR / "sunrise_brochure.pdf"), "sunrise_brochure.pdf"
     with session() as s:
         p = Partner(sme_id=sme_id, input_name=name.strip(), cin=cin.strip().upper() or None,
-                    gstin=gstin.strip().upper() or None, doc_path=doc_path, doc_name=doc_name)
+                    gstin=gstin.strip().upper() or None, domain=domain.strip() or None, doc_path=doc_path, doc_name=doc_name)
         s.add(p)
         s.commit()
         s.refresh(p)

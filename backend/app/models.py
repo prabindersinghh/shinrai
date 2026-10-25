@@ -51,6 +51,7 @@ class Partner(SQLModel, table=True):
     gstin: Optional[str] = None
     doc_path: Optional[str] = None
     doc_name: Optional[str] = None
+    domain: Optional[str] = None  # partner website host for the passive cyber check
     status: str = "new"  # new | investigating | done
     created_at: datetime = Field(default_factory=utcnow)
 
