@@ -137,3 +137,24 @@ so), then the certificate check's live path (SEED only), then the Growth Plan sc
 build and carry their URL and `as_of`; anything not confirmed from a fetched source is `verified_by_team: false`
 and shows a "to be verified" chip. The distress model trains only on real MCA records; with no data it reports
 "not trained" and its rule cannot fire.
+
+## Live cyber posture (`cyber_posture` adapter)
+
+- **Passive only.** DNS TXT for SPF and DMARC, one TLS handshake for the certificate, one more with TLS 1.0/1.1 forced to see
+  whether legacy versions are accepted, and one plain `GET /` to read `Server` / `X-Powered-By` banners. No port scan, no
+  crawling, no redirects, no credentials. The report says so on its first card.
+- **The domain is user input and this server connects to it, so SSRF is the main risk.** The name is validated as a public
+  hostname, resolved through DNS-over-HTTPS (the system resolver stalled for 30 s on some names), refused unless every
+  address is globally routable, and the connection is pinned to the address that was checked.
+- **A check that cannot run is `na`, never `fail`.** A timeout proves nothing, so it is never reported as "refused"; only a
+  server alert or reset is. Only `fail` feeds `CYB_WEAK_POSTURE`, so a flaky network cannot cost a partner points.
+- **TLS probes use blocking sockets in threads.** asyncio's TLS shutdown took about 8 s to unwind after a failed certificate
+  handshake and defeated any timeout. DoH is hedged across two resolvers (the second starts after 1.5 s).
+- **Website source order:** the partner card field, then the registry email, then the brochure. A website typed on the card
+  forces the live path even for a seed-mode demo company; illustrative cases keep their curated result.
+- **End-of-life table is static** (dated 2026-10, `ponytail:` comment in the adapter). Swap for the endoflife.date API if it
+  has to stay current.
+- **Report UI.** `CyberDissection` pins the stage with GSAP ScrollTrigger and drives a plain `{x, y, scale}` camera object:
+  GSAP's `svgOrigin` resolves through the element's screen position and drifts once the stage is pinned. Snap stops are the
+  settled frames only, with `inertia: false` so a hard flick cannot skip a floor. Reduced motion and print render the static
+  checklist. The rest of the site keeps its current look; the comic treatment is scoped to this section.

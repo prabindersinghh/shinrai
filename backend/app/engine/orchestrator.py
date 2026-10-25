@@ -32,7 +32,8 @@ STEPS = [
     ("gst", "GST registration", "GST登録"), ("directors", "Directors", "取締役"),
     ("expand", "Director network", "関連会社"), ("enrich", "Linked company status", "関連会社の状態"),
     ("legal", "Courts & insolvency", "訴訟・倒産"), ("news", "News scan", "報道"),
-    ("document", "Partner document", "会社資料"), ("ground", "Ground truth", "現地確認"),
+    ("document", "Partner document", "会社資料"), ("cyber", "Cyber posture", "サイバー対策"),
+    ("ground", "Ground truth", "現地確認"),
     ("claims", "Claim check", "主張検証"), ("analytics", "Graph analytics", "グラフ分析"),
     ("rules", "Rulebook", "ルール判定"), ("scoring", "Scoring", "スコア算出"),
     ("narrative", "Report writing", "レポート作成"), ("done", "Done", "完了"),
@@ -85,6 +86,7 @@ class Pipeline:
         self.coverage: dict[str, str] = {}
         self.modes_used: set[str] = set()
         self.claims_raw: list[dict] = []
+        self.doc_text = ""
         self.flags: list[dict] = []
         self.score: dict = {}
         self.is_demo = False
@@ -176,14 +178,15 @@ class Pipeline:
         return ev_id
 
     async def query(self, step: str, adapter_name: str, query: dict, key: str, label: str = "",
-                    icon: str | None = None) -> tuple[AdapterResult, str]:
+                    icon: str | None = None, mode: str | None = None) -> tuple[AdapterResult, str]:
         adapter = ADAPTERS[adapter_name]
+        mode = mode or self.adapter_mode
         self.q_n += 1
         qid = f"q{self.q_n}"
-        planned = adapter.mode_order(self.adapter_mode)[0]
+        planned = adapter.mode_order(mode)[0]
         await self.emit("query.started", qid=qid, step=step, adapter=adapter_name, source=adapter.source_name,
                         query=query, label=label, mode=planned, icon=icon)
-        result = await adapter.fetch(query, self.adapter_mode)
+        result = await adapter.fetch(query, mode)
         await self.pause(260 + int(query_hash(adapter_name, query), 16) % 900)
         if result.mode_used in ("live", "cached", "seed"):
             self.modes_used.add(result.mode_used)
@@ -451,11 +454,11 @@ class Pipeline:
                 await self.set_risk(nid, "med")
             self.facts.news.append({"node": nid, "about_node": about_node, "tone": tone["tone"], "title": art.get("title")})
         await self.note("news", f"{len(result.records)} articles scanned, {adverse} adverse ({tones and tones[0]['method'] or 'n/a'})")
-        await self._illustrative_regional_and_cyber()
+        await self._illustrative_regional_news()
         await self.end("news", f"{len(result.records)} articles · {adverse} adverse")
 
-    async def _illustrative_regional_and_cyber(self) -> None:
-        """Regional-language press and cyber posture: present only in illustrative cases' curated data."""
+    async def _illustrative_regional_news(self) -> None:
+        """Regional-language press: present only in illustrative cases' curated data."""
         seed = self.seed_file or {}
         cid = self.facts.company_node
         regional = seed.get("regional_news") or []
@@ -477,13 +480,44 @@ class Pipeline:
                     await self.set_risk(nid, "med")
                 self.facts.news.append({"node": nid, "about_node": about, "tone": a["tone"], "title": a["translated"]})
             await self.note("news", f"{lang} press · {len(items)} articles · {adverse} adverse (translated) [{ev}]", icon="📰")
-        cyber = seed.get("cyber")
-        if cyber:
+
+    def _partner_domain(self) -> str | None:
+        """The partner's website host: entered by the user, else the registry email, else the brochure."""
+        from ..adapters.cyber_posture import clean_domain, domain_from_email, domain_from_text
+
+        if self.partner.domain:
+            try:
+                return clean_domain(self.partner.domain)
+            except ValueError:
+                pass
+        return domain_from_email((self.facts.company or {}).get("email")) or domain_from_text(self.doc_text)
+
+    async def step_cyber(self) -> None:
+        await self.begin("cyber")
+        cyber = (self.seed_file or {}).get("cyber")
+        if cyber:  # illustrative case: curated result, labelled as such
             ev = self.evidence("cyber_posture", "Passive cyber posture check", {"domain": cyber["domain"]}, "", "seed", cyber,
                                f"{sum(c['status'] == 'fail' for c in cyber['checks'])} failed checks", "cyber")
-            for c in cyber["checks"]:
-                await self.note("news", f"{c['check']} · {c['result']} [{ev}]", "warn" if c["status"] != "pass" else "info", icon="🛡️")
-            self.facts.intel["cyber"] = {**cyber, "evidence_id": ev}
+            summary = f"{cyber['domain']} · {sum(c['status'] == 'fail' for c in cyber['checks'])} failed"
+        else:
+            domain = self._partner_domain()
+            if not domain:
+                await self.note("cyber", "No partner website known. Add one on the partner card to run the passive check.", "warn")
+                await self.end("cyber", "no website known", skipped=True)
+                return
+            # A website the user typed in is a request to check it now, even for a seed-mode demo company.
+            result, ev = await self.query("cyber", "cyber_posture", {"domain": domain}, "cyber", f"Passive checks · {domain}",
+                                          icon="🛡️", mode="auto" if self.partner.domain and self.adapter_mode == "seed" else None)
+            if not result.records:
+                await self.note("cyber", f"Cyber posture not checked: {result.error or 'no result'}", "warn")
+                await self.end("cyber", result.summary)
+                return
+            cyber, summary = result.records[0], result.summary
+        for c in cyber["checks"]:
+            await self.note("cyber", f"{c['check']} · {c['result']} [{ev}]", "warn" if c["status"] in ("fail", "warn") else "info",
+                            icon="🛡️")
+        self.facts.intel["cyber"] = {**cyber, "evidence_id": ev}
+        await self.end("cyber", summary)
 
     async def step_document(self) -> None:
         await self.begin("document")
@@ -497,6 +531,7 @@ class Pipeline:
             await self.note("document", f"Could not read the document: {exc}", "error")
             await self.end("document", "unreadable")
             return
+        self.doc_text = text
         ev = self.evidence("document", "Partner document", {"file": self.partner.doc_name}, "", "upload",
                            {"filename": self.partner.doc_name, "text": text[:20000]},
                            f"{len(text)} characters extracted", "doc")
@@ -764,12 +799,12 @@ class Pipeline:
         await self.step_resolve()
         if self.facts.company:
             for step in (self.step_company, self.step_gst, self.step_directors, self.step_expand, self.step_enrich,
-                         self.step_legal, self.step_news, self.step_document, self.step_ground, self.step_claims,
-                         self.step_analytics):
+                         self.step_legal, self.step_news, self.step_document, self.step_cyber, self.step_ground,
+                         self.step_claims, self.step_analytics):
                 await step()
         else:
-            for name in ("company", "gst", "directors", "expand", "enrich", "legal", "news", "document", "ground",
-                         "claims", "analytics"):
+            for name in ("company", "gst", "directors", "expand", "enrich", "legal", "news", "document", "cyber",
+                         "ground", "claims", "analytics"):
                 await self.end(name, "skipped: identity not resolved", skipped=True)
         await self.step_rules()
         await self.step_scoring()
